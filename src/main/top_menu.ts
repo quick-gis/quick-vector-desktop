@@ -1,8 +1,24 @@
 import { app, BrowserWindow } from 'electron';
+import { join } from 'path';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 import MenuItem = Electron.MenuItem;
 
-export function topMenu(isMac, win: BrowserWindow): Array<MenuItemConstructorOptions | MenuItem> {
+function createNewWindow(rootPath: string) {
+  const newWindow = new BrowserWindow({
+    width: 400,
+    height: 300,
+    webPreferences: {
+      preload: join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+
+  // 加载新窗口的Vue.js应用程序
+  newWindow.loadURL(rootPath + '#/diag'); // 根据您的实际设置进行更改
+}
+
+export function topMenu(isMac, win: BrowserWindow, rootPath: string): Array<MenuItemConstructorOptions | MenuItem> {
   return [
     ...(isMac
       ? [
@@ -152,6 +168,15 @@ export function topMenu(isMac, win: BrowserWindow): Array<MenuItemConstructorOpt
     {
       label: '调试',
       submenu: [
+        {
+          label: '弹框测试',
+          click: () => {
+            //  这个位置有办法自定义弹框么，如果要做自定义弹框
+            console.log('开始');
+            console.log(rootPath);
+            createNewWindow(rootPath);
+          },
+        },
         {
           label: '控制台',
           accelerator: process.platform === 'darwin' ? 'Alt+Cmd+I' : 'Alt+Shift+I',

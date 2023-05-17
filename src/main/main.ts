@@ -1,8 +1,10 @@
 import { app, BrowserWindow, ipcMain, Menu, session } from 'electron';
 import { join } from 'path';
 import { topMenu } from './top_menu';
+
 let rootPath;
 
+let mainWin: BrowserWindow;
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -29,6 +31,7 @@ function createWindow() {
   }
   let m = Menu.buildFromTemplate(topMenu(isMac, mainWindow, rootPath));
   Menu.setApplicationMenu(m);
+  mainWin = mainWindow;
 }
 
 app.whenReady().then(() => {
@@ -51,17 +54,27 @@ app.whenReady().then(() => {
     }
   });
 });
+// @ts-ignore
+mainWin.on('close', () => {
+  console.log('主窗口关闭');
+});
+let modalArr: Array<BrowserWindow> = [];
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
+  console.log('aaaaaa');
+  if (process.platform !== 'darwin') {
+    modalArr.forEach((e) => {
+      e.close();
+    });
+    app.quit();
+  }
 });
 
 ipcMain.on('message', (event, message) => {
   console.log(message);
 });
-
-let modal;
-// 接收弹出模态框
+let modal: BrowserWindow;
+// 路由弹框
 ipcMain.on('open-modal', (event, path, title = '提示') => {
   console.log('========打开新窗口========', path);
   console.log('========打开新窗口========', rootPath);
@@ -93,5 +106,7 @@ ipcMain.on('open-modal', (event, path, title = '提示') => {
 
   let s = rootPath + '/#' + path;
   console.log(s);
+  modalArr.push(modal);
+
   modal.loadURL(s);
 });

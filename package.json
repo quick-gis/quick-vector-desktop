@@ -16,6 +16,7 @@
     "url": "https://github.com/Deluze"
   },
   "devDependencies": {
+    "@types/jsts": "^0.17.17",
     "@vitejs/plugin-vue": "^4.0.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",

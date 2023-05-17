@@ -2,9 +2,11 @@ import { app, BrowserWindow, ipcMain, Menu, session } from 'electron';
 import { join } from 'path';
 import { topMenu } from './top_menu';
 
-let rootPath;
+let rootPath: string;
 
 let mainWin: BrowserWindow;
+let modalArr: Array<BrowserWindow> = [];
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -31,9 +33,14 @@ function createWindow() {
   }
   let m = Menu.buildFromTemplate(topMenu(isMac, mainWindow, rootPath));
   Menu.setApplicationMenu(m);
+  // 主窗口关闭需要关闭所有打开的窗口
+  mainWindow.on('close', () => {
+    modalArr.forEach((e) => {
+      e.close();
+    });
+  });
   mainWin = mainWindow;
 }
-
 app.whenReady().then(() => {
   createWindow();
 
@@ -54,18 +61,10 @@ app.whenReady().then(() => {
     }
   });
 });
-// @ts-ignore
-mainWin.on('close', () => {
-  console.log('主窗口关闭');
-});
-let modalArr: Array<BrowserWindow> = [];
 
 app.on('window-all-closed', function () {
   console.log('aaaaaa');
   if (process.platform !== 'darwin') {
-    modalArr.forEach((e) => {
-      e.close();
-    });
     app.quit();
   }
 });

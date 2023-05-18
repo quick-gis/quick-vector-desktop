@@ -19,7 +19,7 @@ function createNewWindow(rootPath: string,isDev:boolean,path:string) {
   ;
 
 
-  if (!isDev) {
+  if (isDev) {
     console.log("新开窗口地址 " ,`${rootPath}#${path}`)
     newWindow.loadURL(`${rootPath}#${path}`)
   } else {

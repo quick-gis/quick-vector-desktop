@@ -113,8 +113,14 @@ app.on('activate', () => {
   }
 })
 
-// New window example arg: new windows url
-ipcMain.handle('open-win', (_, arg) => {
+
+
+ipcMain.on('message', (event, message) => {
+  console.log(message);
+});
+
+
+ipcMain.on('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload,
@@ -129,8 +135,3 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadFile(indexHtml, { hash: arg })
   }
 })
-
-
-ipcMain.on('message', (event, message) => {
-  console.log(message);
-});

@@ -20,13 +20,7 @@ const b2 = () => {
 </script>
 
 <template>
-  <div>首页</div>
-  <div>
-    <el-button type="primary" @click="fff">弹框</el-button>
-    <button @click="b2">输出存储</button>
-
-    <div>{{ mm }}</div>
-  </div>
+  <div></div>
 </template>
 
 <style scoped></style>

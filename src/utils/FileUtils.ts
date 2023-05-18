@@ -1,5 +1,7 @@
 const ROOT_PATH = 'qv';
 const LOG_PATH = 'log';
+const STYLE_PATH = 'style';
+const CONFIG_PATH = 'config';
 const USER_HOME = process.env.HOME || process.env.USERPROFILE;
 
 import fs from 'fs';
@@ -19,11 +21,22 @@ export function GetLogPath() {
   return join(USER_HOME, ROOT_PATH, LOG_PATH);
 }
 
+export function GetStylePath() {
+  // @ts-ignore
+  return join(USER_HOME, ROOT_PATH, STYLE_PATH);
+}
+export function GetConfigPath() {
+  // @ts-ignore
+  return join(USER_HOME, ROOT_PATH, CONFIG_PATH);
+}
+
 export function CreateRootPath() {
   // @ts-ignore
   let rp = join(USER_HOME, ROOT_PATH);
   createFolder(rp);
   createFolder(GetLogPath());
+  createFolder(GetStylePath());
+  createFolder(GetConfigPath());
 }
 
 export function LogPath() {

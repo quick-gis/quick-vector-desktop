@@ -21,7 +21,7 @@ function createNewWindow(rootPath: string,isDev:boolean,path:string) {
 
 
   if (!isDev) {
-    newWindow.loadURL(rootPath + '#/diag')
+    newWindow.loadURL(rootPath + '#'+path)
   } else {
     newWindow.loadFile(rootPath,{ hash: path })
   }

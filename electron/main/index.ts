@@ -122,6 +122,9 @@ ipcMain.on('message', (event, message) => {
 
 ipcMain.on('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
+    width:300,
+    height:600,
+    parent:win,
     webPreferences: {
       preload,
       nodeIntegration: true,

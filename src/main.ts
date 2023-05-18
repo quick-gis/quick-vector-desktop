@@ -1,14 +1,14 @@
-import { createApp } from "vue";
-import "./style.css";
-import App from "./App.vue";
-import "./samples/node-api";
-import router from "./router";
-import ElementPlus from "element-plus";
-import "element-plus/dist/index.css";
+import { createApp } from 'vue';
+import './style.css';
+import App from './App.vue';
+import './samples/node-api';
+import router from './router';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
 createApp(App)
   .use(router)
   .use(ElementPlus)
-  .mount("#app")
+  .mount('#app')
   .$nextTick(() => {
-    postMessage({ payload: "removeLoading" }, "*");
+    postMessage({ payload: 'removeLoading' }, '*');
   });

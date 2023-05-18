@@ -6,10 +6,9 @@ const router = createRouter({
 
   routes: [
     {
-      path: "/",
-      redirect:"/index"
-    }
-    ,
+      path: '/',
+      redirect: '/index',
+    },
     {
       path: '/diag',
       name: 'diag',

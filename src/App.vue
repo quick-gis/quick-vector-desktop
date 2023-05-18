@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from './components/HelloWorld.vue';
 
-console.log("[App.vue]", `Hello world from Electron ${process.versions.electron}!`)
+console.log('[App.vue]', `Hello world from Electron ${process.versions.electron}!`);
 </script>
 
 <template>
   <div>
-   <router-view></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -25,7 +25,7 @@ console.log("[App.vue]", `Hello world from Electron ${process.versions.electron}
 }
 
 .logo.electron:hover {
-  filter: drop-shadow(0 0 2em #9FEAF9);
+  filter: drop-shadow(0 0 2em #9feaf9);
 }
 
 .logo:hover {

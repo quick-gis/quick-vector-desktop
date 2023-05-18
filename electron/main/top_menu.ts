@@ -2,33 +2,34 @@ import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 import MenuItem = Electron.MenuItem;
-const preload = join(__dirname, '../preload/index.js')
+const preload = join(__dirname, '../preload/index.js');
 
-function createNewWindow(rootPath: string,isDev:boolean,path:string) {
+function createNewWindow(rootPath: string, isDev: boolean, path: string) {
   const newWindow = new BrowserWindow({
-      title: 'Main window',
-      icon: join(process.env.PUBLIC, 'favicon.ico'),
+    title: 'Main window',
+    icon: join(process.env.PUBLIC, 'favicon.ico'),
     width: 300,
     height: 600,
-      webPreferences: {
-        preload,
-        nodeIntegration: true,
-        contextIsolation: false,
-      },
-    })
-  ;
-
-
+    webPreferences: {
+      preload,
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
   if (isDev) {
-    console.log("新开窗口地址 " ,`${rootPath}#${path}`)
-    newWindow.loadURL(`${rootPath}#${path}`)
+    console.log('新开窗口地址 ', `${rootPath}#${path}`);
+    newWindow.loadURL(`${rootPath}#${path}`);
   } else {
-    newWindow.loadFile(rootPath,{ hash: path })
+    newWindow.loadFile(rootPath, { hash: path });
   }
-
 }
 
-export function topMenu(isMac, win: BrowserWindow, rootPath: string,isDev:boolean): Array<MenuItemConstructorOptions | MenuItem> {
+export function topMenu(
+  isMac,
+  win: BrowserWindow,
+  rootPath: string,
+  isDev: boolean
+): Array<MenuItemConstructorOptions | MenuItem> {
   return [
     ...(isMac
       ? [
@@ -184,7 +185,7 @@ export function topMenu(isMac, win: BrowserWindow, rootPath: string,isDev:boolea
             //  这个位置有办法自定义弹框么，如果要做自定义弹框
             console.log('开始');
             console.log(rootPath);
-            createNewWindow(rootPath,isDev,"/diag");
+            createNewWindow(rootPath, isDev, '/diag');
           },
         },
         {

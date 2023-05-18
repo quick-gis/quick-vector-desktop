@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { getD, setD } from '../store/testU';
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron';
 
 onMounted(() => {
-  ipcRenderer.send("message","hhhhhhh")
+  ipcRenderer.send('message', 'hhhhhhh');
   setD('aaaaaaaaaa');
   console.log('aaaaaa');
 });

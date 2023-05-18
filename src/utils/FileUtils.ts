@@ -3,10 +3,11 @@ const LOG_PATH = 'log';
 const STYLE_PATH = 'style';
 const CONFIG_PATH = 'config';
 const DITU_CONFIG_FILE = 'dt.json';
-const USER_HOME = process.env.HOME || process.env.USERPROFILE;
 
 import fs from 'fs';
+import os from 'os';
 import { join } from 'path';
+const USER_HOME = process.env.HOME || process.env.USERPROFILE || os.homedir();
 
 function createFolder(rp: string) {
   if (fs.existsSync(rp)) {
@@ -57,11 +58,13 @@ export function ReadDiTuConfig() {
 }
 
 export function CreateRootPath() {
-  console.log("开始初始化文件夹")
+  console.log()
+  console.log("开始初始化文件夹",USER_HOME,ROOT_PATH)
 
   // @ts-ignore
   let rp = join(USER_HOME, ROOT_PATH);
   createFolder(rp);
+  debugger
   createFolder(GetLogPath());
   createFolder(GetStylePath());
   createFolder(GetConfigPath());

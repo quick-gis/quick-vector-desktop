@@ -7,13 +7,21 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/index',
+      redirect: '/layer',
     },
 
     {
       path: '/diag',
       name: 'diag',
       component: defineAsyncComponent(() => import('../diag/index.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
+    {
+      path: '/layer',
+      name: 'layer',
+      component: defineAsyncComponent(() => import('../layer/Layer.vue')),
       meta: {
         requiresAuth: false,
       },

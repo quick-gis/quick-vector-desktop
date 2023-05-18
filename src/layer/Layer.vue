@@ -1,7 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { QvMap } from './map/QvMap';
+
+const map = ref<any>();
+let qvMap = new QvMap('map');
+onMounted(() => {
+  console.log('初始化地图');
+  map.value = qvMap.initMap();
+});
+</script>
 
 <template>
-  <div>图层区域</div>
+  <div id="map" ref="map" style="height: 100vh; width: 100%"></div>
 </template>
 
 <style scoped></style>

@@ -48,6 +48,7 @@
     "proj4m": "^1.1.0",
     "shapefile": "^0.6.6",
     "vue": "^3.2.47",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "winston": "^3.8.2"
   }
 }

@@ -17,11 +17,11 @@ function createNewWindow(rootPath: string,isDev:boolean,path:string) {
       },
     })
   ;
-  console.log("新开窗口地址 " ,rootPath , "跳转地址" ,path)
 
 
   if (!isDev) {
-    newWindow.loadURL(rootPath + '#'+path)
+    console.log("新开窗口地址 " ,`${rootPath}#${path}`)
+    newWindow.loadURL(`${rootPath}#${path}`)
   } else {
     newWindow.loadFile(rootPath,{ hash: path })
   }

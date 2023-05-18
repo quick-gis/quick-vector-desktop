@@ -2,6 +2,7 @@ const ROOT_PATH = 'qv';
 const LOG_PATH = 'log';
 const STYLE_PATH = 'style';
 const CONFIG_PATH = 'config';
+const DITU_CONFIG_FILE = 'dt.json';
 const USER_HOME = process.env.HOME || process.env.USERPROFILE;
 
 import fs from 'fs';
@@ -20,6 +21,10 @@ export function GetLogPath() {
   // @ts-ignore
   return join(USER_HOME, ROOT_PATH, LOG_PATH);
 }
+export function GetDiTuConfigFile() {
+  // @ts-ignore
+  return join(USER_HOME, ROOT_PATH, CONFIG_PATH, DITU_CONFIG_FILE);
+}
 
 export function GetStylePath() {
   // @ts-ignore
@@ -30,6 +35,27 @@ export function GetConfigPath() {
   return join(USER_HOME, ROOT_PATH, CONFIG_PATH);
 }
 
+function createFile(file: string, data: string | undefined) {
+  if (fs.existsSync(file)) {
+    console.log(`${file}已存在`);
+    if (data) {
+      fs.writeFileSync(file, data);
+    }
+  } else {
+    console.log(`创建文件,${file}`);
+    // @ts-ignore
+    fs.writeFileSync(file, data);
+  }
+}
+
+export function SaveDiTuConfig(data: string) {
+  createFile(GetDiTuConfigFile(), data);
+}
+
+export function ReadDiTuConfig() {
+  return fs.readFileSync(GetDiTuConfigFile(), 'utf8');
+}
+
 export function CreateRootPath() {
   // @ts-ignore
   let rp = join(USER_HOME, ROOT_PATH);
@@ -37,6 +63,7 @@ export function CreateRootPath() {
   createFolder(GetLogPath());
   createFolder(GetStylePath());
   createFolder(GetConfigPath());
+  createFile(GetDiTuConfigFile(), undefined);
 }
 
 export function LogPath() {

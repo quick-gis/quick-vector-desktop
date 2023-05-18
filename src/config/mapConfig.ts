@@ -1,17 +1,14 @@
-/**
- * 令牌
- */
-export interface Token {
-  /**
-   * 令牌
-   */
-  token: string | '';
-}
+import { ReadDiTuConfig, SaveDiTuConfig } from '../utils/FileUtils';
 
 /**
  * 官方配置：http://lbs.tianditu.gov.cn/server/MapService.html
  */
 export class TianDiTuConfigImpl {
+  constructor(token: string) {
+    this.token = token;
+  }
+
+  token: string;
   /**
    * 天地图_矢量底图_经纬度投影
    */
@@ -53,6 +50,32 @@ export class TianDiTuConfigImpl {
   static cia_w: string = '';
 }
 
-export class BaiDuConfigImpl {}
+export class BaiDuConfigImpl {
+  constructor(token: string) {
+    this.token = token;
+  }
+
+  token: string;
+}
 
 // 文档: https://blog.csdn.net/zyh_1988/article/details/120670402
+
+// todo: 全局变量+pina
+export class DiTuConfig {
+  // @ts-ignore
+  tdt: TianDiTuConfigImpl;
+  // @ts-ignore
+  bd: BaiDuConfigImpl;
+
+  Save() {
+    console.log('保存配置');
+    SaveDiTuConfig(JSON.stringify(this));
+  }
+  Load() {
+    let readDiTuConfig = ReadDiTuConfig();
+    let d = JSON.parse(readDiTuConfig);
+    this.tdt = d.tdt;
+    this.bd = d.bd;
+    debugger;
+  }
+}

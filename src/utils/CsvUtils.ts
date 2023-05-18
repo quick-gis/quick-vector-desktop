@@ -149,4 +149,5 @@ b.LinkData(a.datas, {
   link_field: ['x', 'y'],
   link_pre: '起点',
 });
+console.log(JSON.stringify(b.datas));
 // export { PointCsvObe };

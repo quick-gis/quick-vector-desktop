@@ -9,10 +9,19 @@ const router = createRouter({
       path: '/',
       redirect: '/index',
     },
+
     {
       path: '/diag',
       name: 'diag',
       component: defineAsyncComponent(() => import('../diag/index.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
+    {
+      path: '/selector_file',
+      name: 'selector_file',
+      component: defineAsyncComponent(() => import('../selector/SelectorFile.vue')),
       meta: {
         requiresAuth: false,
       },

@@ -20,7 +20,7 @@ const b2 = () => {
 </script>
 
 <template>
-  <div></div>
+  <div>首页</div>
 </template>
 
 <style scoped></style>

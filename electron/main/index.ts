@@ -63,9 +63,8 @@ async function createWindow() {
   if (process.env.VITE_DEV_SERVER_URL) {
     console.log(`${url}`)
     rootPath = `${url}`
-    console.log("????",url +"#/diag")
     isDev = true;
-    win.loadURL(url +"#/diag")
+    win.loadURL(rootPath)
     // Open devTool if the app is not packaged
     win.webContents.openDevTools()
   } else {

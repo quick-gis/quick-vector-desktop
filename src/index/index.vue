@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import  { getD, setD } from '../store/testU';
+import {ipcRenderer} from "electron";
 
 const fff = () => {
-
+ipcRenderer.send("'open-win'","/diag")
 };
 onMounted(() => {
   setD('jkljljlk');

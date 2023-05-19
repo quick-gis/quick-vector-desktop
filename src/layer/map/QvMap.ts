@@ -1,7 +1,14 @@
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
-import { BingMaps, OSM, XYZ } from 'ol/source';
+import { BingMaps } from 'ol/source';
+import { Vector as VectorSource } from 'ol/source.js';
+import { Vector as VectorLayer } from 'ol/layer.js';
+import Feature from 'ol/Feature.js';
+import GeoJSON from 'ol/format/GeoJSON.js';
+import { Geometry, LineString, Point } from 'ol/geom';
+import { Circle, Fill, Stroke, Style } from 'ol/style';
+
 export class QvMap {
   target: string;
 
@@ -11,6 +18,7 @@ export class QvMap {
 
   // @ts-ignore
   private _map: Map;
+
   constructor(target: string) {
     this.target = target;
   }
@@ -40,5 +48,46 @@ export class QvMap {
       }),
     });
     return this._map;
+  }
+
+  hh: Map = new Map();
+  oa() {
+    let a = this.hh.get('a');
+
+    a.getSource()
+      ?.getFeatures()[0]
+      .setGeometry(new Point([119.45436769887343, 29.21]));
+  }
+  addLayers() {
+    let geojsonObject = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            coordinates: [119.45436769887343, 29.2080525919085],
+            type: 'Point',
+          },
+        },
+      ],
+    };
+
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: new GeoJSON().readFeatures(geojsonObject),
+      }),
+      style: new Style({
+        image: new Circle({
+          radius: 6, // 圆点的半径
+          fill: new Fill({ color: '#fd0606' }), // 填充色
+          stroke: new Stroke({ color: '#000', width: 2 }), // 边框样式
+        }),
+      }),
+    });
+
+    this.hh.set('a', vectorLayer);
+    // 将矢量图
+    this._map.addLayer(vectorLayer);
   }
 }

@@ -15,8 +15,12 @@ ipcRenderer.on('map-config', function (event, arg) {
 onMounted(() => {
   console.log('初始化地图');
   map.value = qvMap.initMap();
+  qvMap.addLayers();
 });
 
+const a = () => {
+  qvMap.oa();
+};
 const d = reactive({
   x: 100,
   y: 100,
@@ -52,6 +56,7 @@ const print = (e) => {
       @resize-end="print('resize-end')"
     >
       <div id="left" class="movable">左侧 {{ aaa }}</div>
+      <el-button @click="a">a</el-button>
     </Vue3DraggableResizable>
   </div>
 </template>

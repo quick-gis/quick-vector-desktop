@@ -7,10 +7,10 @@ const map = ref<any>();
 const aaa = ref(0);
 let qvMap = new QvMap('map');
 
-ipcRenderer.on('update-counter', function (event, arg) {
+ipcRenderer.on('map-config', function (event, arg) {
   console.log('event:', event);
   console.log('arg:', arg);
-  aaa.value = aaa.value + arg;
+  aaa.value = arg;
 });
 onMounted(() => {
   console.log('初始化地图');

@@ -256,6 +256,9 @@ async function createWindow() {
           },
         },
         {
+          type: 'separator',
+        },
+        {
           click: () => win.webContents.send('update-counter', 1),
           label: 'Increment',
         },
@@ -308,6 +311,10 @@ app.on('activate', () => {
 // 渲染进程通知主进程
 ipcMain.on('message', (event, message) => {
   console.log(message);
+});
+
+ipcMain.on('map-config', (event, message) => {
+  win.webContents.send('map-config', message);
 });
 
 ipcMain.on('open-win', (_, arg) => {

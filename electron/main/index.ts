@@ -259,7 +259,11 @@ async function createWindow() {
         {
           label: '控制台',
           accelerator: process.platform === 'darwin' ? 'Alt+Cmd+I' : 'Alt+Shift+I',
-          click: () => {
+          type: 'checkbox',
+          checked: false,
+          click: (e) => {
+            // todo: 控制选中状态
+            // e.checked = !!e.checked;
             console.log('控制台点击');
           },
         },

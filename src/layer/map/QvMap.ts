@@ -15,6 +15,10 @@ export class QvMap {
     this.target = target;
   }
 
+  // todo:
+  //  1. 地图图层不能直接写死
+  //  2. 视图需要传输
+  //  3. 要素图层的序号应该从10000开始
   initMap() {
     this._map = new Map({
       target: this.target,
@@ -28,6 +32,7 @@ export class QvMap {
           }),
         }),
       ],
+
       view: new View({
         center: [119.45436769887343, 29.2080525919085],
         zoom: 15,

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<div id="resizableDiv" class="resizable movable" ></div>
+
+</body>
+<style>
+    .resizable {
+        width: 200px;
+        height: 150px;
+        border: 1px solid #000;
+        background-color: #cccc22;
+        resize: both; /* 启用拖动调整大小的功能 */
+        overflow: auto; /* 添加滚动条以防止内容溢出 */
+    }
+
+    .movable {
+        position: absolute;
+        cursor: move;
+    }
+
+</style>
+<script>
+  const movableDiv = document.getElementById("resizableDiv");
+
+  movableDiv.addEventListener("mousedown", startDrag);
+
+  function startDrag(e) {
+    e.preventDefault();
+
+    const startX = e.clientX - movableDiv.offsetLeft;
+    const startY = e.clientY - movableDiv.offsetTop;
+
+    document.documentElement.addEventListener("mousemove", drag);
+    document.documentElement.addEventListener("mouseup", stopDrag);
+
+    function drag(e) {
+      const newLeft = e.clientX - startX;
+      const newTop = e.clientY - startY;
+
+      movableDiv.style.left = newLeft + "px";
+      movableDiv.style.top = newTop + "px";
+    }
+
+    function stopDrag() {
+      document.documentElement.removeEventListener("mousemove", drag);
+      document.documentElement.removeEventListener("mouseup", stopDrag);
+    }
+  }
+
+</script>
+</html>

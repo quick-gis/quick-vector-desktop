@@ -66,7 +66,15 @@ export class DiTuConfig {
   tdt: TianDiTuConfigImpl;
   // @ts-ignore
   bd: BaiDuConfigImpl;
+  private static instance: DiTuConfig;
 
+  public static getInstance(): DiTuConfig {
+    if (!DiTuConfig.instance) {
+      DiTuConfig.instance = new DiTuConfig();
+      DiTuConfig.instance.Load();
+    }
+    return DiTuConfig.instance;
+  }
   Save() {
     console.log('保存配置');
     SaveDiTuConfig(JSON.stringify(this));
@@ -76,6 +84,5 @@ export class DiTuConfig {
     let d = JSON.parse(readDiTuConfig);
     this.tdt = d.tdt;
     this.bd = d.bd;
-    debugger;
   }
 }

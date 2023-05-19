@@ -25,10 +25,10 @@ function createNewWindow(rootPath: string, isDev: boolean, path: string) {
 }
 
 export function topMenu(
-  isMac,
   win: BrowserWindow,
   rootPath: string,
-  isDev: boolean
+  isDev: boolean,
+  isMac: boolean
 ): Array<MenuItemConstructorOptions | MenuItem> {
   return [
     ...(isMac

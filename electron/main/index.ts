@@ -53,7 +53,7 @@ async function createWindow() {
     },
   });
 
-  const isMac = process.platform === 'darwin';
+  const isMac: boolean = process.platform === 'darwin' || false;
 
   let rootPath;
   let isDev: boolean;
@@ -70,7 +70,7 @@ async function createWindow() {
     isDev = true;
     win.loadFile(indexHtml);
   }
-  let m = Menu.buildFromTemplate(topMenu(isMac, win, rootPath, isDev));
+  let m = Menu.buildFromTemplate(topMenu(isMac, win, rootPath, isDev, isMac));
   Menu.setApplicationMenu(m);
 
   // Test actively push message to the Electron-Renderer

@@ -9,6 +9,14 @@ const router = createRouter({
       path: '/',
       redirect: '/layer',
     },
+    {
+      path: '/config',
+      name: 'config',
+      component: defineAsyncComponent(() => import('../config/config.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
 
     {
       path: '/diag',

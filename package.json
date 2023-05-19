@@ -41,6 +41,7 @@
     "vue-tsc": "^1.2.0"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
     "@turf/turf": "^6.5.0",
     "coordtransform": "^2.1.2",
     "csv": "^6.3.0",
@@ -50,7 +51,6 @@
     "jsts": "^2.9.3",
     "mysql": "^2.18.1",
     "ol": "^7.3.0",
-
     "prettier": "^2.8.8",
     "proj4": "^2.9.0",
     "proj4m": "^1.1.0",

@@ -14,7 +14,7 @@ let logger = winston.createLogger({
     new winston.transports.Console(),
     new winston.transports.File({
       filename: GetLogPath() + '/qv-log.log',
-      maxsize: 1024,
+      maxsize: 1024000,
     }),
   ],
 });

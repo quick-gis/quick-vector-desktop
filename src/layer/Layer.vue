@@ -11,7 +11,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="map" ref="map" style="height: 100vh; width: 100%"></div>
+  <div id="map" ref="map" style="height: 100vh; width: 100%">
+    <div>左侧</div>
+  </div>
 </template>
 
 <style scoped></style>

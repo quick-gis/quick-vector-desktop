@@ -10,6 +10,8 @@ let type;
 const blur = () => {
   GetLog().info('失去焦点' + input1.value);
   let instance = DiTuConfig.getInstance();
+  GetLog().info('失去焦点' + JSON.parse(instance));
+
   if (type == 'tdt') {
     instance.tdt.token = input1.value;
   }

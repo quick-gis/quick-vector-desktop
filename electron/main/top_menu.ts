@@ -1,15 +1,24 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcRenderer } from 'electron';
 import { join } from 'path';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 import MenuItem = Electron.MenuItem;
 const preload = join(__dirname, '../preload/index.js');
 
-function createNewWindow(rootPath: string, isDev: boolean, path: string) {
+function createNewWindow(
+  rootPath: string,
+  isDev: boolean,
+
+  win: BrowserWindow,
+
+  path: string
+) {
   const newWindow = new BrowserWindow({
-    title: 'Main window',
+    title: '配置界面',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
+    parent: win,
     width: 300,
     height: 600,
+    modal: true,
     webPreferences: {
       preload,
       nodeIntegration: true,
@@ -18,6 +27,7 @@ function createNewWindow(rootPath: string, isDev: boolean, path: string) {
   });
   if (isDev) {
     console.log('新开窗口地址 ', `${rootPath}#${path}`);
+    debugger;
     newWindow.loadURL(`${rootPath}#${path}`);
   } else {
     newWindow.loadFile(rootPath, { hash: path });
@@ -185,7 +195,7 @@ export function topMenu(
             //  这个位置有办法自定义弹框么，如果要做自定义弹框
             console.log('开始');
             console.log(rootPath);
-            createNewWindow(rootPath, isDev, '/diag');
+            createNewWindow(rootPath, isDev, win, '/config?type=tdt');
           },
         },
         {

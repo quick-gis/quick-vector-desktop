@@ -1,4 +1,5 @@
 import { ReadDiTuConfig, SaveDiTuConfig } from '../utils/FileUtils';
+import { GetLog } from '../utils/LogUtils';
 
 /**
  * 官方配置：http://lbs.tianditu.gov.cn/server/MapService.html
@@ -76,13 +77,14 @@ export class DiTuConfig {
     return DiTuConfig.instance;
   }
   Save() {
-    console.log('保存配置');
+    GetLog().info('写入配置' + JSON.stringify(DiTuConfig.getInstance()));
     SaveDiTuConfig(JSON.stringify(this));
   }
   Load() {
     let readDiTuConfig = ReadDiTuConfig();
     let d = JSON.parse(readDiTuConfig);
-    this.tdt = d.tdt;
-    this.bd = d.bd;
+    let instance = DiTuConfig.getInstance();
+    instance.tdt = d.tdt;
+    instance.bd = d.bd;
   }
 }

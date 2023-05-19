@@ -33,7 +33,6 @@ const print = (e) => {
   <div id="map" ref="map" style="height: 100vh; width: 100%">
     <Vue3DraggableResizable
       id="a"
-      :parent="true"
       :initW="110"
       :initH="120"
       v-model:x="d.x"

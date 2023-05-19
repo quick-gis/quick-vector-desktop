@@ -235,7 +235,6 @@ async function createWindow() {
 
             if (process.env.VITE_DEV_SERVER_URL) {
               browserWindow.loadURL(rootPath + '#/config?type=tdt');
-              browserWindow.webContents.openDevTools();
             } else {
               browserWindow.loadFile(rootPath, { hash: '/config?type=tdt' });
             }
@@ -244,6 +243,16 @@ async function createWindow() {
               console.log('关闭弹窗');
             });
 
+            let m = Menu.buildFromTemplate([
+              ...(isMac
+                ? [
+                    {
+                      label: app.name,
+                    },
+                  ]
+                : []),
+            ]);
+            browserWindow.setMenu(m);
             browserWindow.show();
           },
         },
@@ -252,7 +261,6 @@ async function createWindow() {
           accelerator: process.platform === 'darwin' ? 'Alt+Cmd+I' : 'Alt+Shift+I',
           click: () => {
             console.log('控制台点击');
-            win.webContents.openDevTools();
           },
         },
         {

@@ -36,10 +36,10 @@ export function GetConfigPath() {
   return join(USER_HOME, ROOT_PATH, CONFIG_PATH);
 }
 
-function createFile(file: string, data: string ) {
+function createFile(file: string, data: string) {
   if (fs.existsSync(file)) {
     console.log(`${file}已存在`);
-    if (data!="{}") {
+    if (data != '{}') {
       fs.writeFileSync(file, data);
     }
   } else {
@@ -58,17 +58,16 @@ export function ReadDiTuConfig() {
 }
 
 export function CreateRootPath() {
-  console.log()
-  console.log("开始初始化文件夹",USER_HOME,ROOT_PATH)
+  console.log();
+  console.log('开始初始化文件夹', USER_HOME, ROOT_PATH);
 
   // @ts-ignore
   let rp = join(USER_HOME, ROOT_PATH);
   createFolder(rp);
-  debugger
   createFolder(GetLogPath());
   createFolder(GetStylePath());
   createFolder(GetConfigPath());
-  createFile(GetDiTuConfigFile(), JSON.stringify("{}"));
+  createFile(GetDiTuConfigFile(), JSON.stringify('{}'));
 }
 
 export function LogPath() {

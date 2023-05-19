@@ -27,7 +27,6 @@ function createNewWindow(
   });
   if (isDev) {
     console.log('新开窗口地址 ', `${rootPath}#${path}`);
-    debugger;
     newWindow.loadURL(`${rootPath}#${path}`);
   } else {
     newWindow.loadFile(rootPath, { hash: path });

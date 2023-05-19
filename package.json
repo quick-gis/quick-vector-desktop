@@ -57,6 +57,7 @@
     "shapefile": "^0.6.6",
     "vue": "^3.2.47",
     "vue-router": "^4.2.0",
+    "vue3-draggable-resizable": "^1.6.5",
     "winston": "^3.8.2"
   }
 }

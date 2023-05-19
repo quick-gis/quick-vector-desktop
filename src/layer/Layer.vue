@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { QvMap } from './map/QvMap';
 import { ipcRenderer } from 'electron';
 
@@ -15,52 +15,53 @@ ipcRenderer.on('map-config', function (event, arg) {
 onMounted(() => {
   console.log('初始化地图');
   map.value = qvMap.initMap();
-
-  const movableDiv = document.getElementById('left');
-
-  movableDiv.addEventListener('mousedown', startDrag);
-
-  function startDrag(e) {
-    e.preventDefault();
-
-    const startX = e.clientX - movableDiv.offsetLeft;
-    const startY = e.clientY - movableDiv.offsetTop;
-
-    document.documentElement.addEventListener('mousemove', drag);
-    document.documentElement.addEventListener('mouseup', stopDrag);
-
-    function drag(e) {
-      const newLeft = e.clientX - startX;
-      const newTop = e.clientY - startY;
-
-      movableDiv.style.left = newLeft + 'px';
-      movableDiv.style.top = newTop + 'px';
-    }
-
-    function stopDrag() {
-      document.documentElement.removeEventListener('mousemove', drag);
-      document.documentElement.removeEventListener('mouseup', stopDrag);
-    }
-  }
 });
+
+const d = reactive({
+  x: 100,
+  y: 100,
+  h: 100,
+  w: 100,
+  active: false,
+});
+const print = (e) => {
+  console.log(e);
+};
 </script>
 
 <template>
   <div id="map" ref="map" style="height: 100vh; width: 100%">
-    <div id="left" class="movable">左侧 {{ aaa }}</div>
+    <Vue3DraggableResizable
+      id="a"
+      :parent="true"
+      :initW="110"
+      :initH="120"
+      v-model:x="d.x"
+      v-model:y="d.y"
+      v-model:w="d.w"
+      v-model:h="d.h"
+      v-model:active="d.active"
+      :draggable="true"
+      :resizable="true"
+      @activated="print('activated')"
+      @deactivated="print('deactivated')"
+      @drag-start="print('drag-start')"
+      @resize-start="print('resize-start')"
+      @dragging="print('dragging')"
+      @resizing="print('resizing')"
+      @drag-end="print('drag-end')"
+      @resize-end="print('resize-end')"
+    >
+      <div id="left" class="movable">左侧 {{ aaa }}</div>
+    </Vue3DraggableResizable>
   </div>
 </template>
 
 <style scoped>
-#left {
+#a {
   position: fixed;
   z-index: 999;
   background-color: #fff;
   height: 100%;
-  resize: both;
-}
-.movable {
-  position: absolute;
-  cursor: move;
 }
 </style>

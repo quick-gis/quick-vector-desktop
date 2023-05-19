@@ -4,12 +4,13 @@ import { QvMap } from './map/QvMap';
 import { ipcRenderer } from 'electron';
 
 const map = ref<any>();
-const aaa = ref();
+const aaa = ref(0);
 let qvMap = new QvMap('map');
 
 ipcRenderer.on('update-counter', function (event, arg) {
   console.log('event:', event);
   console.log('arg:', arg);
+  aaa.value = aaa.value + arg;
 });
 onMounted(() => {
   console.log('初始化地图');

@@ -223,6 +223,7 @@ async function createWindow() {
             console.log(rootPath);
 
             let browserWindow = new BrowserWindow({
+              parent: win,
               modal: false,
               show: false,
               webPreferences: {
@@ -238,6 +239,11 @@ async function createWindow() {
             } else {
               browserWindow.loadFile(rootPath, { hash: '/config?type=tdt' });
             }
+
+            browserWindow.on('closed', () => {
+              console.log('关闭弹窗');
+            });
+
             browserWindow.show();
           },
         },
@@ -248,6 +254,14 @@ async function createWindow() {
             console.log('控制台点击');
             win.webContents.openDevTools();
           },
+        },
+        {
+          click: () => win.webContents.send('update-counter', 1),
+          label: 'Increment',
+        },
+        {
+          click: () => win.webContents.send('update-counter', -1),
+          label: 'Decrement',
         },
       ],
     },
@@ -291,6 +305,7 @@ app.on('activate', () => {
   }
 });
 
+// 渲染进程通知主进程
 ipcMain.on('message', (event, message) => {
   console.log(message);
 });

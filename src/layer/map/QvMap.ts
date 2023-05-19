@@ -7,7 +7,7 @@ import { Vector as VectorLayer } from 'ol/layer.js';
 import Feature from 'ol/Feature.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { Geometry, LineString, Point } from 'ol/geom';
-import { Circle, Fill, Stroke, Style } from 'ol/style';
+import { Circle, Fill, RegularShape, Stroke, Style } from 'ol/style';
 
 export class QvMap {
   target: string;
@@ -78,10 +78,17 @@ export class QvMap {
         features: new GeoJSON().readFeatures(geojsonObject),
       }),
       style: new Style({
-        image: new Circle({
-          radius: 6, // 圆点的半径
-          fill: new Fill({ color: '#fd0606' }), // 填充色
-          stroke: new Stroke({ color: '#000', width: 2 }), // 边框样式
+        image: new RegularShape({
+          fill: new Fill({
+            color: 'red',
+          }), //填充色
+          stroke: new Stroke({
+            color: '#ffcc33',
+            width: 2,
+          }), //边线样式
+          points: 3, //边数
+          radius: 10, //半径
+          angle: 0, //形状的角度(弧度单位)
         }),
       }),
     });

@@ -1,4 +1,4 @@
-import { Circle, Fill, Stroke, Style } from 'ol/style';
+import { Circle, Fill, RegularShape, Stroke, Style } from 'ol/style';
 
 interface MapStyle {
   name: string;
@@ -32,6 +32,70 @@ const SelectedStyles = {
     stroke: new Stroke({
       color: '#000000', // 黑色边框
       width: 3, // 边框粗细为3
+    }),
+  }),
+  //五角星
+  wjx: new Style({
+    image: new RegularShape({
+      points: 5, // 顶点个数
+      radius1: 20, // 外圈大小
+      radius2: 10, // 内圈大小
+      stroke: new Stroke({
+        // 设置边的样式
+        color: 'red',
+        width: 2,
+      }),
+      fill: new Fill({
+        // 设置五星填充样式
+        color: 'blue',
+      }),
+    }),
+  }),
+  //十字架
+  szj: new Style({
+    image: new RegularShape({
+      fill: new Fill({
+        color: 'red',
+      }), //填充色
+      stroke: new Stroke({
+        color: '#ffcc33',
+        width: 2,
+      }), //边线样式
+      points: 4, //边数
+      radius: 10, //半径
+      radius2: 0, //内半径
+      angle: 0, //形状的角度(弧度单位)
+    }),
+  }),
+  //X形状
+  x: new Style({
+    image: new RegularShape({
+      fill: new Fill({
+        color: 'red',
+      }), //填充色
+      stroke: new Stroke({
+        color: '#ffcc33',
+        width: 2,
+      }), //边线样式
+      points: 4, //边数
+      radius: 10, //半径
+      radius2: 0, //内半径
+      angle: Math.PI / 4, //形状的角度(弧度单位)
+    }),
+  }),
+  // 三角形
+  sjx: new Style({
+    image: new RegularShape({
+      fill: new Fill({
+        color: 'red',
+      }), //填充色
+      stroke: new Stroke({
+        color: '#ffcc33',
+        width: 2,
+      }), //边线样式
+      points: 3, //边数
+      radius: 10, //半径
+      angle: 0, //形状的角度(弧度单位)
     }),
   }),
 };

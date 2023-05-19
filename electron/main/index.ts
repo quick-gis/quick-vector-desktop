@@ -223,7 +223,6 @@ async function createWindow() {
             console.log(rootPath);
 
             let browserWindow = new BrowserWindow({
-              parent: win,
               modal: false,
               show: false,
               webPreferences: {

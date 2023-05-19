@@ -8,18 +8,16 @@ const router = useRoute();
 let type;
 
 const blur = () => {
-  GetLog().info('失去焦点' + input1.value);
   let instance = DiTuConfig.getInstance();
-  GetLog().info('失去焦点' + JSON.parse(instance));
 
   if (type == 'tdt') {
     instance.tdt.token = input1.value;
+    console.log('tdt', input1.value);
   }
-  instance.Save();
 };
 onMounted(() => {
   console.log('kkk');
-  GetLog().info(router.query.type);
+  console.log('type = ', router.query.type);
 });
 </script>
 

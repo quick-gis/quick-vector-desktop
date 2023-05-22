@@ -1,3 +1,6 @@
+// @ts-ignore
+const axios = require('axios');
+
 /**
  * poi 数据对象
  */
@@ -60,7 +63,6 @@ class GaoDePoiSearchParam extends PoiSearchParam {
 interface PoiRest {
   search(param: PoiSearchParam): Promise<PoiDataIns[]>;
 }
-const axios = require('axios');
 
 class GaoDePoiRest implements PoiRest {
   async search(param: GaoDePoiSearchParam): Promise<PoiDataIns[]> {
@@ -93,17 +95,17 @@ class GaoDePoiRest implements PoiRest {
   }
 }
 
-function f() {
-  let g = new GaoDePoiRest();
-  let gaoDePoiSearchParam = new GaoDePoiSearchParam();
-
-  gaoDePoiSearchParam.key = 'df9e141f75c34da017e73b62a4617096';
-  gaoDePoiSearchParam.polygon =
-    '116.460988,40.006919|116.48231,40.007381|116.47516,39.99713|116.472596,39.985227|116.45669,39.984989|116.460988,40.006919';
-  gaoDePoiSearchParam.keywords = 'kfc';
-  g.search(gaoDePoiSearchParam).then((e) => {
-    console.log(e);
-  });
-}
-
-f();
+// function f() {
+//   let g = new GaoDePoiRest();
+//   let gaoDePoiSearchParam = new GaoDePoiSearchParam();
+//
+//   gaoDePoiSearchParam.key = 'df9e141f75c34da017e73b62a4617096';
+//   gaoDePoiSearchParam.polygon =
+//     '116.460988,40.006919|116.48231,40.007381|116.47516,39.99713|116.472596,39.985227|116.45669,39.984989|116.460988,40.006919';
+//   gaoDePoiSearchParam.keywords = 'kfc';
+//   g.search(gaoDePoiSearchParam).then((e) => {
+//     console.log(e);
+//   });
+// }
+//
+// f();

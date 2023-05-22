@@ -39,6 +39,47 @@ const preload = join(__dirname, '../preload/index.js');
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 
+function extracted(rootPath, isMac: boolean, path) {
+  //  这个位置有办法自定义弹框么，如果要做自定义弹框
+  console.log('开始');
+  console.log(rootPath);
+
+  let browserWindow = new BrowserWindow({
+    parent: win,
+    modal: false,
+    show: false,
+    width: 600,
+    height: 300,
+    webPreferences: {
+      preload,
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
+
+  if (process.env.VITE_DEV_SERVER_URL) {
+    browserWindow.loadURL(rootPath + '#' + path);
+  } else {
+    browserWindow.loadFile(rootPath, { hash: path });
+  }
+
+  browserWindow.on('closed', () => {
+    console.log('关闭弹窗');
+  });
+
+  let m = Menu.buildFromTemplate([
+    ...(isMac
+      ? [
+          {
+            label: app.name,
+          },
+        ]
+      : []),
+  ]);
+  browserWindow.setMenu(m);
+  browserWindow.show();
+}
+
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Main window',
@@ -206,7 +247,17 @@ async function createWindow() {
       label: '工具',
       submenu: [{ label: '定位' }, { label: '地理编码' }, { label: '逆地理编码' }, { label: '坐标转换' }],
     },
-    { label: '查询', submenu: [] },
+    {
+      label: '查询',
+      submenu: [
+        {
+          label: '高德POI',
+          click: () => {
+            extracted(rootPath, isMac, '/poi?type=gaode');
+          },
+        },
+      ],
+    },
     {
       label: '数据库配置',
       submenu: [{ label: 'MySQL' }, { label: 'PostGIS' }],
@@ -218,42 +269,7 @@ async function createWindow() {
         {
           label: '弹框测试',
           click: () => {
-            //  这个位置有办法自定义弹框么，如果要做自定义弹框
-            console.log('开始');
-            console.log(rootPath);
-
-            let browserWindow = new BrowserWindow({
-              parent: win,
-              modal: false,
-              show: false,
-              webPreferences: {
-                preload,
-                nodeIntegration: true,
-                contextIsolation: false,
-              },
-            });
-
-            if (process.env.VITE_DEV_SERVER_URL) {
-              browserWindow.loadURL(rootPath + '#/config?type=tdt');
-            } else {
-              browserWindow.loadFile(rootPath, { hash: '/config?type=tdt' });
-            }
-
-            browserWindow.on('closed', () => {
-              console.log('关闭弹窗');
-            });
-
-            let m = Menu.buildFromTemplate([
-              ...(isMac
-                ? [
-                    {
-                      label: app.name,
-                    },
-                  ]
-                : []),
-            ]);
-            browserWindow.setMenu(m);
-            browserWindow.show();
+            extracted(rootPath, isMac, '/config?type=tdt');
           },
         },
         {

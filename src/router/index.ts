@@ -50,6 +50,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/poi',
+      name: 'poi',
+      component: defineAsyncComponent(() => import('../poi/Poi.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

@@ -34,57 +34,103 @@ const allowDrag = (draggingNode: Node) => {
 
 const data = [
   {
-    label: 'Level one 1',
+    label: '编辑图层',
+  },
+  {
+    label: '展示图层',
     children: [
       {
-        label: 'Level two 1-1',
+        label: '数据库图层',
         children: [
           {
-            label: 'Level three 1-1-1',
+            label: '雨水井',
+          },
+        ],
+      },
+      {
+        label: '文件图层',
+        children: [
+          {
+            label: '污水井.csv',
           },
         ],
       },
     ],
   },
   {
-    label: 'Level one 2',
+    label: 'WMS/WMTS',
     children: [
       {
-        label: 'Level two 2-1',
-        children: [
-          {
-            label: 'Level three 2-1-1',
-          },
-        ],
-      },
-      {
-        label: 'Level two 2-2',
-        children: [
-          {
-            label: 'Level three 2-2-1',
-          },
-        ],
+        label: '网络地图',
       },
     ],
   },
   {
-    label: 'Level one 3',
+    label: '底图',
     children: [
       {
-        label: 'Level two 3-1',
+        label: '天地图',
         children: [
           {
-            label: 'Level three 3-1-1',
+            label: '天地图矢量（经纬度投影）',
+            children: [
+              {
+                label: '矢量底图',
+              },
+              {
+                label: '矢量标注',
+              },
+            ],
+          },
+          {
+            label: '天地图矢量（球面墨卡托投影）',
+            children: [
+              {
+                label: '矢量底图',
+              },
+              {
+                label: '矢量标注',
+              },
+            ],
+          },
+          {
+            label: '天地图影像（经纬度投影）',
+            children: [
+              {
+                label: '影像底图',
+              },
+              {
+                label: '影像标注',
+              },
+            ],
+          },
+          {
+            label: '天地图影像（球面墨卡托投影）',
+            children: [
+              {
+                label: '影像底图',
+              },
+              {
+                label: '影像标注',
+              },
+            ],
           },
         ],
       },
+
       {
-        label: 'Level two 3-2',
+        label: '高德地图',
         children: [
-          {
-            label: 'Level three 3-2-1',
-          },
+          { label: '秘钥配置' },
+          { label: '标标准图层' },
+          { label: '实时路况图层' },
+          { label: '卫星图' },
+          { label: '卫星和路网' },
         ],
+      },
+      {
+        label: '百度地图',
+        children: [{ label: '标准地图' }, { label: '卫星地图' }],
       },
     ],
   },

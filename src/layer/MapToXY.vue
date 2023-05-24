@@ -2,11 +2,11 @@
   <div>
     <div>
       <label for="inputX">X:</label>
-      <el-input id="inputX" v-model="x"></el-input>
+      <el-input-number :step="0.1" id="inputX" v-model="x"></el-input-number>
     </div>
     <div>
       <label for="inputY">Y:</label>
-      <el-input id="inputY" v-model="y"></el-input>
+      <el-input-number :step="0.1" id="inputY" v-model="y"></el-input-number>
     </div>
 
     <div>

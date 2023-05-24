@@ -15,6 +15,7 @@ ipcRenderer.on('map-config', function (event, arg) {
 ipcRenderer.on('map_to_xy', function (event, arg) {
   console.log('event:', event);
   console.log('arg:', arg);
+  qvMap.moveToXY(arg.x, arg.y);
 });
 
 onMounted(() => {

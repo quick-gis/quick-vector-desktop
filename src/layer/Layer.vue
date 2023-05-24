@@ -12,15 +12,19 @@ ipcRenderer.on('map-config', function (event, arg) {
   console.log('arg:', arg);
   aaa.value = arg;
 });
+ipcRenderer.on('map_to_xy', function (event, arg) {
+  console.log('event:', event);
+  console.log('arg:', arg);
+});
+
 onMounted(() => {
   console.log('初始化地图');
   map.value = qvMap.initMap();
-  qvMap.addLayers();
+  qvMap.testAddLayers();
 });
 
-const a = () => {
-  qvMap.oa();
-};
+const a = () => {};
+const b = () => {};
 const d = reactive({
   x: 100,
   y: 100,
@@ -55,8 +59,13 @@ const print = (e) => {
       @drag-end="print('drag-end')"
       @resize-end="print('resize-end')"
     >
+      <div>
+        <div>
+          <el-button @click="a">a</el-button>
+          <el-button @click="b">b</el-button>
+        </div>
+      </div>
       <div id="left" class="movable">左侧 {{ aaa }}</div>
-      <el-button @click="a">a</el-button>
     </Vue3DraggableResizable>
   </div>
 </template>

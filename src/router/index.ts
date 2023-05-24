@@ -58,6 +58,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/map_to_xy',
+      name: 'map_to_xy',
+      component: defineAsyncComponent(() => import('../layer/MapToXY.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

@@ -57,6 +57,7 @@ const data = [
       },
     ],
   },
+  { label: '标记图层' },
   {
     label: 'WMS/WMTS',
     children: [

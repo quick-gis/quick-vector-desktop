@@ -3,24 +3,12 @@ import { release } from 'node:os';
 import { join } from 'node:path';
 import { topMenu } from './top_menu';
 
-// The built directory structure
-//
-// ├─┬ dist-electron
-// │ ├─┬ main
-// │ │ └── index.js    > Electron-Main
-// │ └─┬ preload
-// │   └── index.js    > Preload-Scripts
-// ├─┬ dist
-// │ └── index.html    > Electron-Renderer
-//
 process.env.DIST_ELECTRON = join(__dirname, '..');
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist');
 process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL ? join(process.env.DIST_ELECTRON, '../public') : process.env.DIST;
 
-// Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration();
 
-// Set application name for Windows 10+ notifications
 if (process.platform === 'win32') app.setAppUserModelId(app.getName());
 
 if (!app.requestSingleInstanceLock()) {
@@ -28,24 +16,15 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0);
 }
 
-// Remove electron security warnings
-// This warning only shows in development mode
-// Read more on https://www.electronjs.org/docs/latest/tutorial/security
-// process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
-
 let win: BrowserWindow | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js');
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
-
-function extracted(rootPath, isMac: boolean, path) {
-  //  这个位置有办法自定义弹框么，如果要做自定义弹框
-  console.log('开始');
-  console.log(rootPath);
-
+const map = new Map();
+function extracted(name, rootPath, isMac: boolean, path) {
   let browserWindow = new BrowserWindow({
-    parent: win,
+    // parent: win,
     modal: false,
     show: false,
     width: 600,
@@ -76,8 +55,10 @@ function extracted(rootPath, isMac: boolean, path) {
         ]
       : []),
   ]);
+  browserWindow.webContents.openDevTools();
   browserWindow.setMenu(m);
   browserWindow.show();
+  map.set(name, browserWindow);
 }
 
 async function createWindow() {
@@ -245,7 +226,17 @@ async function createWindow() {
     },
     {
       label: '工具',
-      submenu: [{ label: '定位' }, { label: '地理编码' }, { label: '逆地理编码' }, { label: '坐标转换' }],
+      submenu: [
+        {
+          label: '定位',
+          click: () => {
+            extracted('map_to_xy', rootPath, isMac, '/map_to_xy');
+          },
+        },
+        { label: '地理编码' },
+        { label: '逆地理编码' },
+        { label: '坐标转换' },
+      ],
     },
     {
       label: '查询',
@@ -253,7 +244,7 @@ async function createWindow() {
         {
           label: '高德POI',
           click: () => {
-            extracted(rootPath, isMac, '/poi?type=gaode');
+            extracted('高德poi', rootPath, isMac, '/poi?type=gaode');
           },
         },
       ],
@@ -269,7 +260,7 @@ async function createWindow() {
         {
           label: '弹框测试',
           click: () => {
-            extracted(rootPath, isMac, '/config?type=tdt');
+            extracted('测试', rootPath, isMac, '/config?type=tdt');
           },
         },
         {
@@ -339,6 +330,12 @@ app.on('activate', () => {
 // 渲染进程通知主进程
 ipcMain.on('message', (event, message) => {
   console.log(message);
+});
+ipcMain.on('close-sub-window', (event, message) => {
+  console.log(message);
+  // 接收消息
+  map.get(message.name).close();
+  win.webContents.send('map_to_xy', message.data);
 });
 
 ipcMain.on('map-config', (event, message) => {

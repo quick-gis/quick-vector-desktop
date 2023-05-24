@@ -12,10 +12,6 @@ import { Circle, Fill, RegularShape, Stroke, Style } from 'ol/style';
 export class QvMap {
   target: string;
 
-  get map(): Map {
-    return this._map;
-  }
-
   // @ts-ignore
   private _map: Map;
 
@@ -51,14 +47,14 @@ export class QvMap {
   }
 
   hh: Map = new Map();
-  oa() {
+  testChangeData() {
     let a = this.hh.get('a');
 
     a.getSource()
       ?.getFeatures()[0]
       .setGeometry(new Point([119.45436769887343, 29.21]));
   }
-  addLayers() {
+  testAddLayers() {
     let geojsonObject = {
       type: 'FeatureCollection',
       features: [
@@ -96,5 +92,17 @@ export class QvMap {
     this.hh.set('a', vectorLayer);
     // 将矢量图
     this._map.addLayer(vectorLayer);
+  }
+
+  /**
+   * 移动到xy
+   */
+  moveToXY(x: number, y: number, zoom?: number) {
+    const view = this._map.getView();
+    view.setCenter([x, y]);
+
+    if (zoom) {
+      view.setZoom(zoom);
+    }
   }
 }

@@ -1,9 +1,9 @@
 {
-  "name": "electron-vue-vite",
+  "name": "Quick-Vector-Editor",
   "version": "2.0.0",
   "main": "dist-electron/main/index.js",
-  "description": "Really simple Electron + Vue + Vite boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
+  "description": "Quick vector editor",
+  "author": "Zen Huifer <huifer97@163.com>",
   "license": "MIT",
   "private": true,
   "keywords": [

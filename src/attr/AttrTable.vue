@@ -86,7 +86,7 @@
         <el-input disabled placeholder="   })(rowData); " />
 
         <el-divider />
-        <el-button @click="">模拟第一行计算</el-button>
+        <el-button @click="mockFirstCalc">模拟第一行计算</el-button>
         <el-button @click="calcField">计算</el-button>
         <el-button @click="fieldCalcDisplay = false">取消</el-button>
       </el-dialog>
@@ -122,9 +122,29 @@
 </template>
 
 <script>
+import { h } from 'vue';
+import { ElMessage } from 'element-plus';
+
 export default {
   name: 'demo',
   methods: {
+    mockFirstCalc() {
+      // rowData 这个变量名不要修改
+      let rowData = this.testDatas[0];
+      const jsFunction = this.calcParam.pre + this.calcParam.rule + this.calcParam.pro;
+      try {
+        let d = eval(jsFunction);
+
+        ElMessage({
+          message: h('p', null, [h('span', null, '执行结果:'), h('i', { style: 'color: teal' }, d)]),
+        });
+      } catch (e) {
+        console.log(e);
+        ElMessage({
+          message: h('p', null, [h('span', null, '执行失败:'), h('i', { style: 'color: red' }, e.stack)]),
+        });
+      }
+    },
     calcOnDeleteKeymap(e) {
       console.log('按下了退格');
     },
@@ -135,14 +155,33 @@ export default {
     calcField() {
       const jsFunction = this.calcParam.pre + this.calcParam.rule + this.calcParam.pro;
 
-      this.testDatas.forEach((rowData) => {
-        let d = eval(jsFunction);
-        if (d) {
-          let col = this.columnList[this.curData.colIndex];
-          rowData[col.prop].content = d;
+      let canChange = true;
+
+      // rowData 这个变量名不要修改
+      for (const rowData of this.testDatas) {
+        try {
+          let d = eval(jsFunction);
+        } catch (e) {
+          canChange = false;
+          break;
         }
-      });
-      this.fieldCalcDisplay = false;
+      }
+
+      if (canChange) {
+        // rowData 这个变量名不要修改
+        this.testDatas.forEach((rowData) => {
+          let d = eval(jsFunction);
+          if (d) {
+            let col = this.columnList[this.curData.colIndex];
+            rowData[col.prop].content = d;
+          }
+        });
+        this.fieldCalcDisplay = false;
+      } else {
+        ElMessage({
+          message: h('p', null, [h('span', null, '计算失败，重新编写脚本')]),
+        });
+      }
     },
     deleteRow() {
       this.testDatas.splice(this.curData.rowIndex, 1);
@@ -151,7 +190,6 @@ export default {
       console.log('复制本行');
       var row = this.testDatas[this.curData.rowIndex];
       this.testDatas.splice(this.curData.rowIndex + 1, 0, row);
-
       console.log(row);
     },
     // todo： 如果要做添加一行需要控制主程序显示顺序

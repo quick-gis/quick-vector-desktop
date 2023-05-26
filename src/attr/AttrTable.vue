@@ -1,4 +1,17 @@
 <template>
+  <div id="held">
+    <el-row class="mb-4">
+      <div>字段</div>
+      <el-button
+        type="primary"
+        @click="
+          newFieldDisplay = true;
+          is_justAddField = true;
+        "
+        >添加字段</el-button
+      >
+    </el-row>
+  </div>
   <div id="hello">
     <!-- 表格 -->
     <el-table
@@ -63,19 +76,24 @@
     <div>
       <!--    字段计算器-->
       <el-dialog v-model="fieldCalcDisplay" title="字段计算器" width="30%">
-        <el-form-item label="选择字段">
-          <el-select v-model="calcParam.curField" placeholder="请选择字段">
-            <el-option v-for="op in columnList" :key="op" :label="op.label" :value="op.prop" />
-          </el-select>
-          <el-button @click="calcAddField">添加</el-button>
-        </el-form-item>
+        <!--        <el-form-item label="选择字段">-->
+        <!--          <el-select v-model="calcParam.curField" placeholder="请选择字段">-->
+        <!--            <el-option-->
+        <!--              v-for="op in columnList"-->
+        <!--              :key="op"-->
+        <!--              :label="op.label"-->
+        <!--              :value="op.prop"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--          <el-button @click="calcAddField">添加</el-button>-->
+        <!--        </el-form-item>-->
 
-        <el-divider />
+        <!--        <el-divider />-->
         <div>
-          <el-button @click="calcParam.dataTipsDisplay = true">data数据案例 </el-button>
+          <el-button @click="calcParam.dataTipsDisplay = true">首行数据 </el-button>
         </div>
         <div></div>
-        <el-input disabled placeholder="   (function(data) {" />
+        <el-input disabled placeholder="(function(data) {" />
         <el-input
           v-model="calcParam.rule"
           :rows="8"
@@ -83,7 +101,7 @@
           type="textarea"
           @keyup.delete="calcOnDeleteKeymap(e)"
         />
-        <el-input disabled placeholder="   })(rowData); " />
+        <el-input disabled placeholder="})(rowData); " />
 
         <el-divider />
         <el-button @click="mockFirstCalc">模拟第一行计算</el-button>
@@ -94,8 +112,8 @@
 
     <div>
       <!--          数据提示框-->
-      <el-dialog v-model="calcParam.dataTipsDisplay" title="数据案例" width="30%">
-        <div>{{ calcParam.data_tips }}</div>
+      <el-dialog v-model="calcParam.dataTipsDisplay" title="首行数据" width="30%">
+        <div>{{ testDatas[0] }}</div>
       </el-dialog>
     </div>
     <div>
@@ -148,10 +166,7 @@ export default {
     calcOnDeleteKeymap(e) {
       console.log('按下了退格');
     },
-    calcAddField() {
-      // this.calcParam.rule = "a";
-      this.calcParam.rule + '[[' + this.calcParam.curField + ']]';
-    },
+
     calcField() {
       const jsFunction = this.calcParam.pre + this.calcParam.rule + this.calcParam.pro;
 
@@ -203,7 +218,8 @@ export default {
       this.testDatas.splice(this.curData.rowIndex + 1, 0, d);
     },
     newFieldOk() {
-      this.addCloField(this.curData.before, this.newFieldParam);
+      this.addCloField(this.curData.before, this.newFieldParam, this.is_justAddField);
+
       this.newFieldCanle();
     },
     newFieldCanle() {
@@ -292,18 +308,26 @@ export default {
       this.showMenu = false;
       this.showNumbMenu = false;
     },
-    addCloField(before, data) {
+    addCloField(before, data, is_justAddField) {
       let ll = { prop: data.en, label: data.cn, show: true };
 
-      if (before) {
-        this.columnList.splice(this.curData.colIndex, 0, ll);
-      } else {
-        this.columnList.splice(Number(this.curData.colIndex) + 1, 0, ll);
-      }
+      if (!is_justAddField) {
+        if (before) {
+          this.columnList.splice(this.curData.colIndex, 0, ll);
+        } else {
+          this.columnList.splice(Number(this.curData.colIndex) + 1, 0, ll);
+        }
 
-      this.testDatas.forEach((e) => {
-        e[ll.prop] = { content: '', show: true };
-      });
+        this.testDatas.forEach((e) => {
+          e[ll.prop] = { content: '', show: true };
+        });
+      } else {
+        this.columnList.splice(this.columnList.length, 0, ll);
+
+        this.testDatas.forEach((e) => {
+          e[ll.prop] = { content: '', show: true };
+        });
+      }
     },
   },
 
@@ -343,6 +367,7 @@ export default {
         cn: '',
         en: '',
       },
+      is_justAddField: false,
       newFieldDisplay: false,
       fieldCalcDisplay: false,
       curData: {

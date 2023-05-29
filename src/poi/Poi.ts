@@ -1,5 +1,4 @@
-const axios = require('axios');
-
+import axios from 'axios';
 /**
  * poi 数据对象
  */
@@ -51,7 +50,7 @@ abstract class PoiSearchParam {
    * 页码
    */
   // @ts-ignore
-  page: number;
+  page: number | null;
 }
 class GaoDePoiSearchParam extends PoiSearchParam {
   // @ts-ignore
@@ -63,7 +62,7 @@ interface PoiRest {
   search(param: PoiSearchParam): Promise<PoiDataIns[]>;
 }
 
-class GaoDePoiRest implements PoiRest {
+export class GaoDePoiRest implements PoiRest {
   async search(param: GaoDePoiSearchParam): Promise<PoiDataIns[]> {
     let config = {
       method: 'get',

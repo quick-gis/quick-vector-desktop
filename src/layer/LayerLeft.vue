@@ -91,9 +91,11 @@ const data = [
             children: [
               {
                 label: '矢量底图',
+                tag: 'vec_c',
               },
               {
                 label: '矢量标注',
+                tag: 'cva_c',
               },
             ],
           },
@@ -102,9 +104,11 @@ const data = [
             children: [
               {
                 label: '矢量底图',
+                tag: 'vec_w',
               },
               {
                 label: '矢量标注',
+                tag: 'cva_w',
               },
             ],
           },
@@ -113,9 +117,11 @@ const data = [
             children: [
               {
                 label: '影像底图',
+                tag: 'img_c',
               },
               {
                 label: '影像标注',
+                tag: 'cia_c',
               },
             ],
           },
@@ -124,9 +130,11 @@ const data = [
             children: [
               {
                 label: '影像底图',
+                tag: 'img_w',
               },
               {
                 label: '影像标注',
+                tag: 'cia_w',
               },
             ],
           },

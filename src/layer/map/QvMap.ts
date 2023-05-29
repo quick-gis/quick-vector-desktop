@@ -1,7 +1,7 @@
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
-import { BingMaps } from 'ol/source';
+import { BingMaps, XYZ } from 'ol/source';
 import { Vector as VectorSource } from 'ol/source.js';
 import { Vector as VectorLayer } from 'ol/layer.js';
 import Feature from 'ol/Feature.js';
@@ -9,6 +9,7 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import { Geometry, LineString, Point } from 'ol/geom';
 import { Circle, Fill, RegularShape, Stroke, Style } from 'ol/style';
 import { vec_c } from './TiandiTu';
+import { a } from './BaiduMap';
 
 export class QvMap {
   target: string;
@@ -30,17 +31,17 @@ export class QvMap {
       controls: [],
 
       layers: [
-        ...vec_c(),
-        // new TileLayer({
-        //   source: new BingMaps({
-        //     key: 'AuWr3eXukkN34apjqfnABbs2nvmHRfVso9gH-X9HYB4lam8xwBbfHvKlDC0MFSyq',
-        //     imagerySet: 'Aerial',
-        //   }),
-        // }),
+        new TileLayer({
+          source: new BingMaps({
+            key: 'AuWr3eXukkN34apjqfnABbs2nvmHRfVso9gH-X9HYB4lam8xwBbfHvKlDC0MFSyq',
+            imagerySet: 'Aerial',
+          }),
+        }),
       ],
 
       view: new View({
         center: [119.45436769887343, 29.2080525919085],
+
         zoom: 8,
         projection: 'EPSG:4326',
       }),

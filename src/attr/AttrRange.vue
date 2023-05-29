@@ -19,6 +19,9 @@
 export default {
   name: 'attrRange',
   mounted() {
+    console.log('=========');
+
+    console.log(this.geometry);
     let d = this.getCoordinates(this.geometry.geometry);
     for (let i in d) {
       this.tabledata.push({

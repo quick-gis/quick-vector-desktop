@@ -8,6 +8,7 @@ import Feature from 'ol/Feature.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { Geometry, LineString, Point } from 'ol/geom';
 import { Circle, Fill, RegularShape, Stroke, Style } from 'ol/style';
+import { vec_c } from './TiandiTu';
 
 export class QvMap {
   target: string;
@@ -29,17 +30,18 @@ export class QvMap {
       controls: [],
 
       layers: [
-        new TileLayer({
-          source: new BingMaps({
-            key: 'AuWr3eXukkN34apjqfnABbs2nvmHRfVso9gH-X9HYB4lam8xwBbfHvKlDC0MFSyq',
-            imagerySet: 'Aerial',
-          }),
-        }),
+        ...vec_c(),
+        // new TileLayer({
+        //   source: new BingMaps({
+        //     key: 'AuWr3eXukkN34apjqfnABbs2nvmHRfVso9gH-X9HYB4lam8xwBbfHvKlDC0MFSyq',
+        //     imagerySet: 'Aerial',
+        //   }),
+        // }),
       ],
 
       view: new View({
         center: [119.45436769887343, 29.2080525919085],
-        zoom: 15,
+        zoom: 8,
         projection: 'EPSG:4326',
       }),
     });

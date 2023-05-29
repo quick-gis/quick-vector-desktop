@@ -57,6 +57,7 @@ const data = [
         children: [
           {
             label: '雨水井',
+            type: '',
           },
         ],
       },

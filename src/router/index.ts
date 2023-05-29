@@ -51,6 +51,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/gen_csv',
+      name: 'csv成图',
+      component: defineAsyncComponent(() => import('../gen/genCsv.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
+    {
       path: '/poi',
       name: 'poi',
       component: defineAsyncComponent(() => import('../poi/Poi.vue')),

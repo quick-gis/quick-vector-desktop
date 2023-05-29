@@ -151,3 +151,10 @@ b.LinkData(a.datas, {
 });
 console.log(JSON.stringify(b.datas));
 // export { PointCsvObe };
+
+export function CsvHeader(path: string) {
+  const fileData = fs.readFileSync(path, 'utf8');
+
+  let rows = fileData.split('\n');
+  return rows[0].split(',');
+}

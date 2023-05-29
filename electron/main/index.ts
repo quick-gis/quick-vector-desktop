@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Menu, dialog } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
 import { topMenu } from './top_menu';
@@ -55,7 +55,7 @@ function extracted(name, rootPath, isMac: boolean, path) {
         ]
       : []),
   ]);
-  browserWindow.webContents.openDevTools();
+  browserWindow.webContents.openDevTools({ mode: 'detach' });
   browserWindow.setMenu(m);
   browserWindow.show();
   map.set(name, browserWindow);
@@ -107,7 +107,13 @@ async function createWindow() {
         {
           label: '导入',
           submenu: [
-            { label: '导入 CSV' },
+            {
+              label: '导入 CSV',
+
+              click: () => {
+                extracted('/gen_csv', rootPath, isMac, '/gen_csv');
+              },
+            },
             { label: '导入 EXCEL' },
             { label: '导入 GeoJson' },
             { label: '导入 WMS\\WMTS' },
@@ -359,4 +365,32 @@ ipcMain.on('open-win', (_, arg) => {
   } else {
     childWindow.loadFile(indexHtml, { hash: arg });
   }
+});
+
+ipcMain.on('openDialog', (event) => {
+  dialog.showOpenDialog({}).then((result) => {
+    console.log(result);
+    win.webContents.send('file-select', result.filePaths[0]);
+  });
+});
+
+ipcMain.on('open-select-csv', (event, args) => {
+  dialog
+    .showOpenDialog({
+      filters: [{ name: 'csv file', extensions: ['csv'] }],
+    })
+    .then((result) => {
+      console.log(result);
+      map.get('/gen_csv').webContents.send('open-select-csv-success', result.filePaths[0]);
+    });
+});
+ipcMain.on('open-link-select-csv', (event, args) => {
+  dialog
+    .showOpenDialog({
+      filters: [{ name: 'csv file', extensions: ['csv'] }],
+    })
+    .then((result) => {
+      console.log(result);
+      map.get('/gen_csv').webContents.send('open-link-select-csv-success', result.filePaths[0]);
+    });
 });

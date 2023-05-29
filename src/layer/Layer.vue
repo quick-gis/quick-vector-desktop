@@ -17,13 +17,18 @@ ipcRenderer.on('map_to_xy', function (event, arg) {
   console.log('arg:', arg);
   qvMap.moveToXY(arg.x, arg.y);
 });
+ipcRenderer.on('file-select', function (event, args) {
+  console.log('文件：', args);
+});
 
 onMounted(() => {
   console.log('初始化地图');
   map.value = qvMap.initMap();
   qvMap.testAddLayers();
 });
-
+const fileOpen = () => {
+  ipcRenderer.send('openDialog');
+};
 const a = () => {};
 const b = () => {};
 const d = reactive({
@@ -64,6 +69,7 @@ const print = (e) => {
         <div>
           <el-button @click="a">a</el-button>
           <el-button @click="b">b</el-button>
+          <el-button @click="fileOpen">文件选择</el-button>
         </div>
       </div>
       <div id="left" class="movable">左侧 {{ aaa }}</div>

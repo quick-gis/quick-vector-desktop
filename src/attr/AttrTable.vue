@@ -8,8 +8,10 @@
           newFieldDisplay = true;
           is_justAddField = true;
         "
-        >添加字段</el-button
-      >
+        >添加字段
+      </el-button>
+      <el-button type="primary" @click="searchParam.display = true">搜索字段 </el-button>
+      <el-button type="primary" @click="searchCanle">清空字段 </el-button>
     </el-row>
   </div>
   <div id="hello">
@@ -67,6 +69,8 @@
         </el-button>
         <el-divider />
         <el-button @click="fieldCalcDisplay = true">字段计算器</el-button>
+        <el-button @click="showAllField">显示所有字段</el-button>
+        <el-button @click="hideField">隐藏字段</el-button>
       </div>
     </div>
     <div v-show="showNumbMenu" id="contextmenu-numb" @mouseleave="showNumbMenu = false" @mousemove.stop>
@@ -134,6 +138,19 @@
     </div>
 
     <div>
+      <!--          搜索字段-->
+      <el-dialog v-model="searchParam.display" title="搜索字段" width="30%">
+        <el-form :model="searchParam" label-position="right" label-width="100px" style="max-width: 460px"> </el-form>
+        <el-input disabled placeholder="(function(data) {" />
+        <el-input v-model="searchParam.rule" :rows="8" placeholder="请输入计算公式" type="textarea" />
+        <el-input disabled placeholder="})(rowData); " />
+
+        <el-divider />
+        <el-button @click="searchField">确定</el-button>
+        <el-button @click="searchParam.display = false">取消</el-button>
+      </el-dialog>
+    </div>
+    <div>
       {{ testDatas }}
     </div>
   </div>
@@ -146,6 +163,14 @@ import { ElMessage } from 'element-plus';
 export default {
   name: 'demo',
   methods: {
+    showAllField() {
+      this.columnList.forEach((e) => {
+        e.show = true;
+      });
+    },
+    hideField() {
+      this.columnList[this.curData.colIndex].show = false;
+    },
     mockFirstCalc() {
       // rowData 这个变量名不要修改
       let rowData = this.testDatas[0];
@@ -166,7 +191,23 @@ export default {
     calcOnDeleteKeymap(e) {
       console.log('按下了退格');
     },
+    searchField() {
+      const jsFunction = this.searchParam.pre + this.searchParam.rule + this.searchParam.pro;
 
+      // todo: 数据显示问题
+      this.allDatas = this.testDatas;
+      if (this.searchParam.rule != '') {
+        this.testDatas = this.testDatas.filter((rowData) => {
+          let d = eval(jsFunction);
+          return d;
+        });
+      }
+
+      this.searchParam.display = false;
+    },
+    searchCanle() {
+      this.testDatas = this.allDatas;
+    },
     calcField() {
       const jsFunction = this.calcParam.pre + this.calcParam.rule + this.calcParam.pro;
 
@@ -338,6 +379,12 @@ export default {
   },
   data() {
     return {
+      searchParam: {
+        display: false,
+        rule: "return data.name.content == '张三'",
+        pre: '   (function(data) {',
+        pro: '   })(rowData); ',
+      },
       calcParam: {
         dataTipsDisplay: false,
         pre: '   (function(data) {',
@@ -386,6 +433,7 @@ export default {
         { prop: 'city', label: '城市', show: true },
         { prop: 'tel', label: '电话', show: true },
       ],
+      allDatas: [],
       testDatas: [
         {
           name: { content: '张三', show: true },

@@ -2,6 +2,8 @@
 import type Node from 'element-plus/es/components/tree/src/model/node';
 import type { DragEvents } from 'element-plus/es/components/tree/src/model/useDragNode';
 import type { AllowDropType, NodeDropType } from 'element-plus/es/components/tree/src/tree.type';
+import { QvMap } from './map/QvMap';
+import { onMounted } from 'vue';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -31,10 +33,21 @@ const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType) => {
 const allowDrag = (draggingNode: Node) => {
   return !draggingNode.data.label.includes('Level three 3-1-1');
 };
+const props = defineProps({
+  qvMap: QvMap,
+});
+
+onMounted(() => {
+  console.log('多对多  ');
+  console.log(props.qvMap);
+});
 
 const data = [
   {
     label: '编辑图层',
+  },
+  {
+    label: '分析图层',
   },
   {
     label: '展示图层',
@@ -136,6 +149,12 @@ const data = [
     ],
   },
 ];
+const nodeClick = (e) => {
+  console.log(e);
+};
+const nodeContextMenu = (event, data, node) => {
+  console.log('右键', event, data, node);
+};
 </script>
 
 <template>
@@ -147,6 +166,8 @@ const data = [
       draggable
       default-expand-all
       node-key="id"
+      @node-click="nodeClick"
+      @node-contextmenu="nodeContextMenu"
       @node-drag-start="handleDragStart"
       @node-drag-enter="handleDragEnter"
       @node-drag-leave="handleDragLeave"
@@ -154,6 +175,9 @@ const data = [
       @node-drag-end="handleDragEnd"
       @node-drop="handleDrop"
     />
+  </div>
+  <div>
+    <!--    右键图层菜单-->
   </div>
 </template>
 

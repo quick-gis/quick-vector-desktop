@@ -17,7 +17,7 @@
 </template>
 <script lang="ts">
 export default {
-  name: 'atte',
+  name: 'attrRange',
   mounted() {
     let d = this.getCoordinates(this.geometry.geometry);
     for (let i in d) {

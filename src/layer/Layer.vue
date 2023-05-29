@@ -2,6 +2,8 @@
 import { onMounted, reactive, ref } from 'vue';
 import { QvMap } from './map/QvMap';
 import { ipcRenderer } from 'electron';
+import LayerLeft from './LayerLeft.vue';
+import AttrRange from '../attr/AttrRange.vue';
 
 const map = ref<any>();
 const aaa = ref(0);
@@ -45,6 +47,7 @@ const print = (e) => {
 
 <template>
   <div id="map" ref="map" style="height: 100vh; width: 100%">
+    <!--  todo: 尺寸动态 -->
     <Vue3DraggableResizable
       id="a"
       :initW="110"
@@ -66,13 +69,8 @@ const print = (e) => {
       @resize-end="print('resize-end')"
     >
       <div>
-        <div>
-          <el-button @click="a">a</el-button>
-          <el-button @click="b">b</el-button>
-          <el-button @click="fileOpen">文件选择</el-button>
-        </div>
+        <LayerLeft :qv-map="qvMap"></LayerLeft>
       </div>
-      <div id="left" class="movable">左侧 {{ aaa }}</div>
     </Vue3DraggableResizable>
   </div>
 </template>
@@ -83,5 +81,13 @@ const print = (e) => {
   z-index: 999;
   background-color: #fff;
   height: 100%;
+  overflow-y: auto;
+}
+#b {
+  position: fixed;
+  z-index: 999;
+  background-color: #fff;
+  height: 100%;
+  overflow-y: auto;
 }
 </style>

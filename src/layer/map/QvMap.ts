@@ -1,42 +1,48 @@
-import Map from 'ol/Map';
+import OlMap from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
-import { BingMaps, XYZ } from 'ol/source';
+import { BingMaps } from 'ol/source';
 import { Vector as VectorSource } from 'ol/source.js';
 import { Vector as VectorLayer } from 'ol/layer.js';
-import Feature from 'ol/Feature.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
-import { Geometry, LineString, Point } from 'ol/geom';
-import { Circle, Fill, RegularShape, Stroke, Style } from 'ol/style';
-import { vec_c } from './TiandiTu';
-import { a } from './BaiduMap';
+import { Point } from 'ol/geom';
+import { Fill, RegularShape, Stroke, Style } from 'ol/style';
+import { ProdLayersTypeEnum } from './ConstValue';
+import { GetTianDiTuLayers } from './Tdt';
+import { Layer } from 'ol/layer';
 
 export class QvMap {
   target: string;
-
+  hh: OlMap = new OlMap();
   // @ts-ignore
-  private _map: Map;
+  private _map: OlMap;
+  /**
+   * 地图
+   * @private
+   */
+  private diTu = new Map<ProdLayersTypeEnum, Layer>();
+
+  // todo:
+  //  1. 地图图层不能直接写死
+  //  2. 视图需要传输
 
   constructor(target: string) {
     this.target = target;
   }
 
-  // todo:
-  //  1. 地图图层不能直接写死
-  //  2. 视图需要传输
   //  3. 要素图层的序号应该从10000开始
   initMap() {
-    this._map = new Map({
+    this._map = new OlMap({
       target: this.target,
       controls: [],
 
       layers: [
-        new TileLayer({
-          source: new BingMaps({
-            key: 'AuWr3eXukkN34apjqfnABbs2nvmHRfVso9gH-X9HYB4lam8xwBbfHvKlDC0MFSyq',
-            imagerySet: 'Aerial',
-          }),
-        }),
+        // new TileLayer({
+        //   source: new BingMaps({
+        //     key: 'AuWr3eXukkN34apjqfnABbs2nvmHRfVso9gH-X9HYB4lam8xwBbfHvKlDC0MFSyq',
+        //     imagerySet: 'Aerial',
+        //   }),
+        // }),
       ],
 
       view: new View({
@@ -49,13 +55,27 @@ export class QvMap {
     return this._map;
   }
 
-  hh: Map = new Map();
   testChangeData() {
     let a = this.hh.get('a');
 
     a.getSource()
       ?.getFeatures()[0]
       .setGeometry(new Point([119.45436769887343, 29.21]));
+  }
+  addMap(layer: ProdLayersTypeEnum) {
+    this.diTu.forEach((v, k) => {
+      v.setVisible(false);
+    });
+    let cache = this.diTu.get(layer);
+    if (cache) {
+      cache.setVisible(true);
+    } else {
+      let tileLayer = GetTianDiTuLayers(layer);
+      if (tileLayer) {
+        this._map.addLayer(tileLayer);
+        this.diTu.set(layer, tileLayer);
+      }
+    }
   }
   testAddLayers() {
     let geojsonObject = {

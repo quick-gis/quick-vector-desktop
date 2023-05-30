@@ -4,7 +4,7 @@ import { QvMap } from './map/QvMap';
 import { ipcRenderer } from 'electron';
 import LayerLeft from './LayerLeft.vue';
 import AttrRange from '../attr/AttrRange.vue';
-
+import { ProdLayersTypeEnum } from './map/ConstValue';
 const map = ref<any>();
 const aaa = ref(0);
 let qvMap = new QvMap('map');
@@ -72,6 +72,28 @@ const aaaa = ref({
 
 <template>
   <div id="map" ref="map" style="height: 100vh; width: 100%">
+    <div>
+      <el-button
+        @click="
+          () => {
+            qvMap.addMap(ProdLayersTypeEnum.img_c_jwd);
+            // qvMap.addMap(ProdLayersTypeEnum.img_jwd_label);
+          }
+        "
+        >aaa</el-button
+      >
+    </div>
+    <div>
+      <el-button
+        @click="
+          () => {
+            qvMap.addMap(ProdLayersTypeEnum.vec_c_jwd);
+            // qvMap.addMap(ProdLayersTypeEnum.vec_jwd_label);
+          }
+        "
+        >bbb</el-button
+      >
+    </div>
     <!--  todo: 尺寸动态 -->
     <Vue3DraggableResizable
       id="a"

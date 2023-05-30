@@ -3,7 +3,8 @@ import type Node from 'element-plus/es/components/tree/src/model/node';
 import type { DragEvents } from 'element-plus/es/components/tree/src/model/useDragNode';
 import type { AllowDropType, NodeDropType } from 'element-plus/es/components/tree/src/tree.type';
 import { QvMap } from './map/QvMap';
-import { onMounted } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
+import { ProdLayersTypeEnum } from './map/ConstValue';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -91,11 +92,11 @@ const data = [
             children: [
               {
                 label: '矢量底图',
-                tag: 'vec_c',
+                tag: ProdLayersTypeEnum.vec_c_jwd,
               },
               {
                 label: '矢量标注',
-                tag: 'cva_c',
+                tag: ProdLayersTypeEnum.vec_jwd_label,
               },
             ],
           },
@@ -104,11 +105,11 @@ const data = [
             children: [
               {
                 label: '矢量底图',
-                tag: 'vec_w',
+                tag: ProdLayersTypeEnum.vec_c_mkt,
               },
               {
                 label: '矢量标注',
-                tag: 'cva_w',
+                tag: ProdLayersTypeEnum.vec_mkt_label,
               },
             ],
           },
@@ -117,11 +118,11 @@ const data = [
             children: [
               {
                 label: '影像底图',
-                tag: 'img_c',
+                tag: ProdLayersTypeEnum.img_c_jwd,
               },
               {
                 label: '影像标注',
-                tag: 'cia_c',
+                tag: ProdLayersTypeEnum.img_jwd_label,
               },
             ],
           },
@@ -130,11 +131,11 @@ const data = [
             children: [
               {
                 label: '影像底图',
-                tag: 'img_w',
+                tag: ProdLayersTypeEnum.img_c_mkt,
               },
               {
                 label: '影像标注',
-                tag: 'cia_w',
+                tag: ProdLayersTypeEnum.img_mkt_label,
               },
             ],
           },
@@ -163,7 +164,11 @@ const nodeClick = (e) => {
 };
 const nodeContextMenu = (event, data, node) => {
   console.log('右键', event, data, node);
+  curData.curNode = node;
 };
+const curData = reactive({
+  curNode: null,
+});
 </script>
 
 <template>

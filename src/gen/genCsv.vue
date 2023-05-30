@@ -22,11 +22,18 @@
 
     <div v-if="gen_shp.hasGeo == '否'">
       <el-form-item label="属性链接配置">
-        <el-button @click="link_config.display = true">配置</el-button>
+        <el-button
+          @click="
+            () => {
+              link_config.display = true;
+            }
+          "
+          >配置
+        </el-button>
       </el-form-item>
     </div>
 
-    <div v-if="(gen_shp.type == 'point' && gen_shp.hasGeo == '是') || this.vlink">
+    <div v-if="gen_shp.type == 'point' && (gen_shp.hasGeo == '是' || this.vlink)">
       <el-form-item label="X坐标">
         <el-select v-model="gen_shp.point.x_field" placeholder="请选择X坐标">
           <el-option
@@ -52,19 +59,51 @@
         </el-select>
       </el-form-item>
     </div>
-    <div v-if="gen_shp.type == 'line' && gen_shp.hasGeo == '是'">
+    <div v-if="gen_shp.type == 'line' && (gen_shp.hasGeo == '是' || this.vlink)">
       <el-form-item label="起点X坐标">
-        <el-select v-model="gen_shp.line.sx_field" placeholder="请选择起点X坐标"></el-select>
+        <el-select v-model="gen_shp.line.sx_field" placeholder="请选择起点X坐标">
+          <el-option
+            v-for="(col, idx) in gen_shp.fields"
+            :key="idx"
+            :index="idx"
+            :label="gen_shp.fields[idx]"
+            :value="gen_shp.fields[idx]"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="起点Y坐标">
-        <el-select v-model="gen_shp.line.sy_field" placeholder="请选择起点Y坐标"></el-select>
+        <el-select v-model="gen_shp.line.sy_field" placeholder="请选择起点Y坐标">
+          <el-option
+            v-for="(col, idx) in gen_shp.fields"
+            :key="idx"
+            :index="idx"
+            :label="gen_shp.fields[idx]"
+            :value="gen_shp.fields[idx]"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="终点X坐标">
-        <el-select v-model="gen_shp.line.ex_field" placeholder="请选择终点X坐标"></el-select>
+        <el-select v-model="gen_shp.line.ex_field" placeholder="请选择终点X坐标">
+          <el-option
+            v-for="(col, idx) in gen_shp.fields"
+            :key="idx"
+            :index="idx"
+            :label="gen_shp.fields[idx]"
+            :value="gen_shp.fields[idx]"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="终点Y坐标">
-        <el-select v-model="gen_shp.line.ey_field" placeholder="请选择终点Y坐标"></el-select>
+        <el-select v-model="gen_shp.line.ey_field" placeholder="请选择终点Y坐标">
+          <el-option
+            v-for="(col, idx) in gen_shp.fields"
+            :key="idx"
+            :index="idx"
+            :label="gen_shp.fields[idx]"
+            :value="gen_shp.fields[idx]"
+          />
+        </el-select>
       </el-form-item>
     </div>
   </el-form>
@@ -132,7 +171,7 @@
 </template>
 <script lang="ts">
 import { ipcRenderer } from 'electron';
-import { CsvHeader, csvToListAndMap } from '../utils/CsvUtils';
+import { csvToListAndMap } from '../utils/CsvUtils';
 
 export default {
   methods: {
@@ -184,9 +223,27 @@ export default {
           features.push(once);
         }
       } else if (this.gen_shp.type == 'line') {
+        for (let datum of this.csv.data) {
+          let once = {
+            type: 'Feature',
+            properties: datum,
+            geometry: {
+              coordinates: [
+                [Number(datum[this.gen_shp.line.sx_field]), Number(datum[this.gen_shp.line.sy_field])],
+                [Number(datum[this.gen_shp.line.ex_field]), Number(datum[this.gen_shp.line.ey_field])],
+              ],
+              type: 'LineString',
+            },
+          };
+          features.push(once);
+        }
       }
       console.log(features);
       this.res = features;
+      this.ipcRenderer().send('gen-pointOrLine', {
+        fileName: this.gen_shp.file,
+        geo: features,
+      });
     },
 
     error() {},

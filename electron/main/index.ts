@@ -394,3 +394,9 @@ ipcMain.on('open-link-select-csv', (event, args) => {
       map.get('/gen_csv').webContents.send('open-link-select-csv-success', result.filePaths[0]);
     });
 });
+
+ipcMain.on('gen-pointOrLine', (e, a) => {
+  map.get('/gen_csv').close();
+  console.log(e, a);
+  win.webContents.send('gen-pointOrLine-show', a);
+});

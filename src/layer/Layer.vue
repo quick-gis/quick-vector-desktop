@@ -23,6 +23,13 @@ ipcRenderer.on('file-select', function (event, args) {
   console.log('文件：', args);
 });
 
+ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
+  console.log('成图完毕');
+  console.log('文件地址', args.fileName);
+  console.log('数据', args.geo);
+  console.log(args);
+});
+
 onMounted(() => {
   console.log('初始化地图');
   map.value = qvMap.initMap();

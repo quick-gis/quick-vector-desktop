@@ -97,8 +97,8 @@ const aaaa = ref({
     <!--  todo: 尺寸动态 -->
     <Vue3DraggableResizable
       id="a"
-      :initW="110"
-      :initH="120"
+      :initW="200"
+      :initH="600"
       v-model:x="d.x"
       v-model:y="d.y"
       v-model:w="d.w"

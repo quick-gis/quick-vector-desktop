@@ -7,7 +7,7 @@ import { Vector as VectorLayer } from 'ol/layer.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { Point } from 'ol/geom';
 import { Fill, RegularShape, Stroke, Style } from 'ol/style';
-import { ProdLayersTypeEnum } from './ConstValue';
+import { getProj, ProdLayersTypeEnum } from './ConstValue';
 import { GetTianDiTuLayers } from './Tdt';
 import { Layer } from 'ol/layer';
 
@@ -61,6 +61,20 @@ export class QvMap {
     a.getSource()
       ?.getFeatures()[0]
       .setGeometry(new Point([119.45436769887343, 29.21]));
+  }
+
+  showOrDisplay(layer: ProdLayersTypeEnum, check: boolean) {
+    let layer1 = this.diTu.get(layer);
+    let proj = getProj(layer);
+    if (layer1) {
+      layer1.setVisible(check);
+    } else {
+      let tileLayer = GetTianDiTuLayers(layer);
+      if (tileLayer) {
+        this._map.addLayer(tileLayer);
+        this.diTu.set(layer, tileLayer);
+      }
+    }
   }
   addMap(layer: ProdLayersTypeEnum) {
     this.diTu.forEach((v, k) => {

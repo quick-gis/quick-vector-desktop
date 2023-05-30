@@ -5,6 +5,7 @@ import type { AllowDropType, NodeDropType } from 'element-plus/es/components/tre
 import { QvMap } from './map/QvMap';
 import { onMounted, reactive, ref } from 'vue';
 import { ProdLayersTypeEnum } from './map/ConstValue';
+import { Tree } from 'element-plus/lib/components/tree-v2/src/types';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -46,12 +47,16 @@ onMounted(() => {
 const data = [
   {
     label: '编辑图层',
+    disabled: true,
   },
   {
     label: '分析图层',
+    disabled: true,
   },
   {
     label: '展示图层',
+    disabled: true,
+
     children: [
       {
         label: '数据库图层',
@@ -72,21 +77,37 @@ const data = [
       },
     ],
   },
-  { label: '标记图层' },
+  { label: '标记图层', disabled: true },
   {
     label: 'WMS/WMTS',
-    children: [
-      {
-        label: '网络地图',
-      },
-    ],
+    disabled: true,
+
+    children: [],
   },
   {
     label: '底图',
+    disabled: true,
+
     children: [
       {
         label: '天地图',
+        disabled: true,
+
         children: [
+          {
+            label: '天地图影像（经纬度投影）',
+
+            children: [
+              {
+                label: '影像底图',
+                tag: ProdLayersTypeEnum.img_c_jwd,
+              },
+              {
+                label: '影像标注',
+                tag: ProdLayersTypeEnum.img_jwd_label,
+              },
+            ],
+          },
           {
             label: '天地图矢量（经纬度投影）',
             children: [
@@ -100,61 +121,35 @@ const data = [
               },
             ],
           },
-          {
-            label: '天地图矢量（球面墨卡托投影）',
-            children: [
-              {
-                label: '矢量底图',
-                tag: ProdLayersTypeEnum.vec_c_mkt,
-              },
-              {
-                label: '矢量标注',
-                tag: ProdLayersTypeEnum.vec_mkt_label,
-              },
-            ],
-          },
-          {
-            label: '天地图影像（经纬度投影）',
-            children: [
-              {
-                label: '影像底图',
-                tag: ProdLayersTypeEnum.img_c_jwd,
-              },
-              {
-                label: '影像标注',
-                tag: ProdLayersTypeEnum.img_jwd_label,
-              },
-            ],
-          },
-          {
-            label: '天地图影像（球面墨卡托投影）',
-            children: [
-              {
-                label: '影像底图',
-                tag: ProdLayersTypeEnum.img_c_mkt,
-              },
-              {
-                label: '影像标注',
-                tag: ProdLayersTypeEnum.img_mkt_label,
-              },
-            ],
-          },
-        ],
-      },
+          // {
+          //   label: '天地图矢量（球面墨卡托投影）',
+          //
+          //   children: [
+          //     {
+          //       label: '矢量底图',
+          //       tag: ProdLayersTypeEnum.vec_c_mkt,
+          //     },
+          //     {
+          //       label: '矢量标注',
+          //       tag: ProdLayersTypeEnum.vec_mkt_label,
+          //     },
+          //   ],
+          // },
 
-      {
-        label: '高德地图',
-        children: [
-          { label: '秘钥配置' },
-          { label: '标标准图层' },
-          { label: '实时路况图层' },
-          { label: '卫星图' },
-          { label: '卫星和路网' },
+          // {
+          //   label: '天地图影像（球面墨卡托投影）',
+          //   children: [
+          //     {
+          //       label: '影像底图',
+          //       tag: ProdLayersTypeEnum.img_c_mkt,
+          //     },
+          //     {
+          //       label: '影像标注',
+          //       tag: ProdLayersTypeEnum.img_mkt_label,
+          //     },
+          //   ],
+          // },
         ],
-      },
-      {
-        label: '百度地图',
-        children: [{ label: '标准地图' }, { label: '卫星地图' }],
       },
     ],
   },
@@ -164,11 +159,29 @@ const nodeClick = (e) => {
 };
 const nodeContextMenu = (event, data, node) => {
   console.log('右键', event, data, node);
-  curData.curNode = node;
+  showMenu.value = true;
 };
+function locateMenuOrEditInput(eleId, eleWidth, event) {
+  let ele = document.getElementById(eleId);
+  ele.style.top = event.clientY + 0 + 'px';
+  ele.style.left = event.clientX + 0 + 'px';
+  if (window.innerWidth - eleWidth < event.clientX) {
+    ele.style.left = 'unset';
+    ele.style.right = 0;
+  }
+}
 const curData = reactive({
   curNode: null,
 });
+const showMenu = ref(false);
+const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean) => {
+  console.log('选择框选择');
+  console.log(data);
+  console.log(data?.tag);
+  if (data?.tag) {
+    props.qvMap?.showOrDisplay(data?.tag, checked);
+  }
+};
 </script>
 
 <template>
@@ -180,6 +193,8 @@ const curData = reactive({
       draggable
       default-expand-all
       node-key="id"
+      show-checkbox
+      @check-change="handleCheckChange"
       @node-click="nodeClick"
       @node-contextmenu="nodeContextMenu"
       @node-drag-start="handleDragStart"
@@ -192,7 +207,37 @@ const curData = reactive({
   </div>
   <div>
     <!--    右键图层菜单-->
+    <div v-show="showMenu" id="contextmenu" @mouseleave="showMenu = false" @mousemove.stop>
+      <div>
+        <el-button
+          @click="
+            () => {
+              console.log('aaaaaaaa');
+            }
+          "
+          >前加一列
+        </el-button>
+      </div>
+    </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#contextmenu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: auto;
+  width: 120px;
+  border-radius: 3px;
+  border: 1px solid #999999;
+  background-color: #f4f4f4;
+  padding: 10px;
+  z-index: 12;
+
+  button {
+    display: block;
+    margin: 0 0 5px;
+  }
+}
+</style>

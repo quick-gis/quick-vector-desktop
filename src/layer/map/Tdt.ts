@@ -1,4 +1,4 @@
-import { get, Projection } from 'ol/proj';
+import { get, Projection, transformExtent } from 'ol/proj';
 import { getTopLeft, getWidth } from 'ol/extent';
 import TileLayer from 'ol/layer/Tile';
 import WMTS from 'ol/source/WMTS';
@@ -34,11 +34,11 @@ export function GetTianDiTuLayers(layer: ProdLayersTypeEnum) {
   let index = -1;
   if (layer == ProdLayersTypeEnum.vec_c_jwd) {
     url = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=' + key;
-    index = 1;
+    index = 5;
     ly = 'vec';
   } else if (layer == ProdLayersTypeEnum.vec_jwd_label) {
     url = 'http://t{0-7}.tianditu.gov.cn/cva_c/wmts?tk=' + key;
-    index = 2;
+    index = 6;
     ly = 'cva';
   } else if (layer == ProdLayersTypeEnum.vec_c_mkt) {
     url = 'http://t{0-7}.tianditu.gov.cn/vec_w/wmts?tk=' + key;
@@ -50,11 +50,11 @@ export function GetTianDiTuLayers(layer: ProdLayersTypeEnum) {
     ly = 'cva';
   } else if (layer == ProdLayersTypeEnum.img_c_jwd) {
     url = 'http://t{0-7}.tianditu.gov.cn/img_c/wmts?tk=' + key;
-    index = 5;
+    index = 1;
     ly = 'img';
   } else if (layer == ProdLayersTypeEnum.img_jwd_label) {
     url = 'http://t{0-7}.tianditu.gov.cn/cia_c/wmts?tk=' + key;
-    index = 6;
+    index = 2;
     ly = 'cia';
   } else if (layer == ProdLayersTypeEnum.img_c_mkt) {
     url = 'http://t{0-7}.tianditu.gov.cn/img_w/wmts?tk=' + key;
@@ -73,6 +73,7 @@ export function GetTianDiTuLayers(layer: ProdLayersTypeEnum) {
     return new TileLayer({
       zIndex: index,
       visible: true,
+
       source: new WMTS({
         url: url,
         layer: ly,

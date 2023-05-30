@@ -26,7 +26,7 @@
       </el-form-item>
     </div>
 
-    <div v-if="gen_shp.type == 'point' && gen_shp.hasGeo == '是'">
+    <div v-if="(gen_shp.type == 'point' && gen_shp.hasGeo == '是') || this.vlink">
       <el-form-item label="X坐标">
         <el-select v-model="gen_shp.point.x_field" placeholder="请选择X坐标">
           <el-option
@@ -70,7 +70,7 @@
   </el-form>
 
   <div>
-    <el-dialog v-model="link_config.display" title="引用配置" width="40%">
+    <el-dialog v-model="link_config.display" title="引用配置" width="40%" @close="linkClose">
       <el-form :model="link_config" label-width="120px">
         <el-form-item label="选择链接文件">
           <el-input v-model="link_config.file" disabled></el-input>
@@ -122,36 +122,62 @@
   </div>
   <div>{{ this.gen_shp }}</div>
   <div>{{ this.link_config }}</div>
+
+  <div>源文件</div>
+  <div>{{ this.csv }}</div>
+  <div>链接文件</div>
+  <div>{{ this.linkcsv }}</div>
+  <dev>geojson</dev>
+  <div>{{ this.res }}</div>
 </template>
 <script lang="ts">
 import { ipcRenderer } from 'electron';
-import { CsvHeader } from '../utils/CsvUtils';
+import { CsvHeader, csvToListAndMap } from '../utils/CsvUtils';
 
 export default {
   methods: {
     ipcRenderer() {
       return ipcRenderer;
     },
+    linkClose() {
+      console.log('链接表窗口关闭');
+      this.vlink = this.validateLinkConfig();
+      this.link_config.ref_field.forEach((e) => {
+        this.gen_shp.fields.push(this.link_config.pre + '_' + e);
+      });
+      this.csv.data.forEach((ee) => {
+        let ss = ee[this.link_config.source_field];
+        let o = this.find(ss, this.link_config.target_field);
+
+        for (let refFieldElement of this.link_config.ref_field) {
+          if (o) {
+            ee[this.link_config.pre + '_' + refFieldElement] = o[refFieldElement];
+          }
+        }
+        console.log('sssssssssss', ss);
+        console.log('oooooo', o);
+      });
+    },
+    find(ss, field) {
+      let o = null;
+      this.linkcsv.data.forEach((e) => {
+        if (e[field] == ss) {
+          o = e;
+          return;
+        }
+      });
+      return o;
+    },
     ok() {
       let features: any[] = [];
 
       if (this.gen_shp.type == 'point') {
-        for (let i = 1; i < this.csv.row.length; i++) {
-          const row = this.csv.row[i].split(',');
-          if (row.length !== this.csv.header.length) {
-            continue;
-          }
-
-          let data: any = {};
-          for (let j = 0; j < this.csv.header.length; j++) {
-            data[this.csv.header[j]] = row[j];
-          }
-
+        for (let datum of this.csv.data) {
           let once = {
             type: 'Feature',
-            properties: data,
+            properties: datum,
             geometry: {
-              coordinates: [Number(data[this.gen_shp.point.x_field]), Number(data[this.gen_shp.point.y_field])],
+              coordinates: [Number(datum[this.gen_shp.point.x_field]), Number(datum[this.gen_shp.point.y_field])],
               type: 'Point',
             },
           };
@@ -160,38 +186,43 @@ export default {
       } else if (this.gen_shp.type == 'line') {
       }
       console.log(features);
+      this.res = features;
     },
+
     error() {},
+    validateLinkConfig() {
+      let vPre = this.link_config.pre != '';
+      let vRefField = this.link_config.ref_field.length > 0;
+      return vPre == true && vRefField == true;
+    },
   },
   mounted() {
     ipcRenderer.on('open-select-csv-success', (event, args) => {
-      console.log(event);
-      console.log(args);
       this.gen_shp.file = args;
-
-      let csvHeader = CsvHeader(args);
-      this.gen_shp.fields = csvHeader.head;
-      this.csv.row = csvHeader.row;
-      this.csv.header = csvHeader.head;
+      let csvToListAndMap1 = csvToListAndMap(args);
+      this.gen_shp.fields = csvToListAndMap1.header;
+      this.csv.header = csvToListAndMap1.header;
+      this.csv.data = csvToListAndMap1.list;
     });
     ipcRenderer.on('open-link-select-csv-success', (event, args) => {
-      console.log(event);
-      console.log(args);
       this.link_config.file = args;
-      let csvHeader = CsvHeader(args);
-      this.link_config.fields = csvHeader.head;
-      this.linkcsv.row = csvHeader.row;
+      let csvToListAndMap1 = csvToListAndMap(args);
+      this.link_config.fields = csvToListAndMap1.header;
+      this.linkcsv.data = csvToListAndMap1.list;
     });
   },
 
   data() {
     return {
+      res: null,
       csv: {
         header: [],
-        row: [],
+        data: [],
       },
+      vlink: false,
       linkcsv: {
-        row: [],
+        data: [],
+        header: [],
       },
       link_config: {
         fields: [],

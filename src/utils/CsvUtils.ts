@@ -13,7 +13,7 @@ interface Link {
    */
   link_field: any[];
 }
-class LineCsvObe {
+export class LineCsvObe {
   rows: any;
   headers: any[];
   path: string;
@@ -88,7 +88,7 @@ class LineCsvObe {
   }
 }
 
-class PointCsvObe {
+export class PointCsvObe {
   rows: any;
   headers: any[];
   path: string;
@@ -136,25 +136,28 @@ class PointCsvObe {
     };
   }
 }
-
-let a = new PointCsvObe('/Users/zhangsan/temp/electron-vite-vue/sample/data.csv');
-console.log(JSON.stringify(a.LoadPointCsv('x', 'y')));
-
-let b = new LineCsvObe('/Users/zhangsan/temp/electron-vite-vue/sample/data-line.csv');
-console.log(JSON.stringify(b.LoadLineCsv('sx', 'sy', 'zx', 'zy')));
-
-b.LinkData(a.datas, {
-  source: 'name',
-  target: 'name',
-  link_field: ['x', 'y'],
-  link_pre: '起点',
-});
-console.log(JSON.stringify(b.datas));
-// export { PointCsvObe };
+//
+// let a = new PointCsvObe('/Users/zhangsan/temp/electron-vite-vue/sample/data.csv');
+// console.log(JSON.stringify(a.LoadPointCsv('x', 'y')));
+//
+// let b = new LineCsvObe('/Users/zhangsan/temp/electron-vite-vue/sample/data-line.csv');
+// console.log(JSON.stringify(b.LoadLineCsv('sx', 'sy', 'zx', 'zy')));
+//
+// b.LinkData(a.datas, {
+//   source: 'name',
+//   target: 'name',
+//   link_field: ['x', 'y'],
+//   link_pre: '起点',
+// });
+// console.log(JSON.stringify(b.datas));
+// // export { PointCsvObe };
 
 export function CsvHeader(path: string) {
   const fileData = fs.readFileSync(path, 'utf8');
 
   let rows = fileData.split('\n');
-  return rows[0].split(',');
+  return {
+    head: rows[0].split(','),
+    row: rows,
+  };
 }

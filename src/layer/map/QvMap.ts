@@ -6,18 +6,46 @@ import { Vector as VectorSource } from 'ol/source.js';
 import { Vector as VectorLayer } from 'ol/layer.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { Point } from 'ol/geom';
-import { Fill, RegularShape, Stroke, Style } from 'ol/style';
 import { getProj, ProdLayersTypeEnum } from './ConstValue';
 import { GetTianDiTuLayers } from './Tdt';
 import { Layer } from 'ol/layer';
 import { SelectedStyles } from '../../config/mapmapStyle';
 import { MapBrowserEvent } from 'ol';
 import { reactive } from 'vue';
+import { Select } from 'ol/interaction';
+function getSelectPlus(mapData) {
+  const clickInteraction = new Select({ multi: false });
+  clickInteraction.on('select', function (event) {
+    let selectedFeatures = event.target.getFeatures();
+    let data = null;
+    if (selectedFeatures.getLength() > 0) {
+      data = selectedFeatures.item(0);
+    } else {
+      data = event.selected[0];
+    }
+    if (data) {
+      mapData.isSelect = true;
+    } else {
+      mapData.isSelect = false;
+    }
+    var format = new GeoJSON();
+
+    var geoJSON = format.writeFeature(data, {
+      featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
+    });
+    mapData.selectData = geoJSON;
+
+    console.log('当前点击数据GEOJSON', geoJSON);
+    console.log('当前点击数据', data);
+  });
+  return clickInteraction;
+}
 
 const a = {
-  default_click: (e: MapBrowserEvent<any>, mapData) => {
+  default_click: (e: MapBrowserEvent<any>, mapData, map) => {
     console.log('当前点击坐标111', e.coordinate);
     mapData.coordinates = e.coordinate;
+    mapData.click = true;
   },
   move_mouse: (e, mapData) => {
     mapData.coordinates = e.coordinate;
@@ -46,7 +74,22 @@ export class QvMap {
   // @ts-ignore
   private mapData = reactive({
     coordinates: null,
+    click: false,
+    openSelect: false,
+    selectData: {},
+    isSelect: false,
   });
+  private openSelect = false;
+  openOrClose() {
+    if (this.openSelect) {
+      this.mapData.openSelect = false;
+      this._map.removeInteraction(getSelectPlus(this.mapData));
+    } else {
+      this.mapData.openSelect = true;
+      this._map.addInteraction(getSelectPlus(this.mapData));
+    }
+    this.openSelect = !this.openSelect;
+  }
 
   constructor(target: string, obj) {
     this.target = target;
@@ -69,20 +112,12 @@ export class QvMap {
       }),
     });
     this._map.on('click', ($event) => {
-      a['default_click']($event, this.mapData);
+      a['default_click']($event, this.mapData, this._map);
     });
     this._map.on('pointermove', ($event) => {
       a['move_mouse']($event, this.mapData);
     });
     return this._map;
-  }
-
-  testChangeData() {
-    let a = this.hh.get('a');
-
-    a.getSource()
-      ?.getFeatures()[0]
-      .setGeometry(new Point([119.45436769887343, 29.21]));
   }
 
   showOrDisplay(layer: ProdLayersTypeEnum, check: boolean) {

@@ -8,7 +8,7 @@
   <div></div>
   <div>空间属性</div>
   <el-form label-position="right" label-width="100px" :model="feature" style="max-width: 460px">
-    <el-table :data="tabledata" style="width: 100%">
+    <el-table :data="tableData" style="width: 100%">
       <el-table-column prop="id" label="序号" width="100" />
       <el-table-column prop="x" label="x" width="180" />
       <el-table-column prop="y" label="y" width="180" />
@@ -20,19 +20,25 @@ export default {
   name: 'attrRange',
   mounted() {
     console.log('=========');
-
     console.log(this.geometry);
-    let d = this.getCoordinates(this.geometry.geometry);
-    for (let i in d) {
-      this.tabledata.push({
-        id: i,
-        x: d[i][0],
-        y: d[i][1],
-      });
-    }
-    this.feature = this.geometry;
   },
+  computed: {
+    tableData() {
+      console.log('tableData refresh');
+      this.feature = this.geometry;
 
+      let d = this.getCoordinates(this.geometry.geometry);
+      const arr = [];
+      for (let i in d) {
+        arr.push({
+          id: i,
+          x: d[i][0],
+          y: d[i][1],
+        });
+      }
+      return arr;
+    },
+  },
   methods: {
     getCoordinates(geometry) {
       let coordinates = [];
@@ -54,7 +60,6 @@ export default {
   },
   data() {
     return {
-      tabledata: [],
       feature: {
         properties: {},
         geometry: {},

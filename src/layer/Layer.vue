@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { h, onMounted, reactive, ref, watch } from 'vue';
 import { QvMap } from './map/QvMap';
 import { ipcRenderer } from 'electron';
 import LayerLeft from './LayerLeft.vue';
 import AttrRange from '../attr/AttrRange.vue';
 import { ProdLayersTypeEnum } from './map/ConstValue';
-defineEmits();
+import { ElMessage } from 'element-plus';
 const map = ref<any>();
 const aaa = ref(0);
 let mapData = reactive({
-  coordinates: null,
+  coordinates: [],
+  click: false,
+  // 是否开启选择元素
+  openSelect: false,
+  // 选择要素的数据
+  selectData: {},
+
+  // 是否选中要素
+  isSelect: false,
 });
 
 let qvMap = new QvMap('map', mapData);
-
 ipcRenderer.on('map-config', function (event, arg) {
   console.log('event:', event);
   console.log('arg:', arg);
@@ -61,6 +68,26 @@ const d2 = reactive({
 const print = (e) => {
   console.log(e);
 };
+watch(mapData, (o, n) => {
+  if (n.click) {
+    console.log('点击了', n.coordinates);
+    n.click = false;
+    ElMessage({
+      message: h('p', null, [
+        h('span', null, '坐标x'),
+        h('i', { style: 'color: teal' }, n.coordinates[0]),
+        h('br'),
+        h('span', null, '坐标y'),
+        h('i', { style: 'color: teal' }, n.coordinates[1]),
+      ]),
+    });
+  }
+  if (n.isSelect) {
+    let value = JSON.parse(n.selectData);
+    aaaa.value = value;
+    n.isSelect = false;
+  }
+});
 const aaaa = ref({
   type: 'Feature',
   properties: {
@@ -91,24 +118,13 @@ const aaaa = ref({
       <el-button
         @click="
           () => {
-            qvMap.addMap(ProdLayersTypeEnum.img_c_jwd);
-            // qvMap.addMap(ProdLayersTypeEnum.img_jwd_label);
+            qvMap.openOrClose();
           }
         "
-        >aaa</el-button
+        >开关选择 {{ mapData.openSelect }}</el-button
       >
     </div>
-    <div>
-      <el-button
-        @click="
-          () => {
-            qvMap.addMap(ProdLayersTypeEnum.vec_c_jwd);
-            // qvMap.addMap(ProdLayersTypeEnum.vec_jwd_label);
-          }
-        "
-        >bbb</el-button
-      >
-    </div>
+
     <!--  todo: 尺寸动态 -->
     <Vue3DraggableResizable
       id="a"
@@ -161,7 +177,6 @@ const aaaa = ref({
         </div>
       </Vue3DraggableResizable>
     </div>
-    <div>坐标:</div>
   </div>
 </template>
 

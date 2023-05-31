@@ -11,6 +11,18 @@ import { getProj, ProdLayersTypeEnum } from './ConstValue';
 import { GetTianDiTuLayers } from './Tdt';
 import { Layer } from 'ol/layer';
 import { SelectedStyles } from '../../config/mapmapStyle';
+import { MapBrowserEvent } from 'ol';
+import { reactive } from 'vue';
+
+const a = {
+  default_click: (e: MapBrowserEvent<any>, mapData) => {
+    console.log('当前点击坐标111', e.coordinate);
+    mapData.coordinates = e.coordinate;
+  },
+  move_mouse: (e, mapData) => {
+    mapData.coordinates = e.coordinate;
+  },
+};
 
 export class QvMap {
   target: string;
@@ -31,12 +43,14 @@ export class QvMap {
 
   static addLayerBaseIndex = 10000;
   private curLayerIndex = QvMap.addLayerBaseIndex;
-  // todo:
-  //  1. 地图图层不能直接写死
-  //  2. 视图需要传输
+  // @ts-ignore
+  private mapData = reactive({
+    coordinates: null,
+  });
 
-  constructor(target: string) {
+  constructor(target: string, obj) {
     this.target = target;
+    this.mapData = obj;
   }
 
   //  3. 要素图层的序号应该从10000开始
@@ -45,14 +59,7 @@ export class QvMap {
       target: this.target,
       controls: [],
 
-      layers: [
-        // new TileLayer({
-        //   source: new BingMaps({
-        //     key: 'AuWr3eXukkN34apjqfnABbs2nvmHRfVso9gH-X9HYB4lam8xwBbfHvKlDC0MFSyq',
-        //     imagerySet: 'Aerial',
-        //   }),
-        // }),
-      ],
+      layers: [],
 
       view: new View({
         center: [119.45436769887343, 29.2080525919085],
@@ -60,6 +67,12 @@ export class QvMap {
         zoom: 8,
         projection: 'EPSG:4326',
       }),
+    });
+    this._map.on('click', ($event) => {
+      a['default_click']($event, this.mapData);
+    });
+    this._map.on('pointermove', ($event) => {
+      a['move_mouse']($event, this.mapData);
     });
     return this._map;
   }
@@ -115,7 +128,6 @@ export class QvMap {
     });
     this.curLayerIndex = this.curLayerIndex + 1;
     vectorLayer.setZIndex(this.curLayerIndex);
-    // todo: 文件名称、文件显示修改
     this.fileLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
   }

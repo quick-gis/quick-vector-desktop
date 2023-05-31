@@ -5,9 +5,14 @@ import { ipcRenderer } from 'electron';
 import LayerLeft from './LayerLeft.vue';
 import AttrRange from '../attr/AttrRange.vue';
 import { ProdLayersTypeEnum } from './map/ConstValue';
+defineEmits();
 const map = ref<any>();
 const aaa = ref(0);
-let qvMap = new QvMap('map');
+let mapData = reactive({
+  coordinates: null,
+});
+
+let qvMap = new QvMap('map', mapData);
 
 ipcRenderer.on('map-config', function (event, arg) {
   console.log('event:', event);
@@ -79,6 +84,10 @@ const aaaa = ref({
 <template>
   <div id="map" ref="map" style="height: 100vh; width: 100%">
     <div>
+      <div id="flood">
+        <span>x:{{ mapData.coordinates[0] }}</span
+        ><span>,</span><span>y:{{ mapData.coordinates[1] }}</span>
+      </div>
       <el-button
         @click="
           () => {
@@ -152,6 +161,7 @@ const aaaa = ref({
         </div>
       </Vue3DraggableResizable>
     </div>
+    <div>坐标:</div>
   </div>
 </template>
 
@@ -169,5 +179,13 @@ const aaaa = ref({
   background-color: #fff;
   height: 100%;
   overflow-y: auto;
+}
+#flood {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 300px;
+  height: 20px;
+  background-color: rgba(255, 0, 0, 0.5);
 }
 </style>

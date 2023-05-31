@@ -3,9 +3,12 @@ import type Node from 'element-plus/es/components/tree/src/model/node';
 import type { DragEvents } from 'element-plus/es/components/tree/src/model/useDragNode';
 import type { AllowDropType, NodeDropType } from 'element-plus/es/components/tree/src/tree.type';
 import { QvMap } from './map/QvMap';
-import { onMounted, reactive, ref } from 'vue';
+import { nextTick, onMounted, reactive, ref } from 'vue';
 import { ProdLayersTypeEnum } from './map/ConstValue';
 import { Tree } from 'element-plus/lib/components/tree-v2/src/types';
+import { ipcRenderer } from 'electron';
+import * as path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -44,78 +47,93 @@ onMounted(() => {
   console.log(props.qvMap);
 });
 
-const data = [
+const data = ref([
   {
+    id: uuidv4(),
     label: '编辑图层',
     disabled: true,
   },
   {
+    id: uuidv4(),
     label: '分析图层',
     disabled: true,
   },
   {
+    id: uuidv4(),
     label: '展示图层',
     disabled: true,
 
     children: [
       {
+        id: uuidv4(),
         label: '数据库图层',
         children: [
           {
+            id: uuidv4(),
             label: '雨水井',
             type: '',
           },
         ],
       },
       {
+        id: uuidv4(),
         label: '文件图层',
-        children: [
-          {
-            label: '污水井.csv',
-          },
-        ],
+        children: [],
       },
     ],
   },
-  { label: '标记图层', disabled: true },
   {
+    id: uuidv4(),
+    label: '标记图层',
+    disabled: true,
+  },
+  {
+    id: uuidv4(),
     label: 'WMS/WMTS',
     disabled: true,
 
     children: [],
   },
   {
+    id: uuidv4(),
     label: '底图',
     disabled: true,
 
     children: [
       {
+        id: uuidv4(),
         label: '天地图',
         disabled: true,
 
         children: [
           {
+            id: uuidv4(),
             label: '天地图影像（经纬度投影）',
 
             children: [
               {
+                id: uuidv4(),
                 label: '影像底图',
                 tag: ProdLayersTypeEnum.img_c_jwd,
               },
               {
+                id: uuidv4(),
                 label: '影像标注',
                 tag: ProdLayersTypeEnum.img_jwd_label,
               },
             ],
           },
           {
+            id: uuidv4(),
             label: '天地图矢量（经纬度投影）',
             children: [
               {
+                id: uuidv4(),
                 label: '矢量底图',
                 tag: ProdLayersTypeEnum.vec_c_jwd,
               },
               {
+                id: uuidv4(),
                 label: '矢量标注',
                 tag: ProdLayersTypeEnum.vec_jwd_label,
               },
@@ -125,7 +143,24 @@ const data = [
       },
     ],
   },
-];
+]);
+
+function findNodeByLabel(nodes, targetLabel) {
+  for (const node of nodes) {
+    if (node.label === targetLabel) {
+      return node; // 找到匹配的节点，返回它
+    }
+
+    if (node.children && node.children.length > 0) {
+      const result = findNodeByLabel(node.children, targetLabel); // 递归搜索子节点
+      if (result) {
+        return result; // 找到匹配的节点，返回它
+      }
+    }
+  }
+
+  return null; // 没有找到匹配的节点
+}
 const nodeClick = (e) => {
   console.log(e);
 };
@@ -150,15 +185,45 @@ const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean)
   console.log('选择框选择');
   console.log(data);
   console.log(data?.tag);
-  if (data?.tag) {
+  if (data?.tag == ProdLayersTypeEnum.file) {
+    props.qvMap?.showOrCloseFileLayers(data?.uid, checked);
+  } else if (
+    data?.tag == ProdLayersTypeEnum.vec_c_jwd ||
+    data?.tag == ProdLayersTypeEnum.vec_jwd_label ||
+    data?.tag == ProdLayersTypeEnum.vec_c_mkt ||
+    data?.tag == ProdLayersTypeEnum.vec_mkt_label ||
+    data?.tag == ProdLayersTypeEnum.img_c_jwd ||
+    data?.tag == ProdLayersTypeEnum.img_jwd_label ||
+    data?.tag == ProdLayersTypeEnum.img_c_mkt ||
+    data?.tag == ProdLayersTypeEnum.img_mkt_label
+  ) {
     props.qvMap?.showOrDisplay(data?.tag, checked);
   }
 };
+ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
+  console.log('左侧图层', args);
+  const fileName = path.basename(args.fileName);
+  console.log('filename', fileName);
+  let findNodeByLabel1 = findNodeByLabel(data.value, '文件图层');
+  let nodeId = uuidv4();
+  findNodeByLabel1.children.unshift({
+    id: '123456',
+    label: fileName,
+    uid: args.uid,
+    tag: ProdLayersTypeEnum.file,
+  });
+
+  nextTick(() => {
+    defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
+  });
+});
+const defaultCheckedKeys = ref(['123456']);
 </script>
 
 <template>
   <div>
     <el-tree
+      :default-checked-keys="defaultCheckedKeys"
       :allow-drop="allowDrop"
       :allow-drag="allowDrag"
       :data="data"

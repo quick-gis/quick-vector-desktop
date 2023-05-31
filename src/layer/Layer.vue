@@ -27,7 +27,7 @@ ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
   console.log('成图完毕');
   console.log('文件地址', args.fileName);
   console.log('数据', args.geo);
-  qvMap.addGeoJsonForImport(args.geo, args.type);
+  qvMap.addGeoJsonForImport(args.uid, args.geo, args.type);
 });
 
 onMounted(() => {

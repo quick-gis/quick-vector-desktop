@@ -174,7 +174,7 @@
 import { ipcRenderer } from 'electron';
 import { csvToListAndMap } from '../utils/CsvUtils';
 import { GetLog } from '../utils/LogUtils';
-
+import { v4 as uuidv4 } from 'uuid';
 export default {
   methods: {
     a() {
@@ -250,6 +250,7 @@ export default {
       console.log(features);
       this.res = features;
       let data = {
+        uid: uuidv4(),
         fileName: this.gen_shp.file,
         type: this.gen_shp.type,
         geo: {

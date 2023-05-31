@@ -23,7 +23,11 @@ export class QvMap {
    */
   private diTu = new Map<ProdLayersTypeEnum, Layer>();
 
-  private importLayer = new Map<String, Layer>();
+  /**
+   * 文件转换图层
+   * @private
+   */
+  private fileLayer = new Map<String, Layer>();
 
   static addLayerBaseIndex = 10000;
   private curLayerIndex = QvMap.addLayerBaseIndex;
@@ -97,7 +101,12 @@ export class QvMap {
     }
   }
 
-  addGeoJsonForImport(json, type) {
+  showOrCloseFileLayers(uid, checked) {
+    console.log('iiiiii', uid);
+    let layer1 = this.fileLayer.get(uid);
+    layer1.setVisible(checked);
+  }
+  addGeoJsonForImport(uid, json, type) {
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
         features: new GeoJSON().readFeatures(json),
@@ -106,45 +115,8 @@ export class QvMap {
     });
     this.curLayerIndex = this.curLayerIndex + 1;
     vectorLayer.setZIndex(this.curLayerIndex);
-    this._map.addLayer(vectorLayer);
-  }
-  testAddLayers() {
-    let geojsonObject = {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            coordinates: [119.45436769887343, 29.2080525919085],
-            type: 'Point',
-          },
-        },
-      ],
-    };
-
-    let vectorLayer = new VectorLayer({
-      source: new VectorSource({
-        features: new GeoJSON().readFeatures(geojsonObject),
-      }),
-      style: new Style({
-        image: new RegularShape({
-          fill: new Fill({
-            color: 'red',
-          }), //填充色
-          stroke: new Stroke({
-            color: '#ffcc33',
-            width: 2,
-          }), //边线样式
-          points: 3, //边数
-          radius: 10, //半径
-          angle: 0, //形状的角度(弧度单位)
-        }),
-      }),
-    });
-
-    this.hh.set('a', vectorLayer);
-    // 将矢量图
+    // todo: 文件名称、文件显示修改
+    this.fileLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
   }
 

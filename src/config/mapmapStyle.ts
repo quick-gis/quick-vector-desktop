@@ -11,7 +11,7 @@ interface MapStyle {
 /**
  * 选中样式的静态表
  */
-const SelectedStyles = {
+export const SelectedStyles = {
   point: new Style({
     image: new Circle({
       radius: 6, // 圆点的半径

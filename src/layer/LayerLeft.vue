@@ -121,34 +121,6 @@ const data = [
               },
             ],
           },
-          // {
-          //   label: '天地图矢量（球面墨卡托投影）',
-          //
-          //   children: [
-          //     {
-          //       label: '矢量底图',
-          //       tag: ProdLayersTypeEnum.vec_c_mkt,
-          //     },
-          //     {
-          //       label: '矢量标注',
-          //       tag: ProdLayersTypeEnum.vec_mkt_label,
-          //     },
-          //   ],
-          // },
-
-          // {
-          //   label: '天地图影像（球面墨卡托投影）',
-          //   children: [
-          //     {
-          //       label: '影像底图',
-          //       tag: ProdLayersTypeEnum.img_c_mkt,
-          //     },
-          //     {
-          //       label: '影像标注',
-          //       tag: ProdLayersTypeEnum.img_mkt_label,
-          //     },
-          //   ],
-          // },
         ],
       },
     ],

@@ -10,6 +10,7 @@ import { Fill, RegularShape, Stroke, Style } from 'ol/style';
 import { getProj, ProdLayersTypeEnum } from './ConstValue';
 import { GetTianDiTuLayers } from './Tdt';
 import { Layer } from 'ol/layer';
+import { SelectedStyles } from '../../config/mapmapStyle';
 
 export class QvMap {
   target: string;
@@ -22,6 +23,10 @@ export class QvMap {
    */
   private diTu = new Map<ProdLayersTypeEnum, Layer>();
 
+  private importLayer = new Map<String, Layer>();
+
+  static addLayerBaseIndex = 10000;
+  private curLayerIndex = QvMap.addLayerBaseIndex;
   // todo:
   //  1. 地图图层不能直接写死
   //  2. 视图需要传输
@@ -90,6 +95,18 @@ export class QvMap {
         this.diTu.set(layer, tileLayer);
       }
     }
+  }
+
+  addGeoJsonForImport(json, type) {
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: new GeoJSON().readFeatures(json),
+      }),
+      style: SelectedStyles[type],
+    });
+    this.curLayerIndex = this.curLayerIndex + 1;
+    vectorLayer.setZIndex(this.curLayerIndex);
+    this._map.addLayer(vectorLayer);
   }
   testAddLayers() {
     let geojsonObject = {

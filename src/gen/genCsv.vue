@@ -158,6 +158,7 @@
   <div>
     <el-button @click="ok">确认</el-button>
     <el-button @click="error">取消</el-button>
+    <el-button @click="a">取消</el-button>
   </div>
   <div>{{ this.gen_shp }}</div>
   <div>{{ this.link_config }}</div>
@@ -172,9 +173,17 @@
 <script lang="ts">
 import { ipcRenderer } from 'electron';
 import { csvToListAndMap } from '../utils/CsvUtils';
+import { GetLog } from '../utils/LogUtils';
 
 export default {
   methods: {
+    a() {
+      console.log('kljljl');
+      this.ipcRenderer().send('gen-pointOrLine', {
+        fileName: this.gen_shp.file,
+        geo: [],
+      });
+    },
     ipcRenderer() {
       return ipcRenderer;
     },
@@ -240,10 +249,17 @@ export default {
       }
       console.log(features);
       this.res = features;
-      this.ipcRenderer().send('gen-pointOrLine', {
+      let data = {
         fileName: this.gen_shp.file,
-        geo: features,
-      });
+        type: this.gen_shp.type,
+        geo: {
+          type: 'FeatureCollection',
+          features: features,
+        },
+      };
+      console.log(data);
+      GetLog().info(JSON.stringify(data));
+      ipcRenderer.send('gen-pointOrLine', JSON.parse(JSON.stringify(data)));
     },
 
     error() {},

@@ -19,11 +19,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: go home
-        run: cd docs && pwd
       # 生成静态文件
       - name: Build
-        run: npm install && npm run docs:build
+        run: cd docs && npm install && npm run docs:build
 
       # 部署到 GitHub Pages
       - name: Deploy

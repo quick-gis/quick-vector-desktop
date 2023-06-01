@@ -54,7 +54,10 @@ export function SaveDiTuConfig(data: string) {
 }
 
 export function ReadDiTuConfig() {
-  return fs.readFileSync(GetDiTuConfigFile(), 'utf8');
+  return JSON.parse(fs.readFileSync(GetDiTuConfigFile(), 'utf8'));
+}
+export function WriteDiTuConfig(obj) {
+  createFile(GetDiTuConfigFile(), JSON.stringify(obj));
 }
 
 export function CreateRootPath() {
@@ -67,7 +70,7 @@ export function CreateRootPath() {
   createFolder(GetLogPath());
   createFolder(GetStylePath());
   createFolder(GetConfigPath());
-  createFile(GetDiTuConfigFile(), JSON.stringify('{}'));
+  createFile(GetDiTuConfigFile(), JSON.stringify({}));
 }
 
 export function LogPath() {

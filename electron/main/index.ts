@@ -118,9 +118,20 @@ async function createWindow() {
       label: '工具',
       submenu: [
         {
-          label: '定位',
+          label: '移动到XY',
           click: () => {
             extracted('map_to_xy', rootPath, isMac, '/map_to_xy');
+          },
+        },
+      ],
+    },
+    {
+      label: '配置',
+      submenu: [
+        {
+          label: '天地图token配置',
+          click: () => {
+            extracted('/config?type=tdt', rootPath, isMac, '/config?type=tdt');
           },
         },
       ],
@@ -177,7 +188,10 @@ ipcMain.on('close-sub-window', (event, message) => {
 });
 
 ipcMain.on('map-config', (event, message) => {
-  win.webContents.send('map-config', message);
+  map.get('/config?type=' + message.type).close();
+  if (!message.canel) {
+    win.webContents.send('map-config', message);
+  }
 });
 
 ipcMain.on('open-win', (_, arg) => {
@@ -238,16 +252,16 @@ ipcMain.on('calc-windows-size', (event, args) => {
 });
 
 // 1. 窗口 最小化
-ipcMain.on('window-min', function () {
-  // 收到渲染进程的窗口最小化操作的通知，并调用窗口最小化函数，执行该操作
-  win.minimize();
-});
-// 2. 窗口 最大化、恢复
-ipcMain.on('window-max', function () {
-  if (win.isMaximized()) {
-    // 为true表示窗口已最大化
-    win.restore(); // 将窗口恢复为之前的状态.
-  } else {
-    win.maximize();
-  }
-});
+// ipcMain.on('window-min', function () {
+//   // 收到渲染进程的窗口最小化操作的通知，并调用窗口最小化函数，执行该操作
+//   win.minimize();
+// });
+// // 2. 窗口 最大化、恢复
+// ipcMain.on('window-max', function () {
+//   if (win.isMaximized()) {
+//     // 为true表示窗口已最大化
+//     win.restore(); // 将窗口恢复为之前的状态.
+//   } else {
+//     win.maximize();
+//   }
+// });

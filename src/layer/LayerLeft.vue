@@ -164,10 +164,10 @@ function findNodeByLabel(nodes, targetLabel) {
 const nodeClick = (e) => {
   console.log(e);
 };
-const nodeContextMenu = (event, data, node) => {
-  console.log('右键', event, data, node);
-  showMenu.value = true;
-};
+// const nodeContextMenu = (event, data, node) => {
+//   console.log('右键', event, data, node);
+//   showMenu.value = true;
+// };
 function locateMenuOrEditInput(eleId, eleWidth, event) {
   let ele = document.getElementById(eleId);
   ele.style.top = event.clientY + 0 + 'px';
@@ -197,6 +197,8 @@ const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean)
     data?.tag == ProdLayersTypeEnum.img_c_mkt ||
     data?.tag == ProdLayersTypeEnum.img_mkt_label
   ) {
+    // todo: 看看有没有异常
+
     props.qvMap?.showOrDisplay(data?.tag, checked);
   }
 };
@@ -207,7 +209,7 @@ ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
   let findNodeByLabel1 = findNodeByLabel(data.value, '文件图层');
   let nodeId = uuidv4();
   findNodeByLabel1.children.unshift({
-    id: '123456',
+    id: nodeId,
     label: fileName,
     uid: args.uid,
     tag: ProdLayersTypeEnum.file,
@@ -217,10 +219,11 @@ ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
     defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
   });
 });
-const defaultCheckedKeys = ref(['123456']);
+const defaultCheckedKeys = ref([]);
 </script>
 
 <template>
+  <div>{{ defaultCheckedKeys }}</div>
   <div>
     <el-tree
       :default-checked-keys="defaultCheckedKeys"

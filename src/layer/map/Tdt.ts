@@ -4,6 +4,8 @@ import TileLayer from 'ol/layer/Tile';
 import WMTS from 'ol/source/WMTS';
 import WMTSTileGrid from 'ol/tilegrid/WMTS';
 import { ProdLayersTypeEnum } from './ConstValue';
+import { GetDiTuConfigFile, ReadDiTuConfig } from '../../utils/FileUtils';
+import fs from 'fs';
 
 function getResolutions(size: number) {
   let resolutions = [];
@@ -15,8 +17,19 @@ function getResolutions(size: number) {
   return resolutions;
 }
 
+export function GetTdtToken() {
+  let readDiTuConfig = ReadDiTuConfig();
+  if (!readDiTuConfig['token']) {
+    throw Error('没有配置底图秘钥');
+  }
+  if (readDiTuConfig['token']['tdt']) {
+    throw Error('没有配置天地图秘钥');
+  }
+  return readDiTuConfig['token']['tdt'];
+}
+
 export function GetTianDiTuLayers(layer: ProdLayersTypeEnum) {
-  let key = 'af329b7c71730694d8ffadce86e45236';
+  let key = GetTdtToken();
   let projection: Projection | null;
   if (
     layer == ProdLayersTypeEnum.vec_c_mkt ||

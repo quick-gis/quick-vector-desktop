@@ -4,7 +4,8 @@ import { QvMap } from './map/QvMap';
 import { ipcRenderer } from 'electron';
 import LayerLeft from './LayerLeft.vue';
 import AttrRange from '../attr/AttrRange.vue';
-import { ElMessage } from 'element-plus';
+import { ReadDiTuConfig, WriteDiTuConfig } from '../utils/FileUtils';
+import { GetTdtToken } from './map/Tdt';
 
 const map = ref<any>();
 const token = ref(0);
@@ -25,10 +26,19 @@ const winSize = reactive({
 });
 
 let qvMap = new QvMap('map', mapData);
+// 接受地图配置
 ipcRenderer.on('map-config', function (event, arg) {
   console.log('event:', event);
-  console.log('arg:', arg);
-  token.value = arg;
+  console.log('地图配置数据:', arg);
+  let readDiTuConfig = ReadDiTuConfig();
+  if (readDiTuConfig['token']) {
+    readDiTuConfig['token'][arg.type] = arg.token;
+  } else {
+    readDiTuConfig['token'] = {};
+    readDiTuConfig['token'][arg.type] = arg.token;
+  }
+  WriteDiTuConfig(readDiTuConfig);
+  console.log('配置文件中 地图配置 = ', readDiTuConfig);
 });
 ipcRenderer.on('calc-windows-size', function (event, args) {
   winSize.w = args.w;
@@ -121,7 +131,12 @@ const onceFeature = ref({
   },
 });
 const attrArrayDisplay = ref(false);
-const test = () => {};
+const mapConfig = ref({
+  tdt_token: '',
+});
+const test = () => {
+  mapConfig.value.tdt_token = GetTdtToken();
+};
 </script>
 
 <template>
@@ -135,7 +150,15 @@ const test = () => {};
         "
         >开关选择 {{ mapData.openSelect }}</el-button
       >
-      <div>{{ attrShowSize }}</div>
+      <el-button
+        @click="
+          () => {
+            test();
+          }
+        "
+        >获取地图配置</el-button
+      >
+      <div>{{ mapConfig }}</div>
     </div>
 
     <!--  todo: 尺寸动态 -->

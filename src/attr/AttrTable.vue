@@ -124,12 +124,18 @@
       <div>
         <!--            新建字段弹框-->
         <el-dialog v-model="newFieldDisplay" title="新增字段" width="30%">
-          <el-form :model="newFieldParam" label-position="right" label-width="100px" style="max-width: 460px">
-            <el-form-item label="中文">
-              <el-input v-model="newFieldParam.cn" />
+          <el-form
+            :model="newFieldParam"
+            :rules="newFieldParam.rules"
+            label-position="right"
+            label-width="100px"
+            style="max-width: 460px"
+          >
+            <el-form-item prop="cn" label="中文" :required="true">
+              <el-input v-model="newFieldParam.cn" autocomplete="off" />
             </el-form-item>
-            <el-form-item label="英文">
-              <el-input v-model="newFieldParam.en" />
+            <el-form-item prop="en" label="英文" :required="true">
+              <el-input v-model="newFieldParam.en" autocomplete="off" />
             </el-form-item>
           </el-form>
           <el-divider />
@@ -179,6 +185,7 @@ export default {
       // rowData 这个变量名不要修改
       let rowData = this.testDatas[0];
       const jsFunction = this.calcParam.pre + this.calcParam.rule + this.calcParam.pro;
+      console.log(jsFunction);
       try {
         let d = eval(jsFunction);
 
@@ -263,9 +270,11 @@ export default {
       this.testDatas.splice(this.curData.rowIndex + 1, 0, d);
     },
     newFieldOk() {
-      this.addCloField(this.curData.before, this.newFieldParam, this.is_justAddField);
+      if (this.newFieldParam.cn && this.newFieldParam.en) {
+        this.addCloField(this.curData.before, this.newFieldParam, this.is_justAddField);
 
-      this.newFieldCanle();
+        this.newFieldCanle();
+      }
     },
     newFieldCanle() {
       this.newFieldDisplay = false;
@@ -364,13 +373,13 @@ export default {
         }
 
         this.testDatas.forEach((e) => {
-          e[ll.prop] = { content: '', show: true };
+          e[ll.prop] = { content: ' 占位符 ', show: true };
         });
       } else {
         this.columnList.splice(this.columnList.length, 0, ll);
 
         this.testDatas.forEach((e) => {
-          e[ll.prop] = { content: '', show: true };
+          e[ll.prop] = { content: ' 占位符 ', show: true };
         });
       }
     },
@@ -430,7 +439,7 @@ export default {
         dataTipsDisplay: false,
         pre: '   (function(data) {',
         pro: '   })(rowData); ',
-        rule: '    \n     console.log(data.name.content); \n     console.log(data.age.content); \n     \n     return "aaa";\n   ',
+        rule: '    \n     console.log(data.name.content); \n         \n     return "aaa";\n   ',
         curField: '',
         data_tips: {
           name: {
@@ -452,6 +461,10 @@ export default {
         },
       },
       newFieldParam: {
+        rules: {
+          cn: [{ required: true, message: '请输入中文', trigger: 'blur' }],
+          en: [{ required: true, message: '请输入英文', trigger: 'blur' }],
+        },
         cn: '',
         en: '',
       },

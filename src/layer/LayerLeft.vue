@@ -158,10 +158,14 @@ function findNodeByLabel(nodes, targetLabel) {
 const nodeClick = (e) => {
   console.log(e);
 };
-// const nodeContextMenu = (event, data, node) => {
-//   console.log('右键', event, data, node);
-//   showMenu.value = true;
-// };
+const nodeContextMenu = (event, data, node) => {
+  console.log('右键', event, data, node);
+  console.log(event.clientY)
+  console.log(event.clientX)
+  contextmenuConfig.x = event.clientX
+  contextmenuConfig.y = event.clientY
+  showMenu.value = true;
+};
 function locateMenuOrEditInput(eleId, eleWidth, event) {
   let ele = document.getElementById(eleId);
   ele.style.top = event.clientY + 0 + 'px';
@@ -214,6 +218,10 @@ ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
   });
 });
 const defaultCheckedKeys = ref([]);
+const contextmenuConfig = reactive({
+  x: 0,
+  y: 0,
+});
 </script>
 
 <template>
@@ -241,7 +249,10 @@ const defaultCheckedKeys = ref([]);
   </div>
   <div>
     <!--    右键图层菜单-->
-    <div v-show="showMenu" id="contextmenu" @mouseleave="showMenu = false" @mousemove.stop>
+    <div v-show="showMenu"  :style="{
+      top: contextmenuConfig.y + 'px',
+      left: contextmenuConfig.x + 'px',
+    }" id="contextmenu" @mouseleave="showMenu = false" @mousemove.stop>
       <div>
         <el-button
           @click="
@@ -258,9 +269,7 @@ const defaultCheckedKeys = ref([]);
 
 <style scoped>
 #contextmenu {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: fixed;
   height: auto;
   width: 120px;
   border-radius: 3px;

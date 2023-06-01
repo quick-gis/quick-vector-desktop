@@ -91,24 +91,13 @@ const print = (e) => {
   console.log(e);
 };
 watch(mapData, (o, n) => {
-  // if (n.click) {
-  //   console.log('点击了', n.coordinates);
-  //   n.click = false;
-  //   ElMessage({
-  //     message: h('p', null, [
-  //       h('span', null, '坐标x'),
-  //       h('i', { style: 'color: teal' }, n.coordinates[0]),
-  //       h('br'),
-  //       h('span', null, '坐标y'),
-  //       h('i', { style: 'color: teal' }, n.coordinates[1]),
-  //     ]),
-  //   });
-  // }
   if (n.isSelect) {
     onceFeature.value = JSON.parse(n.selectData);
     // 发送事件获取窗口尺寸
     ipcRenderer.send('calc-windows-size');
-    attrArrayDisplay.value = true;
+    if (mapData.openSelect) {
+      attrArrayDisplay.value = true;
+    }
     n.isSelect = false;
   }
 });
@@ -118,16 +107,8 @@ const onceFeature = ref({
     a: 3,
   },
   geometry: {
-    coordinates: [
-      [
-        [40.31180535307365, 5.473333383004288],
-        [39.217191604897835, 5.257582796860234],
-        [40.02842818983956, 3.706592460938964],
-        [39.4672302783388, 3.7010476515846022],
-        [40.31180535307365, 5.473333383004288],
-      ],
-    ],
-    type: 'Polygon',
+    coordinates: [[119.45436769887343, 29.2080525919085]],
+    type: 'Point',
   },
 });
 const attrArrayDisplay = ref(false);
@@ -137,6 +118,12 @@ const mapConfig = ref({
 const test = () => {
   mapConfig.value.tdt_token = GetTdtToken();
 };
+
+ipcRenderer.on('openOrCloseSelect', function (event, args) {
+  console.log('开关选择器');
+
+  qvMap.openOrClose();
+});
 </script>
 
 <template>
@@ -148,17 +135,9 @@ const test = () => {
             qvMap.openOrClose();
           }
         "
-        >开关选择 {{ mapData.openSelect }}</el-button
+        >开关选择器</el-button
       >
-      <el-button
-        @click="
-          () => {
-            test();
-          }
-        "
-        >获取地图配置</el-button
-      >
-      <div>{{ mapConfig }}</div>
+      <div>{{ mapData.openSelect }}</div>
     </div>
 
     <!--  todo: 尺寸动态 -->

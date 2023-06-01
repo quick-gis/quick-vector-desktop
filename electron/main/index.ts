@@ -1,7 +1,6 @@
-import { app, BrowserWindow, shell, ipcMain, Menu, dialog, screen } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
-import { topMenu } from './top_menu';
 
 process.env.DIST_ELECTRON = join(__dirname, '..');
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist');
@@ -22,6 +21,7 @@ const preload = join(__dirname, '../preload/index.js');
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 const map = new Map();
+
 function extracted(name, rootPath, isMac: boolean, path) {
   let browserWindow = new BrowserWindow({
     // parent: win,
@@ -111,6 +111,20 @@ async function createWindow() {
               },
             },
           ],
+        },
+      ],
+    },
+    {
+      label: '编辑',
+      submenu: [
+        {
+          label: '开启属性查看模式',
+          type: 'checkbox',
+          checked: false,
+          click: (menuItem, browserWindow, event) => {
+            win.webContents.send('openOrCloseSelect');
+            event.checked = !event.checked;
+          },
         },
       ],
     },

@@ -67,13 +67,7 @@ const data = ref([
       {
         id: uuidv4(),
         label: '数据库图层',
-        children: [
-          {
-            id: uuidv4(),
-            label: '雨水井',
-            type: '',
-          },
-        ],
+        children: [],
       },
       {
         id: uuidv4(),

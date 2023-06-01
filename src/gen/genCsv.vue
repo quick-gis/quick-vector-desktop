@@ -158,17 +158,7 @@
   <div>
     <el-button @click="ok">确认</el-button>
     <el-button @click="error">取消</el-button>
-    <el-button @click="a">取消</el-button>
   </div>
-  <div>{{ this.gen_shp }}</div>
-  <div>{{ this.link_config }}</div>
-
-  <div>源文件</div>
-  <div>{{ this.csv }}</div>
-  <div>链接文件</div>
-  <div>{{ this.linkcsv }}</div>
-  <dev>geojson</dev>
-  <div>{{ this.res }}</div>
 </template>
 <script lang="ts">
 import { ipcRenderer } from 'electron';

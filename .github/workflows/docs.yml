@@ -32,7 +32,8 @@ jobs:
           node-version: 18
           # 缓存 pnpm 依赖
           cache: pnpm
-
+      - name: a
+        run: pnpm view vuepress-vite versions
       # 运行构建脚本
       - name: Build VuePress site
         run: cd docs && pnpm docs:build

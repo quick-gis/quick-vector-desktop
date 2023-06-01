@@ -252,11 +252,13 @@ export default {
     },
     deleteRow() {
       this.testDatas.splice(this.curData.rowIndex, 1);
+      this.showNumbMenu = false;
     },
     copyRow() {
       console.log('复制本行');
       var row = this.testDatas[this.curData.rowIndex];
       this.testDatas.splice(this.curData.rowIndex + 1, 0, row);
+      this.showNumbMenu = false;
       console.log(row);
     },
     // todo： 如果要做添加一行需要控制主程序显示顺序

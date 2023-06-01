@@ -1,74 +1,57 @@
-# electron-vite-vue
+# Quick Vector Editor
 
-🥳 Really simple `Electron` + `Vue` + `Vite` boilerplate.
+本项目基于 `Electron` 、`VUE` 、`OpenLayers` 、`jsts` 开发。项目采用 `EPSG:4326(WGS84)` 坐标系进行开发。
 
-<!-- [![awesome-vite](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite) -->
-<!-- [![Netlify Status](https://api.netlify.com/api/v1/badges/ae3863e3-1aec-4eb1-8f9f-1890af56929d/deploy-status)](https://app.netlify.com/sites/electron-vite/deploys) -->
-<!-- [![GitHub license](https://img.shields.io/github/license/caoxiemeihao/electron-vite-vue)](https://github.com/electron-vite/electron-vite-vue/blob/main/LICENSE) -->
-<!-- [![GitHub stars](https://img.shields.io/github/stars/caoxiemeihao/electron-vite-vue?color=fa6470)](https://github.com/electron-vite/electron-vite-vue) -->
-<!-- [![GitHub forks](https://img.shields.io/github/forks/caoxiemeihao/electron-vite-vue)](https://github.com/electron-vite/electron-vite-vue) -->
+## 功能清单
+-  CSV成图(支持源文件中携带坐标数据生产和不携带坐标数据生产)
+  - [x] 点成图
+  - [x] 线成图
+- EXCEL成图(方式和CSV相同)
+  - [ ] 点成图
+  - [ ] 线成图
+- [ ] MYSQL 数据库成图
+- [ ] WMS/WMST预览
+- 导出
+  - [ ] 导出SHP
+  - [ ] 导出GeoJson
+- 天地图
+  - [x] 天地图秘钥配置
+  - [x] 天地图矢量图加载
+  - [x] 天地图影像图加载
+  - [ ] 天地图坐标拾取
+  - [ ] 天地图地址编码(输入地址获取坐标)
+- 主窗口
+  - [x] 图层树
+  - [x] 属性窗口
+  - 属性表窗口
+    - [ ] 属性计算
+    - [ ] 属性搜索
+    - [ ] 定位
+    - [ ] 值变化
+    - [ ] 添加字段
+    - [ ] 删除字段
+    - [ ] 隐藏/显示字段
+- 编辑
+  - 裁切
+    - [ ] 线段裁切
+    - [ ] 面裁切
+  - [ ] 拷贝要素
+  - [ ] 删除要素
+  - [ ] 修改要素(属性、坐标)
+  - 坐标转换
+    - [ ] WGS84
+    - [ ] 百度地图
+    - [ ] 高德地图
+    - [ ] EPSG坐标
+- 分析
+  - 孤立点分析
+    - [ ] 属性孤立
+    - [ ] 空间孤立
+  -  [ ] 叠加分析
+  - [ ] 连通性分析(对线段生效)
+- 服务发布
+  - [ ] GeoServer 发布
 
-[![GitHub Build](https://github.com/electron-vite/electron-vite-vue/actions/workflows/build.yml/badge.svg)](https://github.com/electron-vite/electron-vite-vue/actions/workflows/build.yml)
-[![GitHub Discord](https://img.shields.io/badge/chat-discord-blue?logo=discord)](https://discord.gg/sRqjYpEAUK)
+## 许可
+[License](LICENSE)
 
-## Features
-
-📦 Out of the box  
-🎯 Based on the official [template-vue-ts](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-vue-ts), less invasive  
-🌱 Extensible, really simple directory structure  
-💪 Support using Node.js API in Electron-Renderer  
-🔩 Support C/C++ native addons  
-🖥 It's easy to implement multiple windows
-
-## Quick Start
-
-```sh
-npm create electron-vite
-```
-
-<!-- [![quick-start](https://asciinema.org/a/483731.svg)](https://asciinema.org/a/483731) -->
-
-![electron-vite-vue.gif](/electron-vite-vue.gif)
-
-## Debug
-
-![electron-vite-react-debug.gif](https://github.com/electron-vite/electron-vite-react/blob/main/electron-vite-react-debug.gif?raw=true)
-
-## Directory
-
-```diff
-+ ├─┬ electron
-+ │ ├─┬ main
-+ │ │ └── index.ts    entry of Electron-Main
-+ │ └─┬ preload
-+ │   └── index.ts    entry of Preload-Scripts
-  ├─┬ src
-  │ └── main.ts       entry of Electron-Renderer
-  ├── index.html
-  ├── package.json
-  └── vite.config.ts
-```
-
-<!--
-## Be aware
-
-🚨 By default, this template integrates Node.js in the Renderer process. If you don't need it, you just remove the option below. [Because it will modify the default config of Vite](https://github.com/electron-vite/vite-plugin-electron-renderer#config-presets-opinionated).
-
-```diff
-# vite.config.ts
-
-export default {
-  plugins: [
--   // Use Node.js API in the Renderer-process
--   renderer({
--     nodeIntegration: true,
--   }),
-  ],
-}
-```
--->
-
-## FAQ
-
-- [C/C++ addons, Node.js modules - Pre-Bundling](https://github.com/electron-vite/vite-plugin-electron-renderer#dependency-pre-bundling)
-- [dependencies vs devDependencies](https://github.com/electron-vite/vite-plugin-electron-renderer#dependencies-vs-devdependencies)

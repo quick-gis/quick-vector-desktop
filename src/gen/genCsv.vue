@@ -211,6 +211,7 @@ export default {
 
       if (this.gen_shp.type == 'point') {
         for (let datum of this.csv.data) {
+          datum['iid'] = uuidv4();
           let once = {
             type: 'Feature',
             properties: datum,
@@ -223,6 +224,7 @@ export default {
         }
       } else if (this.gen_shp.type == 'line') {
         for (let datum of this.csv.data) {
+          datum['iid'] = uuidv4();
           let once = {
             type: 'Feature',
             properties: datum,

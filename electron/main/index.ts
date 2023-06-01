@@ -269,5 +269,7 @@ ipcMain.on('openAttrTable', (event, args) => {
   // 打开属性表窗口
   console.log('打开属性表窗口', args);
   let browserWindow = extracted('/attr_table', rootPath, isMac, '/attr_table');
-  browserWindow.webContents.send('openAttrTable-data', args);
+  setTimeout(() => {
+    browserWindow.webContents.send('openAttrTable-data', args);
+  }, 1000);
 });

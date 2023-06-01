@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-8daa1a0e","path":"/","title":"Quick Vector Editor","lang":"zh-CN","frontmatter":{},"headers":[{"level":2,"title":"功能清单","slug":"功能清单","link":"#功能清单","children":[]}],"git":{"updatedTime":1685598251000,"contributors":[{"name":"Zen Huifer","email":"huifer97@163.com","commits":1}]},"filePathRelative":"README.md"}');export{e as data};

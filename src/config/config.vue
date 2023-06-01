@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { ipcRenderer } from 'electron';
+import { GetTdtToken } from '../layer/map/Tdt';
 
 const input1 = ref('');
 const router = useRoute();
@@ -21,11 +22,12 @@ const blur = (canel) => {
     console.log('高德地图key = ', input1.value);
   }
 
-  ipcRenderer.send('map-config', { type: type, token: input1.value, canel: canel });
+  ipcRenderer.send('map-config', JSON.parse(JSON.stringify({ type: type, token: input1.value, canel: canel })));
 };
 onMounted(() => {
   console.log('kkk');
   console.log('type = ', router.query.type);
+  input1.value = GetTdtToken();
   type = router.query.type;
 });
 </script>
@@ -34,7 +36,7 @@ onMounted(() => {
   <div>
     <el-form label-width="120px">
       <el-form-item label="令牌">
-        <el-input @blur="blur" v-model="input1" />
+        <el-input v-model="input1" />
       </el-form-item>
     </el-form>
     <el-button @click="blur(false)" type="primary">确定</el-button>

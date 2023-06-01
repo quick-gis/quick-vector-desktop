@@ -1,57 +1,56 @@
 # Quick Vector Editor
 
-本项目基于 `Electron` 、`VUE` 、`OpenLayers` 、`jsts` 开发。项目采用 `EPSG:4326(WGS84)` 坐标系进行开发。
+This project is based on `Electron`, `VUE`, `OpenLayers`, `jsts`. The project is developed using the `EPSG:4326(WGS84)` coordinate system.
 
-## 功能清单
--  CSV成图(支持源文件中携带坐标数据生产和不携带坐标数据生产)
-  - [x] 点成图
-  - [x] 线成图
-- EXCEL成图(方式和CSV相同)
-  - [ ] 点成图
-  - [ ] 线成图
-- [ ] MYSQL 数据库成图
-- [ ] WMS/WMST预览
-- 导出
-  - [ ] 导出SHP
-  - [ ] 导出GeoJson
-- 天地图
-  - [x] 天地图秘钥配置
-  - [x] 天地图矢量图加载
-  - [x] 天地图影像图加载
-  - [ ] 天地图坐标拾取
-  - [ ] 天地图地址编码(输入地址获取坐标)
-- 主窗口
-  - [x] 图层树
-  - [x] 属性窗口
-  - 属性表窗口
-    - [ ] 属性计算
-    - [ ] 属性搜索
-    - [ ] 定位
-    - [ ] 值变化
-    - [ ] 添加字段
-    - [ ] 删除字段
-    - [ ] 隐藏/显示字段
-- 编辑
-  - 裁切
-    - [ ] 线段裁切
-    - [ ] 面裁切
-  - [ ] 拷贝要素
-  - [ ] 删除要素
-  - [ ] 修改要素(属性、坐标)
-  - 坐标转换
+## Function list
+- CSV mapping (supports production with and without coordinate data in the source file)
+  - [x] Point mapping
+  - [x] Line plotting
+- EXCEL plotting (in the same way as CSV)
+  - [ ] Point plot
+  - [ ] Line charting
+- [ ] MYSQL database charting
+- [ ] WMS/WMST Preview
+- Export
+  - [ ] Export SHP
+  - [ ] Export GeoJson
+- Skymap
+  - [x] Skymap Secret Key Configuration
+  - [x] Skymap vector map loading
+  - [ x ] Skymap image loading
+  - [ ] Skymap Coordinate Pickup
+  - [ ] Sky map address encoding (input address to get coordinates)
+- Main Window
+  - [x] Layer tree
+  - [x] Properties window
+  - Attribute table window
+    - [ ] Attribute calculation
+    - [ ] Attribute Search
+    - [ ] Positioning
+    - [ ] Value Change
+    - [ ] Add Field
+    - [ ] Delete Fields
+    - [ ] Hide/Show Fields
+- Edit
+  - Crop
+    - [ ] Line cropping
+    - [ ] Face Crop
+  - [ ] Copy Elements
+  - [ ] Delete element
+  - [ ] Modify elements (properties, coordinates)
+  - Coordinate conversion
     - [ ] WGS84
-    - [ ] 百度地图
-    - [ ] 高德地图
-    - [ ] EPSG坐标
-- 分析
-  - 孤立点分析
-    - [ ] 属性孤立
-    - [ ] 空间孤立
-  -  [ ] 叠加分析
-  - [ ] 连通性分析(对线段生效)
-- 服务发布
-  - [ ] GeoServer 发布
+    - [ ] Baidu Map
+    - [ ] Gaode Map
+    - [ ] EPSG coordinates
+- Analysis
+  - Isolated Point Analysis
+    - [ ] Attribute isolation
+    - [ ] Spatial Isolation
+  - [ ] Superposition analysis
+  - [ ] Connectivity analysis (valid for line segments)
+- Service Release
+  - [ ] GeoServer Release
 
-## 许可
+## License
 [License](LICENSE)
-

@@ -236,7 +236,6 @@ const showAttrTable = () => {
 </script>
 
 <template>
-  <div>{{ defaultCheckedKeys }}</div>
   <div>
     <el-tree
       :default-checked-keys="defaultCheckedKeys"

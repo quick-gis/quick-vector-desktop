@@ -1,166 +1,168 @@
 <template>
-  <div id="held">
-    <el-row class="mb-4">
-      <div>字段</div>
-      <el-button
-        type="primary"
-        @click="
-          newFieldDisplay = true;
-          is_justAddField = true;
-        "
-        >添加字段
-      </el-button>
-      <el-button type="primary" @click="searchParam.display = true">搜索字段 </el-button>
-      <el-button type="primary" @click="searchCanle">清空字段 </el-button>
-    </el-row>
-  </div>
-  <div id="hello">
-    <!-- 表格 -->
-    <el-table
-      :data="testDatas"
-      border
-      style="width: 100%; margin-top: 10px"
-      @header-contextmenu="(column, event) => tableHeaderRightClick(column, event)"
-      @cell-contextmenu="numbRightClick"
-    >
-      <el-table-column v-if="columnList.length > 0" :width="50" label="序号" type="index" />
-      <el-table-column v-for="(col, idx) in columnList" :key="col.prop" :index="idx">
-        <!-- 表头 -->
-        <template #header>
-          <p v-show="col.show">
-            {{ col.label }}
-            <i class="el-icon-edit-outline" @click="col.show = false"></i>
-          </p>
-          <el-input v-show="!col.show" v-model="col.label" size="mini"> </el-input>
-        </template>
-        <!-- 列-->
-        <template #default="scope">
-          <p v-show="scope.row[col.prop].show" @dblclick="rowDoubleClick(scope, col)">
-            {{ scope.row[col.prop].content }}
-            <i class="el-icon-edit-outline" @click="scope.row[col.prop].show = false"></i>
-          </p>
-          <el-input
-            v-show="!scope.row[col.prop].show"
-            v-model="scope.row[col.prop].content"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-            type="textarea"
-            @blur="scope.row[col.prop].show = true"
-          >
-          </el-input>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <div v-show="showMenu" id="contextmenu" @mouseleave="showMenu = false" @mousemove.stop>
-      <div>
+  <div>
+    <div id="held">
+      <el-row class="mb-4">
+        <div>字段</div>
         <el-button
+          type="primary"
           @click="
-            curData.before = false;
             newFieldDisplay = true;
+            is_justAddField = true;
           "
-          >后加一列
+          >添加字段
         </el-button>
-        <el-button
-          @click="
-            curData.before = true;
-            newFieldDisplay = true;
-          "
-          >前加一列
-        </el-button>
-        <el-divider />
-        <el-button @click="fieldCalcDisplay = true">字段计算器</el-button>
-        <el-button @click="showAllField">显示所有字段</el-button>
-        <el-button @click="hideField">隐藏字段</el-button>
-      </div>
+        <el-button type="primary" @click="searchParam.display = true">搜索字段 </el-button>
+        <el-button type="primary" @click="searchCanle">清空字段 </el-button>
+      </el-row>
     </div>
-    <div v-show="showNumbMenu" id="contextmenu-numb" @mouseleave="showNumbMenu = false" @mousemove.stop>
-      <el-button @click="deleteRow">删除本行</el-button>
-      <el-button @click="copyRow">复制本行</el-button>
-    </div>
-    <div>
-      <!--    字段计算器-->
-      <el-dialog v-model="fieldCalcDisplay" title="字段计算器" width="30%">
-        <!--        <el-form-item label="选择字段">-->
-        <!--          <el-select v-model="calcParam.curField" placeholder="请选择字段">-->
-        <!--            <el-option-->
-        <!--              v-for="op in columnList"-->
-        <!--              :key="op"-->
-        <!--              :label="op.label"-->
-        <!--              :value="op.prop"-->
-        <!--            />-->
-        <!--          </el-select>-->
-        <!--          <el-button @click="calcAddField">添加</el-button>-->
-        <!--        </el-form-item>-->
+    <div id="hello">
+      <!-- 表格 -->
+      <el-table
+        :data="testDatas"
+        border
+        style="width: 100%; margin-top: 10px"
+        @header-contextmenu="(column, event) => tableHeaderRightClick(column, event)"
+        @cell-contextmenu="numbRightClick"
+      >
+        <el-table-column v-if="columnList.length > 0" :width="50" label="序号" type="index" />
+        <el-table-column v-for="(col, idx) in columnList" :key="col.prop" :index="idx">
+          <!-- 表头 -->
+          <template #header>
+            <p v-show="col.show">
+              {{ col.label }}
+              <i class="el-icon-edit-outline" @click="col.show = false"></i>
+            </p>
+            <el-input v-show="!col.show" v-model="col.label" size="mini"> </el-input>
+          </template>
+          <!-- 列-->
+          <template #default="scope">
+            <p v-show="scope.row[col.prop].show" @dblclick="rowDoubleClick(scope, col)">
+              {{ scope.row[col.prop].content }}
+              <i class="el-icon-edit-outline" @click="scope.row[col.prop].show = false"></i>
+            </p>
+            <el-input
+              v-show="!scope.row[col.prop].show"
+              v-model="scope.row[col.prop].content"
+              :autosize="{ minRows: 2, maxRows: 4 }"
+              type="textarea"
+              @blur="scope.row[col.prop].show = true"
+            >
+            </el-input>
+          </template>
+        </el-table-column>
+      </el-table>
 
-        <!--        <el-divider />-->
+      <div v-show="showMenu" id="contextmenu" @mouseleave="showMenu = false" @mousemove.stop>
         <div>
-          <el-button @click="calcParam.dataTipsDisplay = true">首行数据 </el-button>
+          <el-button
+            @click="
+              curData.before = false;
+              newFieldDisplay = true;
+            "
+            >后加一列
+          </el-button>
+          <el-button
+            @click="
+              curData.before = true;
+              newFieldDisplay = true;
+            "
+            >前加一列
+          </el-button>
+          <el-divider />
+          <el-button @click="fieldCalcDisplay = true">字段计算器</el-button>
+          <el-button @click="showAllField">显示所有字段</el-button>
+          <el-button @click="hideField">隐藏字段</el-button>
         </div>
-        <div></div>
-        <el-input disabled placeholder="(function(data) {" />
-        <el-input
-          v-model="calcParam.rule"
-          :rows="8"
-          placeholder="请输入计算公式"
-          type="textarea"
-          @keyup.delete="calcOnDeleteKeymap(e)"
-        />
-        <el-input disabled placeholder="})(rowData); " />
+      </div>
+      <div v-show="showNumbMenu" id="contextmenu-numb" @mouseleave="showNumbMenu = false" @mousemove.stop>
+        <el-button @click="deleteRow">删除本行</el-button>
+        <el-button @click="copyRow">复制本行</el-button>
+      </div>
+      <div>
+        <!--    字段计算器-->
+        <el-dialog v-model="fieldCalcDisplay" title="字段计算器" width="30%">
+          <!--        <el-form-item label="选择字段">-->
+          <!--          <el-select v-model="calcParam.curField" placeholder="请选择字段">-->
+          <!--            <el-option-->
+          <!--              v-for="op in columnList"-->
+          <!--              :key="op"-->
+          <!--              :label="op.label"-->
+          <!--              :value="op.prop"-->
+          <!--            />-->
+          <!--          </el-select>-->
+          <!--          <el-button @click="calcAddField">添加</el-button>-->
+          <!--        </el-form-item>-->
 
-        <el-divider />
-        <el-button @click="mockFirstCalc">模拟第一行计算</el-button>
-        <el-button @click="calcField">计算</el-button>
-        <el-button @click="fieldCalcDisplay = false">取消</el-button>
-      </el-dialog>
-    </div>
+          <!--        <el-divider />-->
+          <div>
+            <el-button @click="calcParam.dataTipsDisplay = true">首行数据 </el-button>
+          </div>
+          <div></div>
+          <el-input disabled placeholder="(function(data) {" />
+          <el-input
+            v-model="calcParam.rule"
+            :rows="8"
+            placeholder="请输入计算公式"
+            type="textarea"
+            @keyup.delete="calcOnDeleteKeymap(e)"
+          />
+          <el-input disabled placeholder="})(rowData); " />
 
-    <div>
-      <!--          数据提示框-->
-      <el-dialog v-model="calcParam.dataTipsDisplay" title="首行数据" width="30%">
-        <div>{{ testDatas[0] }}</div>
-      </el-dialog>
-    </div>
-    <div>
-      <!--            新建字段弹框-->
-      <el-dialog v-model="newFieldDisplay" title="新增字段" width="30%">
-        <el-form :model="newFieldParam" label-position="right" label-width="100px" style="max-width: 460px">
-          <el-form-item label="中文">
-            <el-input v-model="newFieldParam.cn" />
-          </el-form-item>
-          <el-form-item label="英文">
-            <el-input v-model="newFieldParam.en" />
-          </el-form-item>
-        </el-form>
-        <el-divider />
-        <el-button @click="newFieldOk">确定</el-button>
-        <el-button @click="newFieldCanle">取消</el-button>
-      </el-dialog>
-    </div>
+          <el-divider />
+          <el-button @click="mockFirstCalc">模拟第一行计算</el-button>
+          <el-button @click="calcField">计算</el-button>
+          <el-button @click="fieldCalcDisplay = false">取消</el-button>
+        </el-dialog>
+      </div>
 
-    <div>
-      <!--          搜索字段-->
-      <el-dialog v-model="searchParam.display" title="搜索字段" width="30%">
-        <el-form :model="searchParam" label-position="right" label-width="100px" style="max-width: 460px"> </el-form>
-        <el-input disabled placeholder="(function(data) {" />
-        <el-input v-model="searchParam.rule" :rows="8" placeholder="请输入计算公式" type="textarea" />
-        <el-input disabled placeholder="})(rowData); " />
+      <div>
+        <!--          数据提示框-->
+        <el-dialog v-model="calcParam.dataTipsDisplay" title="首行数据" width="30%">
+          <div>{{ testDatas[0] }}</div>
+        </el-dialog>
+      </div>
+      <div>
+        <!--            新建字段弹框-->
+        <el-dialog v-model="newFieldDisplay" title="新增字段" width="30%">
+          <el-form :model="newFieldParam" label-position="right" label-width="100px" style="max-width: 460px">
+            <el-form-item label="中文">
+              <el-input v-model="newFieldParam.cn" />
+            </el-form-item>
+            <el-form-item label="英文">
+              <el-input v-model="newFieldParam.en" />
+            </el-form-item>
+          </el-form>
+          <el-divider />
+          <el-button @click="newFieldOk">确定</el-button>
+          <el-button @click="newFieldCanle">取消</el-button>
+        </el-dialog>
+      </div>
 
-        <el-divider />
-        <el-button @click="searchField">确定</el-button>
-        <el-button @click="searchParam.display = false">取消</el-button>
-      </el-dialog>
-    </div>
-    <div>
-      {{ testDatas }}
+      <div>
+        <!--          搜索字段-->
+        <el-dialog v-model="searchParam.display" title="搜索字段" width="30%">
+          <el-form :model="searchParam" label-position="right" label-width="100px" style="max-width: 460px"> </el-form>
+          <el-input disabled placeholder="(function(data) {" />
+          <el-input v-model="searchParam.rule" :rows="8" placeholder="请输入计算公式" type="textarea" />
+          <el-input disabled placeholder="})(rowData); " />
+
+          <el-divider />
+          <el-button @click="searchField">确定</el-button>
+          <el-button @click="searchParam.display = false">取消</el-button>
+        </el-dialog>
+      </div>
+      <div>
+        {{ testDatas }}
+      </div>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { h } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 import { ipcRenderer } from 'electron';
-
+let loading;
 export default {
   name: 'demo',
   methods: {
@@ -372,20 +374,52 @@ export default {
         });
       }
     },
+    handlerGeojsonToData(geojson) {
+      const columnList = Object.keys(geojson.features[0].properties).map((prop) => ({
+        prop: prop,
+        label: prop,
+        show: true,
+      }));
+
+      const testDatas = geojson.features.map((feature) => {
+        const properties = feature.properties;
+        const testData = {};
+        Object.keys(properties).forEach((prop) => {
+          testData[prop] = { content: properties[prop], show: true };
+        });
+        return testData;
+      });
+      console.log('========');
+
+      this.columnList = columnList;
+      this.testDatas = testDatas;
+    },
   },
 
   mounted() {
+    console.log('??????????');
     document.body.addEventListener('click', () => {
       this.closeRightMenu();
     });
-
-    ipcRenderer.on('openAttrTable-data', function (event, args) {
-      console.log('joklhgfjgfghjgvcfgvgbhjnhgvbh');
+  },
+  created() {
+    loading = ElLoading.service({
+      lock: true,
+      text: 'Loading',
+      background: 'rgba(0, 0, 0, 0.7)',
+    });
+    ipcRenderer.on('openAttrTable-data', (event, args) => {
+      loading.close();
+      console.log('属性表界面222');
       console.log(args);
+      this.args = args.geojson;
+      this.handlerGeojsonToData(this.args);
     });
   },
+  computed: {},
   data() {
     return {
+      args: null,
       searchParam: {
         display: false,
         rule: "return data.name.content == '张三'",

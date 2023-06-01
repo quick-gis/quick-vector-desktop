@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { h, onMounted, reactive, ref, watch } from 'vue';
+import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { QvMap } from './map/QvMap';
 import { ipcRenderer } from 'electron';
 import LayerLeft from './LayerLeft.vue';
 import AttrRange from '../attr/AttrRange.vue';
-import { ProdLayersTypeEnum } from './map/ConstValue';
 import { ElMessage } from 'element-plus';
+
 const map = ref<any>();
-const aaa = ref(0);
+const token = ref(0);
 let mapData = reactive({
   coordinates: [],
   click: false,
@@ -19,12 +19,22 @@ let mapData = reactive({
   // 是否选中要素
   isSelect: false,
 });
+const winSize = reactive({
+  w: null,
+  h: null,
+});
 
 let qvMap = new QvMap('map', mapData);
 ipcRenderer.on('map-config', function (event, arg) {
   console.log('event:', event);
   console.log('arg:', arg);
-  aaa.value = arg;
+  token.value = arg;
+});
+ipcRenderer.on('calc-windows-size', function (event, args) {
+  winSize.w = args.w;
+  winSize.h = args.h;
+  attrShowSize.x = winSize.w - attrShowSize.initW - 20;
+  attrShowSize.y = 35;
 });
 ipcRenderer.on('map_to_xy', function (event, arg) {
   console.log('event:', event);
@@ -58,37 +68,41 @@ const d = reactive({
   w: 100,
   active: false,
 });
-const d2 = reactive({
+const attrShowSize = reactive({
   x: 300,
-  y: 200,
+  y: 35,
   h: 100,
   w: 100,
+  initW: 500,
+  initH: 380,
   active: false,
 });
 const print = (e) => {
   console.log(e);
 };
 watch(mapData, (o, n) => {
-  if (n.click) {
-    console.log('点击了', n.coordinates);
-    n.click = false;
-    ElMessage({
-      message: h('p', null, [
-        h('span', null, '坐标x'),
-        h('i', { style: 'color: teal' }, n.coordinates[0]),
-        h('br'),
-        h('span', null, '坐标y'),
-        h('i', { style: 'color: teal' }, n.coordinates[1]),
-      ]),
-    });
-  }
+  // if (n.click) {
+  //   console.log('点击了', n.coordinates);
+  //   n.click = false;
+  //   ElMessage({
+  //     message: h('p', null, [
+  //       h('span', null, '坐标x'),
+  //       h('i', { style: 'color: teal' }, n.coordinates[0]),
+  //       h('br'),
+  //       h('span', null, '坐标y'),
+  //       h('i', { style: 'color: teal' }, n.coordinates[1]),
+  //     ]),
+  //   });
+  // }
   if (n.isSelect) {
-    let value = JSON.parse(n.selectData);
-    aaaa.value = value;
+    onceFeature.value = JSON.parse(n.selectData);
+    // 发送事件获取窗口尺寸
+    ipcRenderer.send('calc-windows-size');
+    attrArrayDisplay.value = true;
     n.isSelect = false;
   }
 });
-const aaaa = ref({
+const onceFeature = ref({
   type: 'Feature',
   properties: {
     a: 3,
@@ -106,15 +120,13 @@ const aaaa = ref({
     type: 'Polygon',
   },
 });
+const attrArrayDisplay = ref(false);
+const test = () => {};
 </script>
 
 <template>
   <div id="map" ref="map" style="height: 100vh; width: 100%">
     <div>
-      <div id="flood">
-        <span>x:{{ mapData.coordinates[0] }}</span
-        ><span>,</span><span>y:{{ mapData.coordinates[1] }}</span>
-      </div>
       <el-button
         @click="
           () => {
@@ -123,6 +135,7 @@ const aaaa = ref({
         "
         >开关选择 {{ mapData.openSelect }}</el-button
       >
+      <div>{{ attrShowSize }}</div>
     </div>
 
     <!--  todo: 尺寸动态 -->
@@ -151,16 +164,16 @@ const aaaa = ref({
       </div>
     </Vue3DraggableResizable>
 
-    <div>
+    <div v-if="attrArrayDisplay">
       <Vue3DraggableResizable
         id="b"
-        :initW="100"
-        :initH="120"
-        v-model:x="d2.x"
-        v-model:y="d2.y"
-        v-model:w="d2.w"
-        v-model:h="d2.h"
-        v-model:active="d2.active"
+        :initW="attrShowSize.initW"
+        :initH="attrShowSize.initH"
+        v-model:x="attrShowSize.x"
+        v-model:y="attrShowSize.y"
+        v-model:w="attrShowSize.w"
+        v-model:h="attrShowSize.h"
+        v-model:active="attrShowSize.active"
         :draggable="true"
         :resizable="true"
         @activated="print('activated')"
@@ -173,9 +186,17 @@ const aaaa = ref({
         @resize-end="print('resize-end')"
       >
         <div>
-          <attr-range :geometry="aaaa"></attr-range>
+          <div style="position: relative">
+            <!-- 此处是你的内容 -->
+            <div class="close-button" @click="attrArrayDisplay = false">X</div>
+          </div>
+          <attr-range :geometry="onceFeature"></attr-range>
         </div>
       </Vue3DraggableResizable>
+    </div>
+    <div id="flood">
+      <span>x:{{ mapData.coordinates[0] }}</span
+      ><span>,</span><span>y:{{ mapData.coordinates[1] }}</span>
     </div>
   </div>
 </template>
@@ -201,6 +222,14 @@ const aaaa = ref({
   right: 0;
   width: 300px;
   height: 20px;
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: rgba(238, 255, 0, 0.5);
+}
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px;
+  background-color: #ccc;
+  cursor: pointer;
 }
 </style>

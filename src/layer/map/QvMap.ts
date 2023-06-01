@@ -30,13 +30,15 @@ function getSelectPlus(mapData) {
     }
     var format = new GeoJSON();
 
-    var geoJSON = format.writeFeature(data, {
-      featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
-    });
-    mapData.selectData = geoJSON;
+    if (data) {
+      var geoJSON = format.writeFeature(data, {
+        featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
+      });
+      mapData.selectData = geoJSON;
 
-    console.log('当前点击数据GEOJSON', geoJSON);
-    console.log('当前点击数据', data);
+      console.log('当前点击数据GEOJSON', geoJSON);
+      console.log('当前点击数据', data);
+    }
   });
   return clickInteraction;
 }

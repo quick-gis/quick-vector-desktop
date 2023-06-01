@@ -74,6 +74,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/attr_table',
+      name: 'attr_table',
+      component: defineAsyncComponent(() => import('../attr/AttrTable.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

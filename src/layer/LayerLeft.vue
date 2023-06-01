@@ -9,6 +9,8 @@ import { Tree } from 'element-plus/lib/components/tree-v2/src/types';
 import { ipcRenderer } from 'electron';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import GeoJSON from 'ol/format/GeoJSON';
+import { GetLog } from '../utils/LogUtils';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -158,25 +160,30 @@ function findNodeByLabel(nodes, targetLabel) {
 const nodeClick = (e) => {
   console.log(e);
 };
+var geojson = new GeoJSON();
+
 const nodeContextMenu = (event, data, node) => {
   console.log('右键', event, data, node);
-  console.log(event.clientY)
-  console.log(event.clientX)
-  contextmenuConfig.x = event.clientX
-  contextmenuConfig.y = event.clientY
-  showMenu.value = true;
-};
-function locateMenuOrEditInput(eleId, eleWidth, event) {
-  let ele = document.getElementById(eleId);
-  ele.style.top = event.clientY + 0 + 'px';
-  ele.style.left = event.clientX + 0 + 'px';
-  if (window.innerWidth - eleWidth < event.clientX) {
-    ele.style.left = 'unset';
-    ele.style.right = 0;
+  let tag = node?.data?.tag;
+  if (tag == ProdLayersTypeEnum.file) {
+    console.log('右键node', node);
+    a;
+    let d = props.qvMap?.getFileLayer(node?.data?.uid);
+    let fet = d?.getSource().getFeatures();
+    var geoJSON = geojson.writeFeatures(fet, {
+      featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
+    });
+    console.log('dddddd', geoJSON);
+    curData.geojson = geoJSON;
+    contextmenuConfig.x = event.clientX;
+    contextmenuConfig.y = event.clientY;
+    showMenu.value = true;
   }
-}
+};
+
 const curData = reactive({
   curNode: null,
+  geojson: null,
 });
 const showMenu = ref(false);
 const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean) => {
@@ -222,6 +229,10 @@ const contextmenuConfig = reactive({
   x: 0,
   y: 0,
 });
+
+const showAttrTable = () => {
+  ipcRenderer.send('openAttrTable', { geojson: JSON.parse(curData.geojson) });
+};
 </script>
 
 <template>
@@ -249,19 +260,18 @@ const contextmenuConfig = reactive({
   </div>
   <div>
     <!--    右键图层菜单-->
-    <div v-show="showMenu"  :style="{
-      top: contextmenuConfig.y + 'px',
-      left: contextmenuConfig.x + 'px',
-    }" id="contextmenu" @mouseleave="showMenu = false" @mousemove.stop>
+    <div
+      v-show="showMenu"
+      :style="{
+        top: contextmenuConfig.y + 'px',
+        left: contextmenuConfig.x + 'px',
+      }"
+      id="contextmenu"
+      @mouseleave="showMenu = false"
+      @mousemove.stop
+    >
       <div>
-        <el-button
-          @click="
-            () => {
-              console.log('aaaaaaaa');
-            }
-          "
-          >前加一列
-        </el-button>
+        <el-button @click="showAttrTable()">查看属性表 </el-button>
       </div>
     </div>
   </div>

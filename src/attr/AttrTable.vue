@@ -159,6 +159,7 @@
 <script>
 import { h } from 'vue';
 import { ElMessage } from 'element-plus';
+import { ipcRenderer } from 'electron';
 
 export default {
   name: 'demo',
@@ -168,6 +169,7 @@ export default {
         e.show = true;
       });
     },
+
     hideField() {
       this.columnList[this.curData.colIndex].show = false;
     },
@@ -376,6 +378,11 @@ export default {
     document.body.addEventListener('click', () => {
       this.closeRightMenu();
     });
+
+    ipcRenderer.on('openAttrTable-data', function (event, args) {
+      console.log('joklhgfjgfghjgvcfgvgbhjnhgvbh');
+      console.log(args);
+    });
   },
   data() {
     return {
@@ -453,7 +460,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 #contextmenu {
   position: absolute;
   top: 0;

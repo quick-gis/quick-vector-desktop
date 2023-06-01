@@ -128,18 +128,6 @@ ipcRenderer.on('openOrCloseSelect', function (event, args) {
 
 <template>
   <div id="map" ref="map" style="height: 100vh; width: 100%">
-    <div>
-      <el-button
-        @click="
-          () => {
-            qvMap.openOrClose();
-          }
-        "
-        >开关选择器</el-button
-      >
-      <div>{{ mapData.openSelect }}</div>
-    </div>
-
     <!--  todo: 尺寸动态 -->
     <Vue3DraggableResizable
       id="a"

@@ -124,7 +124,6 @@ export class QvMap {
 
   showOrDisplay(layer: ProdLayersTypeEnum, check: boolean) {
     let layer1 = this.diTu.get(layer);
-    let proj = getProj(layer);
     if (layer1) {
       layer1.setVisible(check);
     } else {
@@ -155,6 +154,9 @@ export class QvMap {
     console.log('iiiiii', uid);
     let layer1 = this.fileLayer.get(uid);
     layer1.setVisible(checked);
+  }
+  getFileLayer(uid) {
+    return this.fileLayer.get(uid);
   }
   addGeoJsonForImport(uid, json, type) {
     let vectorLayer = new VectorLayer({

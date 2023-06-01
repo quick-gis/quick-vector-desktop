@@ -59,7 +59,10 @@ function extracted(name, rootPath, isMac: boolean, path) {
   browserWindow.setMenu(m);
   browserWindow.show();
   map.set(name, browserWindow);
+  return browserWindow;
 }
+let rootPath;
+const isMac: boolean = process.platform === 'darwin' || false;
 
 async function createWindow() {
   win = new BrowserWindow({
@@ -72,8 +75,6 @@ async function createWindow() {
     },
   });
 
-  const isMac: boolean = process.platform === 'darwin' || false;
-  let rootPath;
   let isDev: boolean;
 
   if (process.env.VITE_DEV_SERVER_URL) {
@@ -264,18 +265,9 @@ ipcMain.on('gen-pointOrLine', (e, a) => {
 ipcMain.on('calc-windows-size', (event, args) => {
   win.webContents.send('calc-windows-size', { w: win.getSize()[0], h: win.getSize()[1] });
 });
-
-// 1. 窗口 最小化
-// ipcMain.on('window-min', function () {
-//   // 收到渲染进程的窗口最小化操作的通知，并调用窗口最小化函数，执行该操作
-//   win.minimize();
-// });
-// // 2. 窗口 最大化、恢复
-// ipcMain.on('window-max', function () {
-//   if (win.isMaximized()) {
-//     // 为true表示窗口已最大化
-//     win.restore(); // 将窗口恢复为之前的状态.
-//   } else {
-//     win.maximize();
-//   }
-// });
+ipcMain.on('openAttrTable', (event, args) => {
+  // 打开属性表窗口
+  console.log('打开属性表窗口', args);
+  let browserWindow = extracted('/attr_table', rootPath, isMac, '/attr_table');
+  browserWindow.webContents.send('openAttrTable-data', args);
+});

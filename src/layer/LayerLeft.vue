@@ -233,6 +233,9 @@ const contextmenuConfig = reactive({
 const showAttrTable = () => {
   ipcRenderer.send('openAttrTable', { geojson: JSON.parse(curData.geojson) });
 };
+const exportData = () => {
+  // 导出数据
+};
 </script>
 
 <template>
@@ -271,6 +274,7 @@ const showAttrTable = () => {
     >
       <div>
         <el-button @click="showAttrTable()">查看属性表 </el-button>
+        <el-button @click="exportData()">导出数据 </el-button>
       </div>
     </div>
   </div>

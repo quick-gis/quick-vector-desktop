@@ -22,7 +22,7 @@ export function GetTdtToken() {
   if (!readDiTuConfig['token']) {
     throw Error('没有配置底图秘钥');
   }
-  if (readDiTuConfig['token']['tdt']) {
+  if (!readDiTuConfig['token']['tdt']) {
     throw Error('没有配置天地图秘钥');
   }
   return readDiTuConfig['token']['tdt'];

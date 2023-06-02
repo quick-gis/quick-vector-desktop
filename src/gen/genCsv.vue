@@ -109,49 +109,64 @@
   </el-form>
 
   <div>
-    <el-dialog v-model="link_config.display" title="引用配置" width="40%" @close="linkClose">
-      <el-form :model="link_config" label-width="120px">
-        <el-form-item label="选择链接文件">
+    <el-dialog
+      :show-close="false"
+      :close-on-click-modal="false"
+      v-model="link_config.display"
+      title="引用配置"
+      width="40%"
+    >
+      <el-form :rules="link_config.rules" :model="link_config" label-width="120px">
+        <el-form-item prop="file" label="选择链接文件" required>
           <el-input v-model="link_config.file" disabled></el-input>
           <el-button @click="ipcRenderer().send('open-link-select-csv')">...</el-button>
         </el-form-item>
+        <el-form-item prop="source_field" label="原始表字段" required>
+          <el-select v-model="link_config.source_field" placeholder="请选择原始表字段">
+            <el-option
+              v-for="(col, idx) in gen_shp.fields"
+              :key="idx"
+              :index="idx"
+              :label="gen_shp.fields[idx]"
+              :value="gen_shp.fields[idx]"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="target_field" label="目标表字段" required>
+          <el-select v-model="link_config.target_field" placeholder="请选择目标表字段">
+            <el-option
+              v-for="(col, idx) in link_config.fields"
+              :key="idx"
+              :index="idx"
+              :label="link_config.fields[idx]"
+              :value="link_config.fields[idx]"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="pre" label="前缀" required>
+          <el-input v-model="link_config.pre" placeholder="请输入前缀"></el-input>
+        </el-form-item>
+        <el-form-item prop="ref_field" label="引用字段" required>
+          <el-select v-model="link_config.ref_field" multiple placeholder="请选择引用字段">
+            <el-option
+              v-for="(col, idx) in link_config.fields"
+              :key="idx"
+              :index="idx"
+              :label="link_config.fields[idx]"
+              :value="link_config.fields[idx]"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
-      <el-form-item label="原始表字段">
-        <el-select v-model="link_config.source_field" placeholder="请选择原始表字段">
-          <el-option
-            v-for="(col, idx) in gen_shp.fields"
-            :key="idx"
-            :index="idx"
-            :label="gen_shp.fields[idx]"
-            :value="gen_shp.fields[idx]"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="目标表字段">
-        <el-select v-model="link_config.target_field" placeholder="请选择目标表字段">
-          <el-option
-            v-for="(col, idx) in link_config.fields"
-            :key="idx"
-            :index="idx"
-            :label="link_config.fields[idx]"
-            :value="link_config.fields[idx]"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="前缀">
-        <el-input v-model="link_config.pre" placeholder="请输入前缀"></el-input>
-      </el-form-item>
-      <el-form-item label="引用字段">
-        <el-select v-model="link_config.ref_field" multiple placeholder="请选择引用字段">
-          <el-option
-            v-for="(col, idx) in link_config.fields"
-            :key="idx"
-            :index="idx"
-            :label="link_config.fields[idx]"
-            :value="link_config.fields[idx]"
-          />
-        </el-select>
-      </el-form-item>
+      <el-button @click="linkClose">确定</el-button>
+      <el-button
+        @click="
+          () => {
+            link_config.display = false;
+          }
+        "
+        >取消</el-button
+      >
     </el-dialog>
   </div>
 
@@ -165,8 +180,10 @@ import { ipcRenderer } from 'electron';
 import { csvToListAndMap } from '../utils/CsvUtils';
 import { GetLog } from '../utils/LogUtils';
 import { v4 as uuidv4 } from 'uuid';
+import { ElMessage } from 'element-plus';
 export default {
   methods: {
+    cl(done) {},
     a() {
       console.log('kljljl');
       this.ipcRenderer().send('gen-pointOrLine', {
@@ -180,6 +197,7 @@ export default {
     linkClose() {
       console.log('链接表窗口关闭');
       this.vlink = this.validateLinkConfig();
+
       this.link_config.ref_field.forEach((e) => {
         this.gen_shp.fields.push(this.link_config.pre + '_' + e);
       });
@@ -257,7 +275,53 @@ export default {
 
     error() {},
     validateLinkConfig() {
+      if (!this.link_config.file) {
+        ElMessage({
+          message: '链接文件必填',
+          grouping: true,
+          type: 'error',
+        });
+      }
+
+      if (!this.link_config.source_field) {
+        ElMessage({
+          message: '原始字段必填',
+          grouping: true,
+          type: 'error',
+        });
+      }
+      if (!this.link_config.target_field) {
+        ElMessage({
+          message: '目标字段必填',
+          grouping: true,
+          type: 'error',
+        });
+      }
+      if (!this.link_config.pre) {
+        ElMessage({
+          message: '前缀必填',
+          grouping: true,
+          type: 'error',
+        });
+        if (~this.pre_list.indexOf(this.link_config.pre)) {
+          ElMessage({
+            message: '已使用前缀',
+            grouping: true,
+            type: 'error',
+          });
+        }
+      }
+      if (!this.link_config.ref_field || this.link_config.ref_field.length == 0) {
+        ElMessage({
+          message: '引用字段必填',
+          grouping: true,
+          type: 'error',
+        });
+      }
+
       let vPre = this.link_config.pre != '';
+      this.pre_list.push(vPre);
+
       let vRefField = this.link_config.ref_field.length > 0;
       return vPre == true && vRefField == true;
     },
@@ -290,7 +354,24 @@ export default {
         data: [],
         header: [],
       },
+      pre_list: ['a'],
       link_config: {
+        rules: {
+          file: [{ required: true, message: '必填', trigger: 'blur' }],
+          source_field: [{ required: true, message: '必填', trigger: 'blur' }],
+          target_field: [{ required: true, message: '必填', trigger: 'blur' }],
+          pre: [
+            { required: true, message: '必填', trigger: 'blur' },
+            {
+              validator: (rule: any, value: any, callback: any) => {
+                if (~this.pre_list.indexOf(value)) {
+                  callback(new Error('前缀已使用'));
+                }
+              },
+            },
+          ],
+          ref_field: [{ required: true, message: '必填', trigger: 'blur' }],
+        },
         fields: [],
         display: false,
         file: '',

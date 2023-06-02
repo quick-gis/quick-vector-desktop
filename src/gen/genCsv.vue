@@ -119,7 +119,7 @@
       <el-form :rules="link_config.rules" :model="link_config" label-width="120px">
         <el-form-item prop="file" label="选择链接文件" required>
           <el-input v-model="link_config.file" disabled></el-input>
-          <el-button @click="ipcRenderer().send('open-link-select-csv')">...</el-button>
+          <el-button @click="cl" :disabled="!link_config.canSelectFile">...</el-button>
         </el-form-item>
         <el-form-item prop="source_field" label="原始表字段" required>
           <el-select v-model="link_config.source_field" placeholder="请选择原始表字段">
@@ -181,9 +181,14 @@ import { csvToListAndMap } from '../utils/CsvUtils';
 import { GetLog } from '../utils/LogUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { ElMessage } from 'element-plus';
+import { debounce } from '../utils/Utils';
 export default {
   methods: {
-    cl(done) {},
+    debounce,
+    cl() {
+      this.link_config.canSelectFile = false;
+      ipcRenderer.send('open-link-select-csv');
+    },
     a() {
       console.log('kljljl');
       this.ipcRenderer().send('gen-pointOrLine', {
@@ -213,6 +218,7 @@ export default {
         console.log('sssssssssss', ss);
         console.log('oooooo', o);
       });
+      this.link_config.display = false;
     },
     find(ss, field) {
       let o = null;
@@ -273,7 +279,9 @@ export default {
       ipcRenderer.send('gen-pointOrLine', JSON.parse(JSON.stringify(data)));
     },
 
-    error() {},
+    error() {
+      ipcRenderer.send('gen-pointOrLine', { close: true });
+    },
     validateLinkConfig() {
       if (!this.link_config.file) {
         ElMessage({
@@ -339,6 +347,7 @@ export default {
       let csvToListAndMap1 = csvToListAndMap(args);
       this.link_config.fields = csvToListAndMap1.header;
       this.linkcsv.data = csvToListAndMap1.list;
+      this.link_config.canSelectFile = true;
     });
   },
 
@@ -356,6 +365,7 @@ export default {
       },
       pre_list: ['a'],
       link_config: {
+        canSelectFile: true,
         rules: {
           file: [{ required: true, message: '必填', trigger: 'blur' }],
           source_field: [{ required: true, message: '必填', trigger: 'blur' }],

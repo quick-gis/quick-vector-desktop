@@ -258,8 +258,12 @@ ipcMain.on('open-link-select-csv', (event, args) => {
 
 ipcMain.on('gen-pointOrLine', (e, a) => {
   map.get('/gen_csv').close();
-  console.log(e, a);
-  win.webContents.send('gen-pointOrLine-show', a);
+  if (a?.close) {
+    map.get('/gen_csv').close();
+  } else {
+    win.webContents.send('gen-pointOrLine-show', a);
+    console.log(e, a);
+  }
 });
 
 ipcMain.on('calc-windows-size', (event, args) => {

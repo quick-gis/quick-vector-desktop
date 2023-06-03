@@ -2,19 +2,42 @@
 import { reactive } from 'vue';
 import { ipcRenderer } from 'electron';
 import { readShapefile } from '../utils/ShapeUtil';
-
+import { v4 as uuidv4 } from 'uuid';
+import { ElMessage, FormRules } from 'element-plus';
 const importShapeData = reactive({
   file: '',
   encoding: 'gbk',
   type: '',
 });
+
+const rules = reactive<FormRules>({
+  file: [{ trigger: 'blur', required: true, message: '必填' }],
+  encoding: [{ trigger: 'blur', required: true, message: '必填' }],
+  type: [{ trigger: 'blur', required: true, message: '必填' }],
+});
 ipcRenderer.on('open-select-shp-gen-success', (event, args) => {
   importShapeData.file = args;
 });
-import { v4 as uuidv4 } from 'uuid';
 
 const ok = async () => {
+  if (!importShapeData.file) {
+    ElMessage({
+      message: '文件必选',
+      grouping: true,
+      type: 'error',
+    });
+    return;
+  }
+  if (!importShapeData.type) {
+    ElMessage({
+      message: '类型必须',
+      grouping: true,
+      type: 'error',
+    });
+    return;
+  }
   let data = await readShapefile(importShapeData.file);
+
   ipcRenderer.send(
     'gen-shp',
     JSON.parse(
@@ -44,17 +67,17 @@ const error = () => {
 <template>
   <div>导入SHP</div>
   <div>
-    <el-form :model="importShapeData" label-width="120px">
-      <el-form-item label="选择文件">
+    <el-form :rules="rules" :model="importShapeData" label-width="120px">
+      <el-form-item prop="file" label="选择文件">
         <el-input v-model="importShapeData.file" disabled></el-input>
         <el-button @click="ipcRenderer.send('open-select-shp-gen')">...</el-button>
       </el-form-item>
-      <el-form-item label="编码格式">
+      <el-form-item prop="encoding" label="编码格式">
         <el-select v-model="importShapeData.encoding" placeholder="请选择文件编码">
           <el-option label="GBK" value="gbk" />
         </el-select>
       </el-form-item>
-      <el-form-item label="成图类型">
+      <el-form-item prop="type" label="成图类型">
         <el-select v-model="importShapeData.type" placeholder="请选择成图类型">
           <el-option label="点" value="point" />
           <el-option label="线" value="line" />

@@ -82,6 +82,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/importShape',
+      name: 'importShape',
+      component: defineAsyncComponent(() => import('../gen/ImportShape.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

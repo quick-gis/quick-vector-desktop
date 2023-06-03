@@ -63,6 +63,12 @@ ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
   qvMap.addGeoJsonForImport(args.uid, args.geo, args.type);
 });
 
+ipcRenderer.on('gen-shp-show', (event, args) => {
+  console.log('shp成图');
+  console.log(args);
+  qvMap.addGeoJsonForImport(args.uid, args.geo, args.type);
+});
+
 onMounted(() => {
   console.log('初始化地图');
   map.value = qvMap.initMap();

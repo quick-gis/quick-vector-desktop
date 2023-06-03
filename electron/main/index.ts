@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, shell, globalShortcut } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
 
@@ -111,6 +111,14 @@ async function createWindow() {
                 extracted('/gen_csv', rootPath, isMac, '/gen_csv');
               },
             },
+
+            {
+              label: '导入 SHP',
+
+              click: () => {
+                extracted('/importShape', rootPath, isMac, '/importShape');
+              },
+            },
           ],
         },
       ],
@@ -127,6 +135,10 @@ async function createWindow() {
             event.checked = !event.checked;
           },
         },
+        { label: '复制', accelerator: 'CmdOrCtrl+C', role: 'copy' },
+        { label: '粘贴', accelerator: 'CmdOrCtrl+V', role: 'paste' },
+        { label: '剪切', accelerator: 'CmdOrCtrl+X', role: 'cut' },
+        { label: '全选', accelerator: 'CmdOrCtrl+A', role: 'selectAll' },
       ],
     },
     {
@@ -266,6 +278,16 @@ ipcMain.on('gen-pointOrLine', (e, a) => {
   }
 });
 
+ipcMain.on('gen-shp', (event, args) => {
+  if (args?.close) {
+    map.get('/importShape').close();
+  } else {
+    win.webContents.send('gen-shp-show', args);
+    console.log(event, args);
+    map.get('/importShape').close();
+  }
+});
+
 ipcMain.on('calc-windows-size', (event, args) => {
   win.webContents.send('calc-windows-size', { w: win.getSize()[0], h: win.getSize()[1] });
 });
@@ -276,4 +298,15 @@ ipcMain.on('openAttrTable', (event, args) => {
   setTimeout(() => {
     browserWindow.webContents.send('openAttrTable-data', args);
   }, 1000);
+});
+
+ipcMain.on('open-select-shp-gen', (event, args) => {
+  dialog
+    .showOpenDialog({
+      filters: [{ name: 'shape file', extensions: ['shp'] }],
+    })
+    .then((result) => {
+      console.log(result);
+      map.get('/importShape').webContents.send('open-select-shp-gen-success', result.filePaths[0]);
+    });
 });

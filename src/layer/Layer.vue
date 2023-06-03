@@ -20,6 +20,8 @@ let mapData = reactive({
 
   // 是否选中要素
   isSelect: false,
+  // 是否开启坐标拾取
+  isOpenCoordinatePicku: false,
 });
 const winSize = reactive({
   w: null,
@@ -131,6 +133,18 @@ ipcRenderer.on('openOrCloseSelect', function (event, args) {
 
   qvMap.openOrClose();
 });
+ipcRenderer.on('openOrCloseCoordinatePickup', (event, args) => {
+  console.log('开关地图拾取');
+});
+ipcRenderer.on('closeCoordinatePickup', (event, args) => {});
+
+// 属性查看模式关闭
+ipcRenderer.on('closeSelect', (event, args) => {
+  qvMap.closeSelector();
+});
+const tt = () => {
+  ipcRenderer.send('menu-item-state-changed');
+};
 </script>
 
 <template>
@@ -138,7 +152,7 @@ ipcRenderer.on('openOrCloseSelect', function (event, args) {
     <el-button
       @click="
         () => {
-          ipcRenderer.send('openAttrTable', { geojson: jkl });
+          qvMap.openOrCloseCoordinatePickup();
         }
       "
       >测试属性弹框

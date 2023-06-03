@@ -10,7 +10,7 @@ import { getProj, ProdLayersTypeEnum } from './ConstValue';
 import { GetTianDiTuLayers } from './Tdt';
 import { Layer } from 'ol/layer';
 import { SelectedStyles } from '../../config/mapmapStyle';
-import { MapBrowserEvent } from 'ol';
+import { MapBrowserEvent, Observable } from 'ol';
 import { reactive } from 'vue';
 import { Select } from 'ol/interaction';
 function getSelectPlus(mapData) {
@@ -80,6 +80,7 @@ export class QvMap {
     openSelect: false,
     selectData: {},
     isSelect: false,
+    isOpenCoordinatePicku: false,
   });
   private openSelect = false;
   openOrClose() {
@@ -91,6 +92,27 @@ export class QvMap {
       this._map.addInteraction(getSelectPlus(this.mapData));
     }
     this.openSelect = !this.openSelect;
+  }
+  closeSelector() {
+    this.mapData.openSelect = false;
+    this._map.removeInteraction(getSelectPlus(this.mapData));
+    this.openSelect = !this.openSelect;
+  }
+
+  private mapClickKey: any;
+  openOrCloseCoordinatePickup() {
+    this.mapData.isOpenCoordinatePicku = !this.mapData.isOpenCoordinatePicku;
+    if (this.mapData.isOpenCoordinatePicku) {
+      this.mapClickKey = this._map.on('click', ($event) => {
+        a['default_click']($event, this.mapData, this._map);
+      });
+    } else {
+      this.closeCoordinatePickup();
+    }
+  }
+  closeCoordinatePickup() {
+    this.mapData.isOpenCoordinatePicku = false;
+    this._map.un(this.mapClickKey.type, this.mapClickKey.listener);
   }
 
   constructor(target: string, obj) {
@@ -113,9 +135,7 @@ export class QvMap {
         projection: 'EPSG:4326',
       }),
     });
-    this._map.on('click', ($event) => {
-      a['default_click']($event, this.mapData, this._map);
-    });
+
     this._map.on('pointermove', ($event) => {
       a['move_mouse']($event, this.mapData);
     });

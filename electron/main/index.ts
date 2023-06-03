@@ -15,6 +15,8 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0);
 }
 
+global.sharedObject = { checkTest: false };
+
 let win: BrowserWindow | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js');
@@ -55,7 +57,7 @@ function extracted(name, rootPath, isMac: boolean, path) {
         ]
       : []),
   ]);
-  // browserWindow.webContents.openDevTools({ mode: 'detach' });
+  browserWindow.webContents.openDevTools({ mode: 'detach' });
   browserWindow.setMenu(m);
   browserWindow.show();
   map.set(name, browserWindow);
@@ -63,7 +65,7 @@ function extracted(name, rootPath, isMac: boolean, path) {
 }
 let rootPath;
 const isMac: boolean = process.platform === 'darwin' || false;
-
+let m: Electron.Menu;
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Main window',
@@ -83,13 +85,13 @@ async function createWindow() {
     isDev = true;
     win.loadURL(rootPath);
     // Open devTool if the app is not packaged
-    // win.webContents.openDevTools();
+    win.webContents.openDevTools();
   } else {
     rootPath = indexHtml;
     isDev = true;
     win.loadFile(indexHtml);
   }
-  let m = Menu.buildFromTemplate([
+  m = Menu.buildFromTemplate([
     ...(isMac
       ? [
           {
@@ -127,10 +129,15 @@ async function createWindow() {
       label: '编辑',
       submenu: [
         {
+          id: '开启属性查看模式',
           label: '开启属性查看模式',
           type: 'checkbox',
           checked: false,
           click: (menuItem, browserWindow, event) => {
+            // 关闭坐标拾取模式
+            m.getMenuItemById('坐标拾取').checked = false;
+            win.webContents.send('closeCoordinatePickup');
+
             win.webContents.send('openOrCloseSelect');
             event.checked = !event.checked;
           },
@@ -150,6 +157,20 @@ async function createWindow() {
             extracted('map_to_xy', rootPath, isMac, '/map_to_xy');
           },
         },
+        {
+          id: '坐标拾取',
+          label: '坐标拾取',
+          type: 'checkbox',
+          checked: false,
+          click: () => {
+            // 关闭属性查看模式
+            m.getMenuItemById('开启属性查看模式').checked = false;
+            win.webContents.send('closeSelect');
+
+            win.webContents.send('openOrCloseCoordinatePickup');
+            event.checked = !event.checked;
+          },
+        },
       ],
     },
     {
@@ -159,6 +180,20 @@ async function createWindow() {
           label: '天地图token配置',
           click: () => {
             extracted('/config?type=tdt', rootPath, isMac, '/config?type=tdt');
+          },
+        },
+      ],
+    },
+    {
+      label: '测试',
+      submenu: [
+        {
+          id: '选中测试',
+          label: '选中测试',
+          type: 'checkbox',
+          checked: false, // 将全局变量绑定到菜单项的checked属性
+          click: () => {
+            win.webContents.send('openOrCloseSelect');
           },
         },
       ],
@@ -309,4 +344,10 @@ ipcMain.on('open-select-shp-gen', (event, args) => {
       console.log(result);
       map.get('/importShape').webContents.send('open-select-shp-gen-success', result.filePaths[0]);
     });
+});
+
+ipcMain.on('menu-item-state-changed', (event) => {
+  global.sharedObject.checkTest = !global.sharedObject.checkTest; // 修改菜单项的选中状态
+  const isChecked = global.sharedObject.checkTest;
+  m.getMenuItemById('选中测试').checked = !m.getMenuItemById('选中测试').checked;
 });

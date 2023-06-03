@@ -55,7 +55,7 @@ function extracted(name, rootPath, isMac: boolean, path) {
         ]
       : []),
   ]);
-  browserWindow.webContents.openDevTools({ mode: 'detach' });
+  // browserWindow.webContents.openDevTools({ mode: 'detach' });
   browserWindow.setMenu(m);
   browserWindow.show();
   map.set(name, browserWindow);
@@ -83,7 +83,7 @@ async function createWindow() {
     isDev = true;
     win.loadURL(rootPath);
     // Open devTool if the app is not packaged
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
   } else {
     rootPath = indexHtml;
     isDev = true;

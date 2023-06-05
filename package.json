@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@turf/boolean-touches": "^6.5.0",
     "@turf/turf": "^6.5.0",
     "axios": "^1.4.0",
     "coordtransform": "^2.1.2",

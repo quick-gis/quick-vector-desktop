@@ -76,7 +76,7 @@ export class LineAnalysis {
 
         const otherFeature = featureCollection.features[j];
 
-        if (isLineConnectedToOtherLineForMultiLineString(currentFeature, otherFeature)) {
+        if (this.isLineConnectedToOtherLineForMultiLineString(currentFeature, otherFeature)) {
           isLineConnected = true;
           break;
         }
@@ -91,7 +91,7 @@ export class LineAnalysis {
   }
 
   isLineConnectedToOtherLineForMultiLineString(line1: any, line2: any): boolean {
-    if (areCoordinatesEqualForMultiLineString(line1.geometry.coordinates, line2.geometry.coordinates)) {
+    if (this.areCoordinatesEqualForMultiLineString(line1.geometry.coordinates, line2.geometry.coordinates)) {
       return false;
     }
 
@@ -103,13 +103,13 @@ export class LineAnalysis {
     for (const coords1 of line1Coordinates) {
       for (const coords2 of line2Coordinates) {
         for (const point of coords1) {
-          if (isPointOnLineForMultiLineString(point, coords2)) {
+          if (this.isPointOnLineForMultiLineString(point, coords2)) {
             return true;
           }
         }
 
         for (const point of coords2) {
-          if (isPointOnLineForMultiLineString(point, coords1)) {
+          if (this.isPointOnLineForMultiLineString(point, coords1)) {
             return true;
           }
         }

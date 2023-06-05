@@ -57,7 +57,7 @@ function extracted(name, rootPath, isMac: boolean, path) {
         ]
       : []),
   ]);
-  // browserWindow.webContents.openDevTools({ mode: 'detach' });
+  browserWindow.webContents.openDevTools({ mode: 'detach' });
   browserWindow.setMenu(m);
   browserWindow.show();
   map.set(name, browserWindow);
@@ -85,7 +85,7 @@ async function createWindow() {
     isDev = true;
     win.loadURL(rootPath);
     // Open devTool if the app is not packaged
-    // win.webContents.openDevTools();
+    win.webContents.openDevTools();
   } else {
     rootPath = indexHtml;
     isDev = true;
@@ -146,6 +146,17 @@ async function createWindow() {
         { label: '粘贴', accelerator: 'CmdOrCtrl+V', role: 'paste' },
         { label: '剪切', accelerator: 'CmdOrCtrl+X', role: 'cut' },
         { label: '全选', accelerator: 'CmdOrCtrl+A', role: 'selectAll' },
+      ],
+    },
+    {
+      label: '分析',
+      submenu: [
+        {
+          label: '缓冲区',
+          click: () => {
+            extracted('/buff_lay', rootPath, isMac, '/buff_lay');
+          },
+        },
       ],
     },
     {
@@ -365,4 +376,13 @@ ipcMain.on('buffer-config-data-complete', (event, args) => {
     win.webContents.send('buffer-config-data-complete', args);
     map.get('/buffer').close();
   }
+});
+
+ipcMain.on('getLayers', (event, args) => {
+  win.webContents.send('findLayers', args);
+});
+ipcMain.on('layers', (event, args) => {
+  // setTimeout(() => {
+  map.get('/buff_lay').webContents.send('curLayers', args);
+  // }, 1000);
 });

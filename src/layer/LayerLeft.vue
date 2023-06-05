@@ -271,7 +271,11 @@ const showBufferConfigWindows = () => {
     json: curData.geojson,
   });
 };
-
+ipcRenderer.on('findLayers', (event, args) => {
+  ipcRenderer.send('layers', {
+    data: JSON.parse(JSON.stringify(data.value)),
+  });
+});
 ipcRenderer.on('buffer-config-data-complete', (event, args) => {
   let findNodeByLabel1 = findNodeByLabel(data.value, '缓冲区分析');
   let nodeId = uuidv4();

@@ -145,6 +145,10 @@ ipcRenderer.on('closeSelect', (event, args) => {
 const tt = () => {
   ipcRenderer.send('menu-item-state-changed');
 };
+
+ipcRenderer.on('curLayers', (event, args) => {
+  console.log('当前图层', args);
+});
 </script>
 
 <template>
@@ -152,7 +156,7 @@ const tt = () => {
     <el-button
       @click="
         () => {
-          qvMap.openOrCloseCoordinatePickup();
+          ipcRenderer.send('getLayers');
         }
       "
       >测试属性弹框

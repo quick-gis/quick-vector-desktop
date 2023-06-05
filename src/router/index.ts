@@ -98,6 +98,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/buff_lay',
+      name: 'buff_lay',
+      component: defineAsyncComponent(() => import('../buffer/BufferLayerConf.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

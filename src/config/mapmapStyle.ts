@@ -15,9 +15,9 @@ interface MapStyle {
 export const SelectedStyles = {
   point: new Style({
     image: new Circle({
-      radius: 6, // 圆点的半径
+      radius: 1.3, // 圆点的半径
       fill: new Fill({ color: randomColor() }), // 填充色
-      stroke: new Stroke({ color: '#000', width: 2 }), // 边框样式
+      stroke: new Stroke({ color: '#dadada', width: 2 }), // 边框样式
     }),
   }),
   line: new Style({
@@ -32,7 +32,7 @@ export const SelectedStyles = {
     }),
     stroke: new Stroke({
       color: randomColor(), // 黑色边框
-      width: 3, // 边框粗细为3
+      width: 3.5, // 边框粗细为3
     }),
   }),
   //五角星

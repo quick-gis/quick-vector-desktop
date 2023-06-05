@@ -11,6 +11,7 @@ import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import GeoJSON from 'ol/format/GeoJSON';
 import { GetLog } from '../utils/LogUtils';
+import { saveBufferCount } from '../buffer/BufferUtil';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -59,6 +60,15 @@ const data = ref([
     id: uuidv4(),
     label: '分析图层',
     disabled: true,
+    children: [
+      {
+        id: uuidv4(),
+        label: '缓冲区分析',
+        disabled: true,
+
+        children: [],
+      },
+    ],
   },
   {
     id: uuidv4(),
@@ -165,6 +175,7 @@ var geojson = new GeoJSON();
 const nodeContextMenu = (event, data, node) => {
   console.log('右键', event, data, node);
   let tag = node?.data?.tag;
+  curData.curNode = node;
   if (tag == ProdLayersTypeEnum.file) {
     console.log('右键node', node);
     a;
@@ -251,6 +262,28 @@ const contextmenuConfig = reactive({
 const showAttrTable = () => {
   ipcRenderer.send('openAttrTable', { geojson: JSON.parse(curData.geojson) });
 };
+
+const showBufferConfigWindows = () => {
+  ipcRenderer.send('showBufferConfigWindows', {
+    fileName: curData.curNode?.data?.label,
+    json: curData.geojson,
+  });
+};
+
+ipcRenderer.on('buffer-config-data-complete', (event, args) => {
+  let findNodeByLabel1 = findNodeByLabel(data.value, '缓冲区分析');
+  let nodeId = uuidv4();
+  let label = args.layerName;
+
+  props.qvMap?.addBufferLayer(nodeId, args.geojson, args.size, args.unity);
+  findNodeByLabel1.children.unshift({
+    id: nodeId,
+    label: label + '-' + saveBufferCount(label),
+    sourceName: label,
+    uid: nodeId,
+    tag: ProdLayersTypeEnum.buffer,
+  });
+});
 const exportData = () => {
   // 导出数据
 };
@@ -292,6 +325,7 @@ const exportData = () => {
     >
       <div>
         <el-button @click="showAttrTable()">查看属性表 </el-button>
+        <el-button @click="showBufferConfigWindows()">建立缓冲区 </el-button>
         <el-button @click="exportData()">导出数据 </el-button>
       </div>
     </div>

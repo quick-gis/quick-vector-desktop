@@ -162,11 +162,10 @@ async function createWindow() {
           label: '坐标拾取',
           type: 'checkbox',
           checked: false,
-          click: () => {
+          click: (menuItem, browserWindow, event) => {
             // 关闭属性查看模式
             m.getMenuItemById('开启属性查看模式').checked = false;
             win.webContents.send('closeSelect');
-
             win.webContents.send('openOrCloseCoordinatePickup');
             event.checked = !event.checked;
           },
@@ -350,4 +349,20 @@ ipcMain.on('menu-item-state-changed', (event) => {
   global.sharedObject.checkTest = !global.sharedObject.checkTest; // 修改菜单项的选中状态
   const isChecked = global.sharedObject.checkTest;
   m.getMenuItemById('选中测试').checked = !m.getMenuItemById('选中测试').checked;
+});
+
+ipcMain.on('showBufferConfigWindows', (event, args) => {
+  let browserWindow = extracted('/buffer', rootPath, isMac, '/buffer');
+  setTimeout(() => {
+    browserWindow.webContents.send('buffer-config-data', args);
+  }, 1000);
+});
+
+ipcMain.on('buffer-config-data-complete', (event, args) => {
+  if (args?.close) {
+    map.get('/buffer').close();
+  } else {
+    win.webContents.send('buffer-config-data-complete', args);
+    map.get('/buffer').close();
+  }
 });

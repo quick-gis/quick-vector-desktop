@@ -13,6 +13,8 @@ import { SelectedStyles } from '../../config/mapmapStyle';
 import { MapBrowserEvent, Observable } from 'ol';
 import { reactive } from 'vue';
 import { Select } from 'ol/interaction';
+const turf = require('@turf/turf');
+
 function getSelectPlus(mapData) {
   const clickInteraction = new Select({ multi: false });
   clickInteraction.on('select', function (event) {
@@ -70,9 +72,16 @@ export class QvMap {
    * @private
    */
   private fileLayer = new Map<String, Layer>();
+  /**
+   * 缓冲图层
+   * @private
+   */
+  private bufferLayer = new Map<String, Layer>();
 
-  static addLayerBaseIndex = 10000;
+  static addLayerBaseIndex = 30000;
+  static bufferBaseIndex = 10000;
   private curLayerIndex = QvMap.addLayerBaseIndex;
+  private curBufferLayerIndex = QvMap.bufferBaseIndex;
   // @ts-ignore
   private mapData = reactive({
     coordinates: null,
@@ -188,6 +197,27 @@ export class QvMap {
     this.curLayerIndex = this.curLayerIndex + 1;
     vectorLayer.setZIndex(this.curLayerIndex);
     this.fileLayer.set(uid, vectorLayer);
+    this._map.addLayer(vectorLayer);
+  }
+
+  /**
+   * 添加buffer层
+   * @param uid 唯一标识
+   * @param json GeoJson
+   * @param size 尺寸
+   * @param unity 单位
+   */
+  addBufferLayer(uid: string, json: any, size: any, unity: any) {
+    let geojson = turf.buffer(JSON.parse(json), size, { units: unity });
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: new GeoJSON().readFeatures(geojson),
+      }),
+      style: SelectedStyles['polygon'],
+    });
+    this.curBufferLayerIndex = this.curBufferLayerIndex + 1;
+    vectorLayer.setZIndex(this.curBufferLayerIndex);
+    this.bufferLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
   }
 

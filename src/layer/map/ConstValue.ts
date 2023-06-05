@@ -10,6 +10,7 @@ export enum ProdLayersTypeEnum {
   img_mkt_label = '影像底图-标注-墨卡托',
 
   file = '文件图层',
+  buffer = '缓冲图层',
 }
 
 export function getProj(layer: ProdLayersTypeEnum) {

@@ -90,6 +90,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/buffer',
+      name: 'buffer',
+      component: defineAsyncComponent(() => import('../buffer/Buffer.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

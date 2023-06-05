@@ -203,6 +203,8 @@ const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean)
   console.log(data?.tag);
   if (data?.tag == ProdLayersTypeEnum.file) {
     props.qvMap?.showOrCloseFileLayers(data?.uid, checked);
+  } else if (data?.tag == ProdLayersTypeEnum.buffer) {
+    props.qvMap?.showOrCloseBufferLayers(data?.uid, checked);
   } else if (
     data?.tag == ProdLayersTypeEnum.vec_c_jwd ||
     data?.tag == ProdLayersTypeEnum.vec_jwd_label ||

@@ -7,6 +7,7 @@ import AttrRange from '../attr/AttrRange.vue';
 import { ReadDiTuConfig, WriteDiTuConfig } from '../utils/FileUtils';
 import { GetTdtToken } from './map/Tdt';
 import jkl from './map/a.js';
+import { setQvMap } from './map/ConstValue';
 
 const map = ref<any>();
 const token = ref(0);
@@ -149,6 +150,10 @@ const tt = () => {
 ipcRenderer.on('curLayers', (event, args) => {
   console.log('当前图层', args);
 });
+
+ipcRenderer.on('curLayersGeojson', (event, args) => {
+  console.log('当前geojson', args);
+});
 </script>
 
 <template>
@@ -156,7 +161,7 @@ ipcRenderer.on('curLayers', (event, args) => {
     <el-button
       @click="
         () => {
-          ipcRenderer.send('getLayers');
+          ipcRenderer.send('getLayersGeoJson');
         }
       "
       >测试属性弹框

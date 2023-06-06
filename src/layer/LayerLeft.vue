@@ -80,11 +80,13 @@ const data = ref([
         id: uuidv4(),
         label: '数据库图层',
         children: [],
+        disabled: false,
       },
       {
         id: uuidv4(),
         label: '文件图层',
         children: [],
+        disabled: false,
       },
     ],
   },
@@ -178,7 +180,6 @@ const nodeContextMenu = (event, data, node) => {
   curData.curNode = node;
   if (tag == ProdLayersTypeEnum.file) {
     console.log('右键node', node);
-    a;
     let d = props.qvMap?.getFileLayer(node?.data?.uid);
     let fet = d?.getSource().getFeatures();
     var geoJSON = geojson.writeFeatures(fet, {
@@ -225,7 +226,7 @@ ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
   const fileName = path.basename(args.fileName);
   console.log('filename', fileName);
   let findNodeByLabel1 = findNodeByLabel(data.value, '文件图层');
-  let nodeId = uuidv4();
+  let nodeId = args.uid;
   findNodeByLabel1.children.unshift({
     id: nodeId,
     label: fileName,
@@ -243,9 +244,9 @@ ipcRenderer.on('gen-shp-show', function (event, args) {
   const fileName = path.basename(args.fileName);
   console.log('filename', fileName);
   let findNodeByLabel1 = findNodeByLabel(data.value, '文件图层');
-  let nodeId = uuidv4();
+  let nodeId = args.uid;
   findNodeByLabel1.children.unshift({
-    id: nodeId,
+    id: args.uid,
     label: fileName,
     uid: args.uid,
     tag: ProdLayersTypeEnum.file,
@@ -276,18 +277,58 @@ ipcRenderer.on('findLayers', (event, args) => {
     data: JSON.parse(JSON.stringify(data.value)),
   });
 });
+ipcRenderer.on('findLayersGeoJson', (event, args) => {
+  let map = [];
+  let fileLayer = props.qvMap?.GetAllfileLayer();
+  fileLayer?.forEach((v, k) => {
+    let fet = v?.getSource().getFeatures();
+    let geoJSON = geojson.writeFeatures(fet, {
+      featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
+    });
+    map.push({
+      uid: k,
+      geojson: geoJSON,
+    });
+  });
+
+  let bufferLayer = props.qvMap?.GetAllbufferLayer();
+  bufferLayer?.forEach((v, k) => {
+    let fet = v?.getSource().getFeatures();
+    let geoJSON = geojson.writeFeatures(fet, {
+      featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
+    });
+    map.push({
+      uid: k,
+      geojson: geoJSON,
+    });
+  });
+  debugger;
+  ipcRenderer.send('layerGeojson', {
+    data: JSON.parse(JSON.stringify(map)),
+  });
+});
+
 ipcRenderer.on('buffer-config-data-complete', (event, args) => {
   let findNodeByLabel1 = findNodeByLabel(data.value, '缓冲区分析');
   let nodeId = uuidv4();
   let label = args.layerName;
 
-  props.qvMap?.addBufferLayer(nodeId, args.geojson, args.size, args.unity);
+  debugger;
+  if (args.geojson) {
+    props.qvMap?.addBufferLayer(nodeId, args.geojson, args.size, args.unity);
+  } else {
+    props.qvMap?.addBufferLayer(nodeId, props.qvMap?.GetGeojsonWithLayer(args.id), args.size, args.unity);
+  }
+
   findNodeByLabel1.children.unshift({
     id: nodeId,
     label: label + '-' + saveBufferCount(label),
     sourceName: label,
     uid: nodeId,
     tag: ProdLayersTypeEnum.buffer,
+  });
+  nextTick(() => {
+    defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
   });
 });
 const exportData = () => {

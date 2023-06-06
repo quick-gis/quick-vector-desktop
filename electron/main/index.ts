@@ -152,7 +152,7 @@ async function createWindow() {
       label: '分析',
       submenu: [
         {
-          label: '缓冲区',
+          label: '缓冲区分析',
           click: () => {
             extracted('/buff_lay', rootPath, isMac, '/buff_lay');
           },
@@ -371,10 +371,12 @@ ipcMain.on('showBufferConfigWindows', (event, args) => {
 
 ipcMain.on('buffer-config-data-complete', (event, args) => {
   if (args?.close) {
-    map.get('/buffer').close();
+    map.get('/buffer')?.close();
+    map.get('/buff_lay')?.close();
   } else {
     win.webContents.send('buffer-config-data-complete', args);
-    map.get('/buffer').close();
+    map.get('/buffer')?.close();
+    map.get('/buff_lay')?.close();
   }
 });
 
@@ -382,7 +384,14 @@ ipcMain.on('getLayers', (event, args) => {
   win.webContents.send('findLayers', args);
 });
 ipcMain.on('layers', (event, args) => {
-  // setTimeout(() => {
-  map.get('/buff_lay').webContents.send('curLayers', args);
-  // }, 1000);
+  map.get('/buff_lay')?.webContents.send('curLayers', args);
+  win.webContents.send('curLayers', args);
+});
+ipcMain.on('layerGeojson', (event, args) => {
+  map.get('/buff_lay')?.webContents.send('curLayersGeojson', args);
+  win.webContents.send('curLayersGeojson', args);
+});
+
+ipcMain.on('getLayersGeoJson', (event, args) => {
+  win.webContents.send('findLayersGeoJson');
 });

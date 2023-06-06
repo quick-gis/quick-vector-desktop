@@ -15,7 +15,7 @@ interface MapStyle {
 export const SelectedStyles = {
   point: new Style({
     image: new Circle({
-      radius: 1.3, // 圆点的半径
+      radius: 3, // 圆点的半径
       fill: new Fill({ color: randomColor() }), // 填充色
       stroke: new Stroke({ color: '#dadada', width: 2 }), // 边框样式
     }),

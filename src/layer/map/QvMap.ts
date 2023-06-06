@@ -55,6 +55,7 @@ const a = {
     mapData.coordinates = e.coordinate;
   },
 };
+const geojson = new GeoJSON();
 
 export class QvMap {
   target: string;
@@ -71,12 +72,12 @@ export class QvMap {
    * 文件转换图层
    * @private
    */
-  private fileLayer = new Map<String, Layer>();
+  private _fileLayer = new Map<String, Layer>();
   /**
    * 缓冲图层
    * @private
    */
-  private bufferLayer = new Map<String, Layer>();
+  private _bufferLayer = new Map<String, Layer>();
 
   static addLayerBaseIndex = 30000;
   static bufferBaseIndex = 10000;
@@ -181,17 +182,26 @@ export class QvMap {
 
   showOrCloseFileLayers(uid, checked) {
     console.log('iiiiii', uid);
-    let layer1 = this.fileLayer.get(uid);
+    let layer1 = this._fileLayer.get(uid);
     layer1.setVisible(checked);
   }
   showOrCloseBufferLayers(uid, checked) {
-    let layer1 = this.bufferLayer.get(uid);
+    let layer1 = this._bufferLayer.get(uid);
     debugger;
     layer1.setVisible(checked);
   }
   getFileLayer(uid) {
-    return this.fileLayer.get(uid);
+    return this._fileLayer.get(uid);
   }
+
+  GetAllfileLayer(): Map<String, Layer> {
+    return this._fileLayer;
+  }
+
+  GetAllbufferLayer(): Map<String, Layer> {
+    return this._bufferLayer;
+  }
+
   addGeoJsonForImport(uid, json, type) {
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
@@ -201,8 +211,28 @@ export class QvMap {
     });
     this.curLayerIndex = this.curLayerIndex + 1;
     vectorLayer.setZIndex(this.curLayerIndex);
-    this.fileLayer.set(uid, vectorLayer);
+    this._fileLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
+  }
+
+  GetGeojsonWithLayer(uid: string) {
+    let layer = this._bufferLayer.get(uid);
+    if (layer) {
+      let fet = layer?.getSource().getFeatures();
+      let geoJSON = geojson.writeFeatures(fet, {
+        featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
+      });
+      return geoJSON;
+    }
+    let layer1 = this._fileLayer.get(uid);
+    if (layer1) {
+      let fet = layer1?.getSource().getFeatures();
+      let geoJSON = geojson.writeFeatures(fet, {
+        featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
+      });
+      return geoJSON;
+    }
+    return null;
   }
 
   /**
@@ -222,7 +252,7 @@ export class QvMap {
     });
     this.curBufferLayerIndex = this.curBufferLayerIndex + 1;
     vectorLayer.setZIndex(this.curBufferLayerIndex);
-    this.bufferLayer.set(uid, vectorLayer);
+    this._bufferLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
   }
 

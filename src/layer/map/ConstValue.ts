@@ -1,3 +1,5 @@
+import { QvMap } from './QvMap';
+
 export enum ProdLayersTypeEnum {
   vec_c_jwd = '矢量底图-经纬度',
   vec_jwd_label = '矢量底图-标注-经纬度',
@@ -13,6 +15,14 @@ export enum ProdLayersTypeEnum {
   buffer = '缓冲图层',
 }
 
+let qvmap: QvMap = null;
+
+export function setQvMap(qvmapParam: QvMap) {
+  qvmap = qvmapParam;
+}
+export function getQvmap() {
+  return qvmap;
+}
 export function getProj(layer: ProdLayersTypeEnum) {
   if (layer == ProdLayersTypeEnum.vec_c_jwd) {
     return 'EPSG:4326';

@@ -7,6 +7,7 @@ const data = reactive({
   size: 0,
   layerName: '',
   geojson: '',
+  id: '',
 });
 const units = [
   { label: '米', value: 'meters' },
@@ -26,6 +27,7 @@ const units = [
 ipcRenderer.on('buffer-config-data', (event, args) => {
   data.layerName = args.fileName;
   data.geojson = args.json;
+  data.id = args.id;
 });
 const ok = () => {
   ipcRenderer.send('buffer-config-data-complete', {
@@ -34,6 +36,7 @@ const ok = () => {
     layerName: data.layerName,
     close: false,
     geojson: data.geojson,
+    id: data.id,
   });
 };
 const error = () => {

@@ -17,7 +17,7 @@ ipcRenderer.on('curLayers', (event, args) => {
 });
 
 const data = reactive({
-  unity: '',
+  unity: 'meters',
   size: 0,
   layerName: '',
   geojson: '',

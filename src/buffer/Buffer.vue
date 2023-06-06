@@ -4,7 +4,7 @@ import { ipcRenderer } from 'electron';
 import { ElMessage } from 'element-plus';
 
 const data = reactive({
-  unity: '',
+  unity: 'meters',
   size: 0,
   layerName: '',
   geojson: '',

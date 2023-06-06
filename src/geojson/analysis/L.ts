@@ -15,8 +15,14 @@ function checkLinkage(featureCollection: any): any[] {
     // 循环内操作的都应该是feature1
     // 对比两个都是LineString的数据
     let b1 = checkLineStringWithLineString(feature1, featureCollection);
-    if (!b1) {
+    if (b1 < 0) {
       invalidFeatures.push(feature1);
+    }
+    let b2 = checkLineStringWithMultiLineString(feature1, featureCollection);
+    if (b2 < 0) {
+      if (!invalidFeatures.includes(feature1)) {
+        invalidFeatures.push(feature1);
+      }
     }
 
     console.log();
@@ -29,21 +35,64 @@ function checkLinkage(featureCollection: any): any[] {
  * LineString 和 LineString 自查
  * @param feature1
  * @param featureCollection
+ * @return 0 不要计算，-1没 1 有
  */
-function checkLineStringWithLineString(feature1: any, featureCollection: any) {
+function checkLineStringWithLineString(feature1: any, featureCollection: any): number {
   let checkOther = [];
 
   for (let j = 0; j < featureCollection.features.length; j++) {
     const feature2 = featureCollection.features[j];
-    if (feature1.geometry.type == 'LineString' && feature2.geometry.type == 'LineString') {
-      if (!areArraysEqual(feature1.geometry.coordinates, feature2.geometry.coordinates)) {
+    if (!areArraysEqual(feature1.geometry.coordinates, feature2.geometry.coordinates)) {
+      if (feature1.geometry.type == 'LineString' && feature2.geometry.type == 'LineString') {
         let b1 = isLineStringLinked(feature1, feature2);
         checkOther.push(b1);
       }
     }
   }
+  if (checkOther.length == 0) {
+    return 0;
+  }
+  return checkOther.includes(true) ? 1 : -1;
+}
+
+function checkLineStringWithMultiLineString(feature1: any, featureCollection: any) {
+  let checkOther = [];
+
+  for (let j = 0; j < featureCollection.features.length; j++) {
+    const feature2 = featureCollection.features[j];
+    if (!areArraysEqual(feature1.geometry.coordinates, feature2.geometry.coordinates)) {
+      if (feature1.geometry.type == 'LineString' && feature2.geometry.type == 'MultiLineString') {
+        let b1 = isLineStringAndMultiLinked(feature1, feature2);
+        checkOther.push(b1);
+      }
+    }
+  }
+  if (checkOther.length == 0) {
+    return 0;
+  }
+  return checkOther.includes(true) ? 1 : -1;
+}
+
+function isLineStringAndMultiLinked(lineString1: any, lineString2: any): boolean {
+  const coordinates1 = lineString1.geometry.coordinates;
+  const coordinates2 = lineString2.geometry.coordinates;
+  const curStartPoint = coordinates1[0];
+  const curEndPoint = coordinates1[coordinates1.length - 1];
+  let checkOther = [];
+
+  for (let line2 of coordinates2) {
+    const tarStartPoint = line2[0];
+    const tarEndPoint = line2[line2.length - 1];
+    let b =
+      areArraysEqual(curEndPoint, tarEndPoint) ||
+      areArraysEqual(curEndPoint, tarStartPoint) ||
+      areArraysEqual(curStartPoint, tarEndPoint) ||
+      areArraysEqual(curStartPoint, tarStartPoint);
+    checkOther.push(b);
+  }
   return checkOther.includes(true);
 }
+
 function isLineStringLinked(lineString1: any, lineString2: any): boolean {
   const coordinates1 = lineString1.geometry.coordinates;
   const coordinates2 = lineString2.geometry.coordinates;
@@ -124,10 +173,16 @@ const geoJson = {
         id: '2',
       },
       geometry: {
-        type: 'LineString',
+        type: 'MultiLineString',
         coordinates: [
-          [1, 31],
-          [4, 1],
+          [
+            [1, 9],
+            [4, 2],
+          ],
+          [
+            [1, 0],
+            [4, 6],
+          ],
         ],
       },
     },

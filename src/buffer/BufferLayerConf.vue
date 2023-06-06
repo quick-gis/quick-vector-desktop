@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron';
 import { onMounted, reactive, ref } from 'vue';
 import { findNodeById, findNodeByLabel, removeNodesByLabel } from '../layer/map/NodeUtil';
 import { getQvmap } from '../layer/map/ConstValue';
+import { ElMessage } from 'element-plus';
 
 onMounted(() => {
   ipcRenderer.send('getLayers');
@@ -38,19 +39,50 @@ const units = [
 ];
 
 const ok = () => {
-  console.log('qqqqq', data);
-  ipcRenderer.send(
-    'buffer-config-data-complete',
-    JSON.parse(
-      JSON.stringify({
-        unity: data.unity,
-        size: data.size,
-        layerName: findNodeById(LayerTree.value, data.layerName).label,
-        close: false,
-        id: data.layerName,
-      })
-    )
-  );
+  let flg = false;
+
+  if (!data.unity) {
+    ElMessage({
+      message: '单位必填',
+      grouping: true,
+      type: 'error',
+    });
+
+    return;
+  }
+  if (!data.size) {
+    ElMessage({
+      message: '长度必填',
+      grouping: true,
+      type: 'error',
+    });
+
+    return;
+  }
+  if (!data.layerName) {
+    ElMessage({
+      message: '图层必填',
+      grouping: true,
+      type: 'error',
+    });
+
+    return;
+  }
+  flg = true;
+  if (flg) {
+    ipcRenderer.send(
+      'buffer-config-data-complete',
+      JSON.parse(
+        JSON.stringify({
+          unity: data.unity,
+          size: data.size,
+          layerName: findNodeById(LayerTree.value, data.layerName).label,
+          close: false,
+          id: data.layerName,
+        })
+      )
+    );
+  }
 };
 
 const error = () => {
@@ -61,12 +93,17 @@ const error = () => {
 const nodeClick = (node) => {
   console.log(node);
 };
+const rules = {
+  layerName: [{ required: true, message: '必填', trigger: 'blur' }],
+  size: [{ required: true, message: '必填', trigger: 'blur' }],
+  unity: [{ required: true, message: '必填', trigger: 'blur' }],
+};
 </script>
 
 <template>
   <div>图层缓冲区</div>
-  <el-form :model="data" label-width="120px">
-    <el-form-item label="缓冲图层">
+  <el-form :rules="rules" :model="data" label-width="120px">
+    <el-form-item prop="layerName" label="缓冲图层">
       <el-tree-select
         :node-click="nodeClick"
         node-key="id"
@@ -75,10 +112,10 @@ const nodeClick = (node) => {
         :render-after-expand="false"
       />
     </el-form-item>
-    <el-form-item label="缓冲长度">
+    <el-form-item prop="size" label="缓冲长度">
       <el-input-number :step="0.1" v-model="data.size" />
     </el-form-item>
-    <el-form-item label="单位">
+    <el-form-item prop="unity" label="单位">
       <el-select v-model="data.unity" placeholder="请选择长度单位">
         <el-option v-for="unit in units" :key="unit.value" :label="unit.label" :value="unit.value"></el-option>
       </el-select>

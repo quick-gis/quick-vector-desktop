@@ -187,7 +187,6 @@ export class QvMap {
   }
   showOrCloseBufferLayers(uid, checked) {
     let layer1 = this._bufferLayer.get(uid);
-    debugger;
     layer1.setVisible(checked);
   }
   getFileLayer(uid) {

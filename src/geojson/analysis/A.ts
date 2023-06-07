@@ -1,18 +1,29 @@
-function isLineStringLinked(lineString1: any, lineString2: any): boolean {
-  const coordinates1 = lineString1.geometry.coordinates;
-  const coordinates2 = lineString2.geometry.coordinates;
+function isMultiLinkedAndMultiLinked(feature1: any, feature2: any): boolean {
+  // 1. 拆解 feat1 的坐标元素
+  let f1Lines = feature1.geometry.coordinates;
+  let f2Lines = feature2.geometry.coordinates;
 
-  const startPoint1 = coordinates1[0];
-  const endPoint1 = coordinates1[coordinates1.length - 1];
-  const startPoint2 = coordinates2[0];
-  const endPoint2 = coordinates2[coordinates2.length - 1];
+  let re = [];
 
-  return (
-    areArraysEqual(startPoint1, startPoint2) ||
-    areArraysEqual(startPoint1, endPoint2) ||
-    areArraysEqual(endPoint1, startPoint2) ||
-    areArraysEqual(endPoint1, endPoint2)
-  );
+  for (let l1 of f1Lines) {
+    const curStartPoint = l1[0];
+    const curEndPoint = l1[l1.length - 1];
+
+    let checkOther = [];
+
+    for (let l2 of f2Lines) {
+      const tarStartPoint = l2[0];
+      const tarEndPoint = l2[l2.length - 1];
+      let b =
+        areArraysEqual(curEndPoint, tarEndPoint) ||
+        areArraysEqual(curEndPoint, tarStartPoint) ||
+        areArraysEqual(curStartPoint, tarEndPoint) ||
+        areArraysEqual(curStartPoint, tarStartPoint);
+      checkOther.push(b);
+    }
+    re.push(checkOther.includes(true));
+  }
+  return re.includes(true);
 }
 
 function areArraysEqual(arr1: [], arr2: []) {
@@ -27,26 +38,33 @@ function areArraysEqual(arr1: [], arr2: []) {
   return true;
 }
 
-const feature = {
+const feature1 = {
   type: 'Feature',
   geometry: {
     type: 'MultiLineString',
     coordinates: [
       [
-        [1, 3],
+        [1, 9],
         [4, 4],
       ],
+    ],
+  },
+};
+const feature2 = {
+  type: 'Feature',
+  geometry: {
+    type: 'MultiLineString',
+    coordinates: [
       [
-        [4, 8],
-        [1, 3],
+        [1, 9],
+        [4, 2],
       ],
       [
-        [1, 2],
-        [1, 3],
+        [1, 0],
+        [4, 6],
       ],
     ],
   },
 };
 
-const isLinked = checkMultiLineStringSelf(feature);
-console.log(isLinked);
+console.log(isMultiLinkedAndMultiLinked(feature1, feature2));

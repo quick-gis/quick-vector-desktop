@@ -157,16 +157,6 @@ ipcRenderer.on('curLayersGeojson', (event, args) => {
 </script>
 
 <template>
-  <div>
-    <el-button
-      @click="
-        () => {
-          ipcRenderer.send('getLayersGeoJson');
-        }
-      "
-      >测试属性弹框
-    </el-button>
-  </div>
   <div id="map" ref="map" style="height: 100vh; width: 100%">
     <!--  todo: 尺寸动态 -->
     <Vue3DraggableResizable

@@ -48,6 +48,14 @@ export class LineAnalysis {
           continue;
         }
       }
+      // todo: MultiLineString 和 LineString 对比
+      let b4 = this.checkMultiLineStringWithLineString(feature1, featureCollection);
+      if (b4 < 0) {
+        if (!invalidFeatures.has(feature1)) {
+          invalidFeatures.add(feature1);
+          continue;
+        }
+      }
     }
 
     return invalidFeatures;
@@ -94,6 +102,40 @@ export class LineAnalysis {
     }
     return re.includes(true);
   }
+  checkMultiLineStringWithLineString(feature1: any, featureCollection: any) {
+    let checkOther = [];
+    for (let j = 0; j < featureCollection.features.length; j++) {
+      const feature2 = featureCollection.features[j];
+      if (!this.areArraysEqual(feature1.geometry.coordinates, feature2.geometry.coordinates)) {
+        if (feature1.geometry.type == 'MultiLineString' && feature2.geometry.type == 'LineString') {
+          let b1 = this.isMultiLinkedAndLineStringLinked(feature1, feature2);
+          checkOther.push(b1);
+        }
+      }
+    }
+    if (checkOther.length == 0) {
+      return 0;
+    }
+    return checkOther.includes(true) ? 1 : -1;
+  }
+  isMultiLinkedAndLineStringLinked(feature1: any, feature2: any): boolean {
+    let f1Line = feature1.geometry.coordinates;
+    let f2Line = feature2.geometry.coordinates;
+    const tarStartPoint = f2Line[0];
+    const tarEndPoint = f2Line[f2Line.length - 1];
+    let checkOther = [];
+    for (let l1 of f1Line) {
+      const curStartPoint = l1[0];
+      const curEndPoint = l1[l1.length - 1];
+      let b =
+        this.areArraysEqual(curEndPoint, tarEndPoint) ||
+        this.areArraysEqual(curEndPoint, tarStartPoint) ||
+        this.areArraysEqual(curStartPoint, tarEndPoint) ||
+        this.areArraysEqual(curStartPoint, tarStartPoint);
+      checkOther.push(b);
+    }
+    return checkOther.includes(true);
+  }
 
   /**
    * LineString 和 LineString 自查
@@ -106,7 +148,7 @@ export class LineAnalysis {
 
     for (let j = 0; j < featureCollection.features.length; j++) {
       const feature2 = featureCollection.features[j];
-      if (!  this.areArraysEqual(feature1.geometry.coordinates, feature2.geometry.coordinates)) {
+      if (!this.areArraysEqual(feature1.geometry.coordinates, feature2.geometry.coordinates)) {
         if (feature1.geometry.type == 'LineString' && feature2.geometry.type == 'LineString') {
           let b1 = this.isLineStringLinked(feature1, feature2);
           checkOther.push(b1);

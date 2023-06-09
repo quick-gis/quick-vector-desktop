@@ -8,6 +8,7 @@ import { ReadDiTuConfig, WriteDiTuConfig } from '../utils/FileUtils';
 import { GetTdtToken } from './map/Tdt';
 import jkl from './map/a.js';
 import { setQvMap } from './map/ConstValue';
+import TestView from '../test/TestLineRing.vue';
 
 const map = ref<any>();
 const token = ref(0);

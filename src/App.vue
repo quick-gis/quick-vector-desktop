@@ -1,8 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import TestView from './test/TestLineRing.vue';
+</script>
 
 <template>
   <div>
-    <router-view></router-view>
+    <test-view></test-view>
+
+    <!--    <router-view></router-view>-->
   </div>
 </template>
 

@@ -3,8 +3,11 @@ const feature2 = {
   geometry: {
     type: 'LineString',
     coordinates: [
-      [1, 9],
-      [4, 4],
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [0, 0],
     ],
   },
 };
@@ -71,7 +74,7 @@ function MultiLineStringSelfFlowLinked(feat1: any) {
     let checkOut = [];
     for (let line2 of le1) {
       if (!areArraysEqual(line1, line2)) {
-        // let b = extracted(line1, line2);
+        let b = extracted(line1, line2);
         checkOut.push(b);
       }
     }

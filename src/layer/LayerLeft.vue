@@ -267,7 +267,6 @@ const showAttrTable = () => {
 };
 
 const showBufferConfigWindows = () => {
-  debugger;
   ipcRenderer.send('showBufferConfigWindows', {
     fileName: curData.curNode?.data?.label,
     json: curData.geojson,
@@ -303,7 +302,6 @@ ipcRenderer.on('findLayersGeoJson', (event, args) => {
       geojson: geoJSON,
     });
   });
-  debugger;
   ipcRenderer.send('layerGeojson', {
     data: JSON.parse(JSON.stringify(map)),
   });
@@ -311,12 +309,10 @@ ipcRenderer.on('findLayersGeoJson', (event, args) => {
 
 ipcRenderer.on('buffer-config-data-complete', (event, args) => {
   console.log('开始缓冲区见图');
-  debugger;
   let findNodeByLabel1 = findNodeByLabel(data.value, '缓冲区分析');
   let nodeId = uuidv4();
   let label = args.layerName;
 
-  debugger;
   if (args.geojson) {
     props.qvMap?.addBufferLayer(nodeId, args.geojson, args.size, args.unity);
   } else {

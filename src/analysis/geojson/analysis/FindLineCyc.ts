@@ -157,7 +157,17 @@ function connectPoints(points: any, nameToXy: any): [] {
       };
       connections.push(connection);
     }
-
+    // 由于要组成环需要补上最后一个和第一个点之间的连线
+    connections.push({
+      start: {
+        x: JSON.parse(nameToXy.get(points[points.length - 1])).x,
+        y: JSON.parse(nameToXy.get(points[points.length - 1])).y,
+      },
+      end: {
+        x: JSON.parse(nameToXy.get(points[0])).x,
+        y: JSON.parse(nameToXy.get(points[0])).y,
+      },
+    });
     return connections;
   }
 
@@ -174,7 +184,7 @@ function connectPoints(points: any, nameToXy: any): [] {
  * ];
  * @param findCyc
  */
-function main(findCyc: any) {
+export function CoreFindCyc(findCyc: any) {
   const { data, nameToXy } = startEndToSt(findCyc);
   let findCycleNodes1 = findCycleNodes(data);
   return connectPoints(findCycleNodes1, nameToXy);

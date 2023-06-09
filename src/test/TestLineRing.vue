@@ -10,7 +10,7 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 
 const data = reactive({
-  source: {
+  source: JSON.stringify({
     type: 'Feature',
     geometry: {
       type: 'LineString',
@@ -22,18 +22,18 @@ const data = reactive({
         [0, 0],
       ],
     },
-  },
+  }),
   target: null,
 });
 const map = ref<any>();
 let cmap = null;
 
 const click = () => {
-  data.target = GeoJsonLineWithOnceCyc(data.source);
+  data.target = GeoJsonLineWithOnceCyc(JSON.parse(data.source));
 
   let vectorLayer = new VectorLayer({
     source: new VectorSource({
-      features: new GeoJSON().readFeatures(data.source),
+      features: new GeoJSON().readFeatures(JSON.parse(data.source)),
     }),
     style: new Style({
       stroke: new Stroke({
@@ -45,7 +45,7 @@ const click = () => {
 
   map.value.addLayer(vectorLayer);
 
-  let features = new GeoJSON().readFeatures(data.source);
+  let features = new GeoJSON().readFeatures(JSON.parse(data.source));
 
   let p = [];
   for (let ft of features) {

@@ -16,7 +16,7 @@ function splitLineString(d: any) {
 function splitMultiLineString(d: any) {
   let res = [];
   for (let dt of d) {
-    res.push(connectPoints(dt));
+    res.push(...connectPoints(dt));
   }
   return res;
 }

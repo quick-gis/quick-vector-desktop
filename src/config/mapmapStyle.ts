@@ -137,3 +137,43 @@ export const SelectedStyles = {
     }),
   }),
 };
+
+export const DefaultSelectStyle = {
+  Point: new Style({
+    image: new Circle({
+      radius: 3, // 圆点的半径
+      fill: new Fill({ color: '#ff0000' }), // 填充色
+      stroke: new Stroke({ color: '#dadada', width: 2 }), // 边框样式
+    }),
+  }),
+  Polygon: new Style({
+    fill: new Fill({
+      color: '#ff0000', // 红色填充
+    }),
+    stroke: new Stroke({
+      color: '#000', // 黑色边框
+      width: 3.5, // 边框粗细为3
+    }),
+  }),
+  MultiPolygon: new Style({
+    fill: new Fill({
+      color: '#ff0000', // 红色填充
+    }),
+    stroke: new Stroke({
+      color: '#000', // 黑色边框
+      width: 3.5, // 边框粗细为3
+    }),
+  }),
+  LineString: new Style({
+    stroke: new Stroke({
+      color: '#ff0000', // 线段的颜色
+      width: 4, // 线段的宽度，即加粗的程度
+    }),
+  }),
+  MultiLineString: new Style({
+    stroke: new Stroke({
+      color: '#ff0000', // 线段的颜色
+      width: 4, // 线段的宽度，即加粗的程度
+    }),
+  }),
+};

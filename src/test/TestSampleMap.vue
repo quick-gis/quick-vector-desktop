@@ -12,14 +12,14 @@ const data = reactive({});
 const map = ref<any>();
 let cmap = null;
 import dp from './test';
-import { SelectedStyles } from '../config/mapmapStyle';
+import { DefaultSelectStyle, SelectedStyles } from '../config/mapmapStyle';
 const click = () => {
   let ppp = new VectorLayer({
     source: new VectorSource({
       features: new GeoJSON().readFeatures(dp),
     }),
     style: function (f) {
-      return SelectedStyles[f.getGeometry().getType()];
+      return DefaultSelectStyle[f.getGeometry().getType()];
     },
   });
 

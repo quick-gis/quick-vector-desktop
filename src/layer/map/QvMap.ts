@@ -9,15 +9,22 @@ import { Point } from 'ol/geom';
 import { getProj, ProdLayersTypeEnum } from './ConstValue';
 import { GetTianDiTuLayers } from './Tdt';
 import { Layer } from 'ol/layer';
-import { SelectedStyles } from '../../config/mapmapStyle';
+import { DefaultSelectStyle, SelectedStyles } from '../../config/mapmapStyle';
 import { MapBrowserEvent, Observable } from 'ol';
 import { reactive } from 'vue';
 import { Select } from 'ol/interaction';
 import dp from '../../test/test';
+import { Style } from 'ol/style';
 const turf = require('@turf/turf');
 
 function getSelectPlus(mapData) {
-  const clickInteraction = new Select({ multi: false });
+  const clickInteraction = new Select({
+    multi: false,
+    style: function (f) {
+      return DefaultSelectStyle[f.getGeometry().getType()];
+    },
+  });
+
   clickInteraction.on('select', function (event) {
     let selectedFeatures = event.target.getFeatures();
     let data = null;

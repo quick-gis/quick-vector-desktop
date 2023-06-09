@@ -18,12 +18,25 @@ const feature1 = {
         [4, 2],
       ],
       [
-        [1, 0],
+        [4, 1],
+        [1, 2],
+        [1, 3],
+        [1, 2],
+      ],
+      [
+        [4, 2],
         [4, 4],
       ],
     ],
   },
 };
+/**
+ * 判断是否链接
+ */
+function isFlowLinked(curEndPoint: [], tarStartPoint: []): boolean {
+  // 线1的终点是线2的起点，
+  return areArraysEqual(curEndPoint, tarStartPoint);
+}
 function areArraysEqual(arr1: [], arr2: []) {
   if (arr1.length !== arr2.length) {
     return false;
@@ -36,22 +49,35 @@ function areArraysEqual(arr1: [], arr2: []) {
   return true;
 }
 
-function isMultiLinkedAndLineStringLinked(feature1: any, feature2: any): boolean {
-  let f1Line = feature1.geometry.coordinates;
-  let f2Line = feature2.geometry.coordinates;
-  const tarStartPoint = f2Line[0];
-  const tarEndPoint = f2Line[f2Line.length - 1];
-  let checkOther = [];
-  for (let l1 of f1Line) {
-    const curStartPoint = l1[0];
-    const curEndPoint = l1[l1.length - 1];
-    let b =
-      areArraysEqual(curEndPoint, tarEndPoint) ||
-      areArraysEqual(curEndPoint, tarStartPoint) ||
-      areArraysEqual(curStartPoint, tarEndPoint) ||
-      areArraysEqual(curStartPoint, tarStartPoint);
-    checkOther.push(b);
-  }
-  return checkOther.includes(true);
+function extracted(le1: any, le2: any) {
+  const curEndPoint = le1[le1.length - 1];
+  const tarStartPoint = le2[0];
+  return isFlowLinked(curEndPoint, tarStartPoint);
 }
-console.log(isMultiLinkedAndLineStringLinked(feature1, feature2));
+
+/**
+ * 检查两个LineString流向是否链接
+ */
+function isLineStringAndLineStringFlowLinked(feat1: any, feat2: any): boolean {
+  let le1 = feat1.geometry.coordinates;
+  let le2 = feat1.geometry.coordinates;
+  return extracted(le1, le2);
+}
+
+function MultiLineStringSelfFlowLinked(feat1: any) {
+  let le1 = feat1.geometry.coordinates;
+  let re = [];
+  for (let line1 of le1) {
+    let checkOut = [];
+    for (let line2 of le1) {
+      if (!areArraysEqual(line1, line2)) {
+        // let b = extracted(line1, line2);
+        checkOut.push(b);
+      }
+    }
+    re.push(checkOut.includes(true));
+  }
+  return !re.includes(false);
+}
+
+console.log(MultiLineStringSelfFlowLinked(feature1));

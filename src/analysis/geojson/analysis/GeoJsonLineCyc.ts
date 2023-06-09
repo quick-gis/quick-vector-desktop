@@ -1,12 +1,7 @@
 import { CoreSplitLine } from './LineSplit';
 import { CoreFindCyc } from './FindLineCyc';
 
-/**
- *
- * @param d
- * @constructor
- */
-export function GeoJsonLineWithOnceCyc(d: any) {
+function calcRing(d: any) {
   let coreSplitLine = CoreSplitLine(d);
 
   let cyc = CoreFindCyc(coreSplitLine);
@@ -27,9 +22,38 @@ export function GeoJsonLineWithOnceCyc(d: any) {
       });
     }
   }
+  return e;
+}
+
+/**
+ *
+ * @param d
+ * @constructor
+ */
+export function GeoJsonLineWithOnceCyc(d: any) {
+  let e = calcRing(d);
 
   return {
     type: 'FeatureCollection',
     features: e,
   };
+}
+
+export function GeoJsonLineCollectionCyc(d: any) {
+  let res = [];
+  for (let a of d.features) {
+    res.push(...calcRing(d));
+  }
+  return {
+    type: 'FeatureCollection',
+    features: res,
+  };
+}
+
+export function GeoJsonLineCyc(d: any) {
+  if (d.type == 'FeatureCollection') {
+    return GeoJsonLineCollectionCyc(d);
+  } else {
+    return GeoJsonLineWithOnceCyc(d);
+  }
 }

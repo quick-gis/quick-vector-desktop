@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { GeoJsonLineWithOnceCyc } from '../analysis/geojson/analysis/GeoJsonLineCyc';
+import { GeoJsonLineCyc, GeoJsonLineWithOnceCyc } from '../analysis/geojson/analysis/GeoJsonLineCyc';
 import { onMounted, reactive, ref } from 'vue';
 
 import OlMap from 'ol/Map';
@@ -29,7 +29,7 @@ const map = ref<any>();
 let cmap = null;
 
 const click = () => {
-  data.target = GeoJsonLineWithOnceCyc(JSON.parse(data.source));
+  data.target = GeoJsonLineCyc(JSON.parse(data.source));
 
   let vectorLayer = new VectorLayer({
     source: new VectorSource({

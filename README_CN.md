@@ -12,6 +12,7 @@
 - EXCEL成图(方式和CSV相同)
   - [ ] 点成图
   - [ ] 线成图
+- [x] GeoJson成图
 - [ ] MYSQL 数据库成图
 - [ ] WMS/WMST预览
 - 导出

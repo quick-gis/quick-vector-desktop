@@ -73,6 +73,12 @@ ipcRenderer.on('gen-shp-show', (event, args) => {
   qvMap.addGeoJsonForImport(args.uid, args.geo, args.type);
 });
 
+ipcRenderer.on('gen-geojson-show', (event, args) => {
+  console.log('geojson成图');
+  console.log(args);
+  qvMap.addGeojsonFile(args.uid, args.geo);
+});
+
 onMounted(() => {
   console.log('初始化地图');
   map.value = qvMap.initMap();

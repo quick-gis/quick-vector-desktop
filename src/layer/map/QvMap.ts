@@ -13,6 +13,7 @@ import { SelectedStyles } from '../../config/mapmapStyle';
 import { MapBrowserEvent, Observable } from 'ol';
 import { reactive } from 'vue';
 import { Select } from 'ol/interaction';
+import dp from '../../test/test';
 const turf = require('@turf/turf');
 
 function getSelectPlus(mapData) {
@@ -201,6 +202,20 @@ export class QvMap {
     return this._bufferLayer;
   }
 
+  addGeojsonFile(uid, json) {
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: new GeoJSON().readFeatures(JSON.parse(json)),
+      }),
+      style: function (f) {
+        return SelectedStyles[f.getGeometry().getType()];
+      },
+    });
+    this.curLayerIndex = this.curLayerIndex + 1;
+    vectorLayer.setZIndex(this.curLayerIndex);
+    this._fileLayer.set(uid, vectorLayer);
+    this._map.addLayer(vectorLayer);
+  }
   addGeoJsonForImport(uid, json, type) {
     let vectorLayer = new VectorLayer({
       source: new VectorSource({

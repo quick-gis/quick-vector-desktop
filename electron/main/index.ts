@@ -121,6 +121,13 @@ async function createWindow() {
                 extracted('/importShape', rootPath, isMac, '/importShape');
               },
             },
+            {
+              label: '导入 GeoJson',
+
+              click: () => {
+                extracted('/importGeoJson', rootPath, isMac, '/importGeoJson');
+              },
+            },
           ],
         },
       ],
@@ -394,4 +401,25 @@ ipcMain.on('layerGeojson', (event, args) => {
 
 ipcMain.on('getLayersGeoJson', (event, args) => {
   win.webContents.send('findLayersGeoJson');
+});
+
+ipcMain.on('open-select-geojson-gen', (event, args) => {
+  dialog
+    .showOpenDialog({
+      filters: [{ name: 'GeoJson file', extensions: ['json'] }],
+    })
+    .then((result) => {
+      console.log(result);
+      map.get('/importGeoJson').webContents.send('open-select-geojson-gen-success', result.filePaths[0]);
+    });
+});
+
+ipcMain.on('gen-geojson', (event, args) => {
+  if (args?.close) {
+    map.get('/importGeoJson').close();
+  } else {
+    win.webContents.send('gen-geojson-show', args);
+    console.log(event, args);
+    map.get('/importGeoJson').close();
+  }
 });

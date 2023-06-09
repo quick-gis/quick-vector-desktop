@@ -20,13 +20,50 @@ export const SelectedStyles = {
       stroke: new Stroke({ color: '#dadada', width: 2 }), // 边框样式
     }),
   }),
+  Point: new Style({
+    image: new Circle({
+      radius: 3, // 圆点的半径
+      fill: new Fill({ color: randomColor() }), // 填充色
+      stroke: new Stroke({ color: '#dadada', width: 2 }), // 边框样式
+    }),
+  }),
   line: new Style({
     stroke: new Stroke({
       color: randomColor(), // 线段的颜色
       width: 4, // 线段的宽度，即加粗的程度
     }),
   }),
+  LineString: new Style({
+    stroke: new Stroke({
+      color: randomColor(), // 线段的颜色
+      width: 4, // 线段的宽度，即加粗的程度
+    }),
+  }),
+  MultiLineString: new Style({
+    stroke: new Stroke({
+      color: randomColor(), // 线段的颜色
+      width: 4, // 线段的宽度，即加粗的程度
+    }),
+  }),
   polygon: new Style({
+    fill: new Fill({
+      color: randomColor(), // 红色填充
+    }),
+    stroke: new Stroke({
+      color: randomColor(), // 黑色边框
+      width: 3.5, // 边框粗细为3
+    }),
+  }),
+  Polygon: new Style({
+    fill: new Fill({
+      color: randomColor(), // 红色填充
+    }),
+    stroke: new Stroke({
+      color: randomColor(), // 黑色边框
+      width: 3.5, // 边框粗细为3
+    }),
+  }),
+  MultiPolygon: new Style({
     fill: new Fill({
       color: randomColor(), // 红色填充
     }),

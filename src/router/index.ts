@@ -106,6 +106,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/importGeoJson',
+      name: 'importGeoJson',
+      component: defineAsyncComponent(() => import('../gen/ImportGeoJson.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

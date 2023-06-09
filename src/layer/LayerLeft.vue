@@ -256,6 +256,24 @@ ipcRenderer.on('gen-shp-show', function (event, args) {
     defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
   });
 });
+
+ipcRenderer.on('gen-geojson-show', function (event, args) {
+  console.log('左侧图层', args);
+  const fileName = path.basename(args.fileName);
+  console.log('filename', fileName);
+  let findNodeByLabel1 = findNodeByLabel(data.value, '文件图层');
+  let nodeId = args.uid;
+  findNodeByLabel1.children.unshift({
+    id: args.uid,
+    label: fileName,
+    uid: args.uid,
+    tag: ProdLayersTypeEnum.file,
+  });
+
+  nextTick(() => {
+    defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
+  });
+});
 const defaultCheckedKeys = ref([]);
 const contextmenuConfig = reactive({
   x: 0,

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import TestView from './test/TestLineRing.vue';
+import TestLineRing from './test/TestLineRing.vue';
+import TestSampleMap from './test/TestSampleMap.vue';
 </script>
 
 <template>
   <div>
-    <test-view></test-view>
-
-    <!--    <router-view></router-view>-->
+    <!--        <TestSampleMap></TestSampleMap>-->
+    <router-view></router-view>
   </div>
 </template>
 

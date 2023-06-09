@@ -13,18 +13,19 @@ const map = ref<any>();
 let cmap = null;
 import dp from './test';
 import { DefaultSelectStyle, SelectedStyles } from '../config/mapmapStyle';
-const click = () => {
-  let ppp = new VectorLayer({
-    source: new VectorSource({
-      features: new GeoJSON().readFeatures(dp),
-    }),
-    style: function (f) {
-      return DefaultSelectStyle[f.getGeometry().getType()];
-    },
-  });
+import { getCenter } from 'ol/extent';
 
-  map.value.addLayer(ppp);
+let ppp = null;
+const click = () => {
+  var layerExtent = ppp.getSource().getExtent();
+
+  let view = map.value.getView();
+  view.fit(layerExtent, {
+    duration: 1000000000, // 动画持续时间，可选
+  });
+  view.setCenter(getCenter(layerExtent));
 };
+
 onMounted(() => {
   console.log('初始化地图');
   cmap = new OlMap({
@@ -34,17 +35,28 @@ onMounted(() => {
     layers: [],
 
     view: new View({
-      center: [38.230560853772744, 9.797195236555524],
+      center: [0, 0],
       zoom: 8,
       projection: 'EPSG:4326',
     }),
   });
+
   map.value = cmap;
+
+  ppp = new VectorLayer({
+    source: new VectorSource({
+      features: new GeoJSON().readFeatures(dp),
+    }),
+    style: function (f) {
+      return DefaultSelectStyle[f.getGeometry().getType()];
+    },
+  });
+  map.value.addLayer(ppp);
 });
 </script>
 
 <template>
-  <el-button type="primary" @click="click">导入geojson</el-button>
+  <el-button type="primary" @click="click">居中显示</el-button>
   <div id="map" ref="map" style="height: 100vh; width: 100%"></div>
 </template>
 

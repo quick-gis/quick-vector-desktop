@@ -14,6 +14,7 @@ const map = ref<any>();
 const token = ref(0);
 let mapData = reactive({
   coordinates: [],
+  zoom: -1,
   click: false,
   // 是否开启选择元素
   openSelect: false,
@@ -222,6 +223,7 @@ ipcRenderer.on('curLayersGeojson', (event, args) => {
       </Vue3DraggableResizable>
     </div>
     <div id="flood">
+      <span>zoom:{{ mapData.zoom }}</span>
       <span>x:{{ mapData.coordinates[0] }}</span
       ><span>,</span><span>y:{{ mapData.coordinates[1] }}</span>
     </div>

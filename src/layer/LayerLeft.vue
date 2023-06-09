@@ -283,6 +283,11 @@ const contextmenuConfig = reactive({
 const showAttrTable = () => {
   ipcRenderer.send('openAttrTable', { geojson: JSON.parse(curData.geojson) });
 };
+const CenteredDisplay = () => {
+  let node = curData.curNode;
+  props.qvMap?.CenteredDisplay(node.data?.uid);
+  showMenu.value = false;
+};
 
 const showBufferConfigWindows = () => {
   ipcRenderer.send('showBufferConfigWindows', {
@@ -376,7 +381,7 @@ const exportData = () => {
     />
   </div>
   <div>
-    <!--    右键图层菜单-->
+    <!--    右键图层菜单(展示图层用-->
     <div
       v-show="showMenu"
       :style="{
@@ -390,7 +395,8 @@ const exportData = () => {
       <div>
         <el-button @click="showAttrTable()">查看属性表 </el-button>
         <el-button @click="showBufferConfigWindows()">建立缓冲区 </el-button>
-        <el-button @click="exportData()">导出数据 </el-button>
+        <el-button @click="CenteredDisplay()">居中显示</el-button>
+        <!--        <el-button @click="exportData()">导出数据 </el-button>-->
       </div>
     </div>
   </div>

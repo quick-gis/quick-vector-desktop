@@ -15,6 +15,7 @@ import { reactive } from 'vue';
 import { Select } from 'ol/interaction';
 import dp from '../../test/test';
 import { Style } from 'ol/style';
+import { getCenter } from 'ol/extent';
 const turf = require('@turf/turf');
 
 function getSelectPlus(mapData) {
@@ -59,8 +60,10 @@ const a = {
     mapData.coordinates = e.coordinate;
     mapData.click = true;
   },
-  move_mouse: (e, mapData) => {
+  move_mouse: (e, mapData, map) => {
     mapData.coordinates = e.coordinate;
+    var view = map.getView();
+    mapData.zoom = view.getZoom();
   },
 };
 const geojson = new GeoJSON();
@@ -99,6 +102,7 @@ export class QvMap {
     selectData: {},
     isSelect: false,
     isOpenCoordinatePicku: false,
+    zoom: -1,
   });
   private openSelect = false;
   openOrClose() {
@@ -155,7 +159,7 @@ export class QvMap {
     });
 
     this._map.on('pointermove', ($event) => {
-      a['move_mouse']($event, this.mapData);
+      a['move_mouse']($event, this.mapData, this._map);
     });
     return this._map;
   }
@@ -201,6 +205,17 @@ export class QvMap {
     return this._fileLayer.get(uid);
   }
 
+  CenteredDisplay(uid) {
+    let fileLayer = this.getFileLayer(uid);
+
+    let layerExtent = fileLayer?.getSource().getExtent();
+
+    let view = this._map.getView();
+    view.fit(layerExtent, {
+      duration: 1000, // 动画持续时间，可选
+    });
+    view.setCenter(getCenter(layerExtent));
+  }
   GetAllfileLayer(): Map<String, Layer> {
     return this._fileLayer;
   }

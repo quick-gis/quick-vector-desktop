@@ -5,7 +5,7 @@ import TestSampleMap from './test/TestSampleMap.vue';
 
 <template>
   <div>
-    <!--        <TestSampleMap></TestSampleMap>-->
+    <!--    <TestSampleMap></TestSampleMap>-->
     <router-view></router-view>
   </div>
 </template>

@@ -358,8 +358,14 @@ ipcRenderer.on('buffer-config-data-complete', (event, args) => {
     defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
   });
 });
-const exportData = () => {
+const exportJeoJsonData = () => {
   // 导出数据
+  let node = curData.curNode;
+  let exportGeoJsonString = props.qvMap?.exportGeoJsonString(node.data?.uid);
+
+  ipcRenderer.send('ex-geojson', {
+    geojson: exportGeoJsonString,
+  });
 };
 </script>
 
@@ -401,7 +407,7 @@ const exportData = () => {
         <el-button @click="showAttrTable()">查看属性表 </el-button>
         <el-button @click="showBufferConfigWindows()">建立缓冲区 </el-button>
         <el-button @click="CenteredDisplay()">居中显示</el-button>
-        <!--        <el-button @click="exportData()">导出数据 </el-button>-->
+        <el-button @click="exportJeoJsonData()">导出为GeoJson数据 </el-button>
       </div>
     </div>
   </div>
@@ -420,7 +426,7 @@ const exportData = () => {
     >
       <div>
         <el-button @click="CenteredDisplay()">居中显示</el-button>
-        <!--        <el-button @click="exportData()">导出数据 </el-button>-->
+        <el-button @click="exportJeoJsonData()">导出为GeoJson数据 </el-button>
       </div>
     </div>
   </div>

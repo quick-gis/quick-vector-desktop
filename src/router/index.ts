@@ -114,6 +114,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/exportGeoJson',
+      name: 'exportGeoJson',
+      component: defineAsyncComponent(() => import('../exp/ExportFileSelect.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

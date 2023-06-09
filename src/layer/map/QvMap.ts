@@ -205,6 +205,15 @@ export class QvMap {
     return this._fileLayer.get(uid);
   }
 
+  exportGeoJsonString(uid: any) {
+    let layer = null;
+
+    layer = this.getFileLayer(uid);
+    if (layer == null) {
+      layer = this._bufferLayer.get(uid);
+    }
+    return geojson.writeFeatures(layer.getSource().getFeatures());
+  }
   CenteredDisplay(uid) {
     let layer = null;
 

@@ -162,6 +162,10 @@ ipcRenderer.on('curLayers', (event, args) => {
 ipcRenderer.on('curLayersGeojson', (event, args) => {
   console.log('当前geojson', args);
 });
+
+ipcRenderer.on('Transit-ex-geojson', (event, args) => {
+  ipcRenderer.send('ex-geojson-end', args);
+});
 </script>
 
 <template>

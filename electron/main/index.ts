@@ -423,3 +423,34 @@ ipcMain.on('gen-geojson', (event, args) => {
     map.get('/importGeoJson').close();
   }
 });
+ipcMain.on('ex-geojson', (event, args) => {
+  let browserWindow = extracted('/exportGeoJson', rootPath, isMac, '/exportGeoJson');
+
+  setTimeout(() => {
+    win.webContents.send('Transit-ex-geojson', args);
+  }, 1000);
+});
+ipcMain.on('ex-geojson-end', (event, args) => {
+  map.get('/exportGeoJson').webContents.send('save-geojson-step2', {
+    geojson: args.geojson,
+  });
+});
+ipcMain.on('save-geojson', (event, args) => {
+  dialog
+    .showSaveDialog({ defaultPath: 'export.json' })
+    .then((result) => {
+      if (!result.canceled) {
+        const filePath = result.filePath;
+        map.get('/exportGeoJson').webContents.send('save-geojson-step1', {
+          path: filePath,
+        });
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+});
+
+ipcMain.on('close-export-geojson', (event, args) => {
+  map.get('/exportGeoJson').close();
+});

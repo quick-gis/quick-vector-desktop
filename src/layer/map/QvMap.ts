@@ -206,13 +206,19 @@ export class QvMap {
   }
 
   CenteredDisplay(uid) {
-    let fileLayer = this.getFileLayer(uid);
+    let layer = null;
 
-    let layerExtent = fileLayer?.getSource().getExtent();
+    layer = this.getFileLayer(uid);
+    if (layer == null) {
+      layer = this._bufferLayer.get(uid);
+    }
+    let layerExtent = layer?.getSource().getExtent();
 
     let view = this._map.getView();
+
     view.fit(layerExtent, {
       duration: 1000, // 动画持续时间，可选
+      size: size,
     });
     view.setCenter(getCenter(layerExtent));
   }

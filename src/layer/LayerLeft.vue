@@ -178,18 +178,21 @@ const nodeContextMenu = (event, data, node) => {
   console.log('右键', event, data, node);
   let tag = node?.data?.tag;
   curData.curNode = node;
+  contextmenuConfig.x = event.clientX;
+  contextmenuConfig.y = event.clientY;
   if (tag == ProdLayersTypeEnum.file) {
     console.log('右键node', node);
     let d = props.qvMap?.getFileLayer(node?.data?.uid);
-    let fet = d?.getSource().getFeatures();
+    let fet = d?.getSource()?.getFeatures();
     var geoJSON = geojson.writeFeatures(fet, {
       featureProjection: 'EPSG:4326', // 指定要素的投影坐标系
     });
     console.log('dddddd', geoJSON);
     curData.geojson = geoJSON;
-    contextmenuConfig.x = event.clientX;
-    contextmenuConfig.y = event.clientY;
+
     showMenu.value = true;
+  } else if (tag == ProdLayersTypeEnum.buffer) {
+    showAnalysisMenu.value = true;
   }
 };
 
@@ -197,6 +200,7 @@ const curData = reactive({
   curNode: null,
   geojson: null,
 });
+const showAnalysisMenu = ref(false);
 const showMenu = ref(false);
 const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean) => {
   console.log('选择框选择');
@@ -287,6 +291,7 @@ const CenteredDisplay = () => {
   let node = curData.curNode;
   props.qvMap?.CenteredDisplay(node.data?.uid);
   showMenu.value = false;
+  showAnalysisMenu.value = false;
 };
 
 const showBufferConfigWindows = () => {
@@ -395,6 +400,25 @@ const exportData = () => {
       <div>
         <el-button @click="showAttrTable()">查看属性表 </el-button>
         <el-button @click="showBufferConfigWindows()">建立缓冲区 </el-button>
+        <el-button @click="CenteredDisplay()">居中显示</el-button>
+        <!--        <el-button @click="exportData()">导出数据 </el-button>-->
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <!--    右键图层菜单(展示图层用-->
+    <div
+      v-show="showAnalysisMenu"
+      :style="{
+        top: contextmenuConfig.y + 'px',
+        left: contextmenuConfig.x + 'px',
+      }"
+      id="contextmenu"
+      @mouseleave="showMenu = false"
+      @mousemove.stop
+    >
+      <div>
         <el-button @click="CenteredDisplay()">居中显示</el-button>
         <!--        <el-button @click="exportData()">导出数据 </el-button>-->
       </div>

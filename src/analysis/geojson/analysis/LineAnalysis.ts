@@ -1,3 +1,5 @@
+import { CoreSplitLine } from './LineSplit';
+
 const turf = require('@turf/turf');
 
 export class LineAnalysis {
@@ -332,9 +334,9 @@ export class LineAnalysis {
    */
   findSelfOverlaps(geojson: any, full: boolean) {
     if (full) {
-      return this.findSelfFullOverlaps(geojson);
+      return { type: 'FeatureCollection', features: this.findSelfFullOverlaps(geojson) };
     } else {
-      return this.findSelfPartialOverlaps(geojson);
+      return { type: 'FeatureCollection', features: this.findSelfPartialOverlaps(geojson) };
     }
   }
 }

@@ -95,13 +95,20 @@ export class QvMap {
    * @private
    */
   private _LineRingLayer = new Map<String, Layer>();
+  /**
+   * 线自重叠分析图层
+   * @private
+   */
+  private _LineSelfOverlapsLayer = new Map<String, Layer>();
 
   static addLayerBaseIndex = 30000;
   static bufferBaseIndex = 10000;
   static lineRingBaseIndex = 90000;
+  static lineSelfOverBaseIndex = 80000;
   private curLayerIndex = QvMap.addLayerBaseIndex;
   private curBufferLayerIndex = QvMap.bufferBaseIndex;
   private curLineRingLayerIndex = QvMap.lineRingBaseIndex;
+  private curLineSelfOverLayerIndex = QvMap.lineSelfOverBaseIndex;
   // @ts-ignore
   private mapData = reactive({
     coordinates: null,
@@ -210,6 +217,9 @@ export class QvMap {
     let layer1 = this._LineRingLayer.get(uid);
     layer1.setVisible(checked);
   }
+  showOrClose_LineSelfOverlapsLayer(uid, checked) {
+    this._LineSelfOverlapsLayer.get(uid)?.setVisible(checked);
+  }
   showOrCloseBufferLayers(uid, checked) {
     let layer1 = this._bufferLayer.get(uid);
     layer1.setVisible(checked);
@@ -228,6 +238,9 @@ export class QvMap {
     if (layer == null) {
       layer = this._LineRingLayer.get(uid);
     }
+    if (layer == null) {
+      layer = this._LineSelfOverlapsLayer.get(uid);
+    }
     return geojson.writeFeatures(layer.getSource().getFeatures());
   }
 
@@ -238,6 +251,9 @@ export class QvMap {
     }
     if (layer == null) {
       layer = this._LineRingLayer.get(uid);
+    }
+    if (layer == null) {
+      layer = this._LineSelfOverlapsLayer.get(uid);
     }
     return layer;
   }
@@ -253,13 +269,15 @@ export class QvMap {
     if (layer == null) {
       layer = this._LineRingLayer.get(uid);
     }
+    if (layer == null) {
+      layer = this._LineSelfOverlapsLayer.get(uid);
+    }
     let layerExtent = layer?.getSource().getExtent();
 
     let view = this._map.getView();
 
     view.fit(layerExtent, {
       duration: 1000, // 动画持续时间，可选
-      size: size,
     });
     view.setCenter(getCenter(layerExtent));
   }
@@ -349,6 +367,19 @@ export class QvMap {
     this.curBufferLayerIndex = this.curBufferLayerIndex + 1;
     vectorLayer.setZIndex(this.curBufferLayerIndex);
     this._bufferLayer.set(uid, vectorLayer);
+    this._map.addLayer(vectorLayer);
+  }
+
+  addLineSelfOverlapsLayer(uid: string, json: any) {
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: geojson.readFeatures(json),
+      }),
+      style: SelectedStyles['line'],
+    });
+    this.curLineSelfOverLayerIndex = this.curLineSelfOverLayerIndex + 1;
+    vectorLayer.setZIndex(this.curLineSelfOverLayerIndex);
+    this._LineSelfOverlapsLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
   }
 

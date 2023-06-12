@@ -170,6 +170,12 @@ async function createWindow() {
             extracted('/line_ring', rootPath, isMac, '/line_ring');
           },
         },
+        {
+          label: '线自重叠分析',
+          click: () => {
+            extracted('/line_self_Overlaps', rootPath, isMac, '/line_self_Overlaps');
+          },
+        },
       ],
     },
     {
@@ -399,10 +405,12 @@ ipcMain.on('getLayers', (event, args) => {
 ipcMain.on('layers', (event, args) => {
   map.get('/buff_lay')?.webContents.send('curLayers', args);
   map.get('/line_ring')?.webContents.send('curLayers', args);
+  map.get('/line_self_Overlaps')?.webContents.send('curLayers', args);
   win.webContents.send('curLayers', args);
 });
 ipcMain.on('layerGeojson', (event, args) => {
   map.get('/buff_lay')?.webContents.send('curLayersGeojson', args);
+  map.get('/line_self_Overlaps')?.webContents.send('curLayersGeojson', args);
   map.get('/line_ring')?.webContents.send('curLayersGeojson', args);
   win.webContents.send('curLayersGeojson', args);
 });
@@ -469,5 +477,14 @@ ipcMain.on('line-ring', (event, args) => {
   } else {
     win.webContents.send('line-ring-config-completion', args);
     map.get('/line_ring')?.close();
+  }
+});
+
+ipcMain.on('line-self-overlaps', (event, args) => {
+  if (args.close) {
+    map.get('/line_self_Overlaps')?.close();
+  } else {
+    win.webContents.send('line-self-overlaps-config-completion', args);
+    map.get('/line_self_Overlaps')?.close();
   }
 });

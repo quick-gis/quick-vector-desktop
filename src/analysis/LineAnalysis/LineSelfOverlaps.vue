@@ -13,6 +13,7 @@ const rules = {
 };
 const data = reactive({
   layerName: '',
+  full: 'true',
 });
 const LayerTree = ref();
 onMounted(() => {
@@ -27,13 +28,14 @@ ipcRenderer.on('curLayers', (event, args) => {
 });
 
 const ok = () => {
-  ipcRenderer.send('line-ring', {
+  ipcRenderer.send('line-self-overlaps', {
     layerName: findNodeById(LayerTree.value, data.layerName).label,
     id: data.layerName,
+    full: data.full,
   });
 };
 const error = () => {
-  ipcRenderer.send('line-ring', {
+  ipcRenderer.send('line-self-overlaps', {
     close: true,
   });
 };
@@ -41,11 +43,17 @@ const error = () => {
 
 <template>
   <div>
-    <div>环分析</div>
+    <div>线自重叠分析</div>
 
     <el-form :rules="rules" :model="data" label-width="120px">
-      <el-form-item prop="layerName" label="环分析图层">
+      <el-form-item prop="layerName" label="待分析图层">
         <el-tree-select node-key="id" v-model="data.layerName" :data="LayerTree" :render-after-expand="false" />
+      </el-form-item>
+      <el-form-item prop="full" label="是否需要完全重叠">
+        <el-select v-model="data.full">
+          <el-option label="是" value="true" />
+          <el-option label="否" value="false" />
+        </el-select>
       </el-form-item>
     </el-form>
     <div>

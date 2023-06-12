@@ -130,6 +130,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/line_self_Overlaps',
+      name: 'line_self_Overlaps',
+      component: defineAsyncComponent(() => import('../analysis/LineAnalysis/LineSelfOverlaps.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

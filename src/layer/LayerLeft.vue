@@ -14,6 +14,7 @@ import { GetLog } from '../utils/LogUtils';
 import { saveBufferCount } from '../buffer/BufferUtil';
 import { saveLineRingCount } from '../analysis/geojson/analysis/LineRingUtil';
 import { GeoJsonLineCyc } from '../analysis/geojson/analysis/GeoJsonLineCyc';
+import { LineAnalysis } from '../analysis/geojson/analysis/LineAnalysis';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -74,6 +75,13 @@ const data = ref([
       {
         id: uuidv4(),
         label: '环分析',
+        disabled: true,
+
+        children: [],
+      },
+      {
+        id: uuidv4(),
+        label: '线自重叠分析',
         disabled: true,
 
         children: [],
@@ -222,6 +230,8 @@ const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean)
     props.qvMap?.showOrCloseBufferLayers(data?.uid, checked);
   } else if (data?.tag == ProdLayersTypeEnum.line_ring) {
     props.qvMap?.showOrCloseLineRingLayers(data?.uid, checked);
+  } else if (data?.tag == ProdLayersTypeEnum.line_self_ov) {
+    props.qvMap?.showOrClose_LineSelfOverlapsLayer(data?.uid, checked);
   } else if (
     data?.tag == ProdLayersTypeEnum.vec_c_jwd ||
     data?.tag == ProdLayersTypeEnum.vec_jwd_label ||
@@ -402,6 +412,32 @@ ipcRenderer.on('line-ring-config-completion', (event, args) => {
     uid: nodeId,
     geo_type: 'Line',
     tag: ProdLayersTypeEnum.line_ring,
+  });
+  nextTick(() => {
+    defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
+  });
+});
+
+let lineAna = new LineAnalysis();
+ipcRenderer.on('line-self-overlaps-config-completion', (event, args) => {
+  let findNodeByLabel1 = findNodeByLabel(data.value, '线自重叠分析');
+  let nodeId = uuidv4();
+  let label = args.layerName;
+  let layer = props.qvMap?.getLayersByUid(args.id);
+  let geojsonstr = geojson.writeFeatures(layer?.getSource()?.getFeatures());
+  // let geoJsonLineCyc = GeoJsonLineCyc(JSON.parse(geojsonstr));
+
+  let findSelfFullOverlaps = lineAna.findSelfOverlaps(JSON.parse(geojsonstr), args.full === 'true');
+  debugger;
+  props.qvMap?.addLineSelfOverlapsLayer(nodeId, findSelfFullOverlaps);
+
+  findNodeByLabel1.children.unshift({
+    id: nodeId,
+    label: label + '-' + saveLineRingCount(label),
+    sourceName: label,
+    uid: nodeId,
+    geo_type: 'Line',
+    tag: ProdLayersTypeEnum.line_self_ov,
   });
   nextTick(() => {
     defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);

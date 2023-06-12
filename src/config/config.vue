@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { ipcRenderer } from 'electron';
@@ -39,8 +39,8 @@ onMounted(() => {
         <el-input v-model="input1" />
       </el-form-item>
     </el-form>
-    <el-button @click="blur(false)" type="primary">确定</el-button>
-    <el-button @click="blur(true)" type="primary">取消</el-button>
+    <el-button type="primary" @click="blur(false)">确定</el-button>
+    <el-button type="primary" @click="blur(true)">取消</el-button>
   </div>
 </template>
 

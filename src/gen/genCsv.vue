@@ -110,18 +110,18 @@
 
   <div>
     <el-dialog
-      :show-close="false"
-      :close-on-click-modal="false"
       v-model="link_config.display"
+      :close-on-click-modal="false"
+      :show-close="false"
       title="引用配置"
       width="40%"
     >
-      <el-form :rules="link_config.rules" :model="link_config" label-width="120px">
-        <el-form-item prop="file" label="选择链接文件" required>
+      <el-form :model="link_config" :rules="link_config.rules" label-width="120px">
+        <el-form-item label="选择链接文件" prop="file" required>
           <el-input v-model="link_config.file" disabled></el-input>
-          <el-button @click="cl" :disabled="!link_config.canSelectFile">...</el-button>
+          <el-button :disabled="!link_config.canSelectFile" @click="cl">...</el-button>
         </el-form-item>
-        <el-form-item prop="source_field" label="原始表字段" required>
+        <el-form-item label="原始表字段" prop="source_field" required>
           <el-select v-model="link_config.source_field" placeholder="请选择原始表字段">
             <el-option
               v-for="(col, idx) in gen_shp.fields"
@@ -132,7 +132,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item prop="target_field" label="目标表字段" required>
+        <el-form-item label="目标表字段" prop="target_field" required>
           <el-select v-model="link_config.target_field" placeholder="请选择目标表字段">
             <el-option
               v-for="(col, idx) in link_config.fields"
@@ -143,10 +143,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item prop="pre" label="前缀" required>
+        <el-form-item label="前缀" prop="pre" required>
           <el-input v-model="link_config.pre" placeholder="请输入前缀"></el-input>
         </el-form-item>
-        <el-form-item prop="ref_field" label="引用字段" required>
+        <el-form-item label="引用字段" prop="ref_field" required>
           <el-select v-model="link_config.ref_field" multiple placeholder="请选择引用字段">
             <el-option
               v-for="(col, idx) in link_config.fields"
@@ -165,8 +165,8 @@
             link_config.display = false;
           }
         "
-        >取消</el-button
-      >
+        >取消
+      </el-button>
     </el-dialog>
   </div>
 
@@ -182,6 +182,7 @@ import { GetLog } from '../utils/LogUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { ElMessage } from 'element-plus';
 import { debounce } from '../utils/Utils';
+
 export default {
   methods: {
     debounce,

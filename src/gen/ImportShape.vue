@@ -1,9 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { reactive } from 'vue';
 import { ipcRenderer } from 'electron';
 import { readShapefile } from '../utils/ShapeUtil';
 import { v4 as uuidv4 } from 'uuid';
 import { ElMessage, FormRules } from 'element-plus';
+
 const importShapeData = reactive({
   file: '',
   encoding: 'gbk',
@@ -68,17 +69,17 @@ const error = () => {
 <template>
   <div>导入SHP</div>
   <div>
-    <el-form :rules="rules" :model="importShapeData" label-width="120px">
-      <el-form-item prop="file" label="选择文件">
+    <el-form :model="importShapeData" :rules="rules" label-width="120px">
+      <el-form-item label="选择文件" prop="file">
         <el-input v-model="importShapeData.file" disabled></el-input>
         <el-button @click="ipcRenderer.send('open-select-shp-gen')">...</el-button>
       </el-form-item>
-      <el-form-item prop="encoding" label="编码格式">
+      <el-form-item label="编码格式" prop="encoding">
         <el-select v-model="importShapeData.encoding" placeholder="请选择文件编码">
           <el-option label="GBK" value="gbk" />
         </el-select>
       </el-form-item>
-      <el-form-item prop="type" label="成图类型">
+      <el-form-item label="成图类型" prop="type">
         <el-select v-model="importShapeData.type" placeholder="请选择成图类型">
           <el-option label="点" value="point" />
           <el-option label="线" value="line" />

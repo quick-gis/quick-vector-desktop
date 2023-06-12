@@ -126,9 +126,9 @@ onMounted(() => {
 
 <template>
   <div>
-    <el-input type="textarea" v-model="data.source"></el-input>
+    <el-input v-model="data.source" type="textarea"></el-input>
   </div>
-  <el-button @click="click" type="primary">监测环</el-button>
+  <el-button type="primary" @click="click">监测环</el-button>
   <div id="map" ref="map" style="height: 100vh; width: 100%"></div>
 </template>
 

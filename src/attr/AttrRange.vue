@@ -1,17 +1,17 @@
 <template>
   <div>逻辑属性</div>
-  <el-form label-position="right" label-width="100px" :model="feature" style="max-width: 460px">
+  <el-form :model="feature" label-position="right" label-width="100px" style="max-width: 460px">
     <el-form-item v-for="(col, index) in feature.properties" :label="index">
-      <el-input disabled="true" v-model="feature.properties[index]" />
+      <el-input v-model="feature.properties[index]" disabled="true" />
     </el-form-item>
   </el-form>
   <div></div>
   <div>空间属性</div>
-  <el-form label-position="right" label-width="100px" :model="feature" style="max-width: 460px">
+  <el-form :model="feature" label-position="right" label-width="100px" style="max-width: 460px">
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="id" label="序号" width="100" />
-      <el-table-column prop="x" label="x" width="180" />
-      <el-table-column prop="y" label="y" width="180" />
+      <el-table-column label="序号" prop="id" width="100" />
+      <el-table-column label="x" prop="x" width="180" />
+      <el-table-column label="y" prop="y" width="180" />
     </el-table>
   </el-form>
 </template>

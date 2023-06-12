@@ -1,4 +1,4 @@
-<script setup lang="ts"></script>
+<script lang="ts" setup></script>
 
 <template>
   <div>图层右键</div>

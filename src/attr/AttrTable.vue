@@ -11,8 +11,8 @@
           "
           >添加字段
         </el-button>
-        <el-button type="primary" @click="searchParam.display = true">搜索字段 </el-button>
-        <el-button type="primary" @click="searchCanle">清空字段 </el-button>
+        <el-button type="primary" @click="searchParam.display = true">搜索字段</el-button>
+        <el-button type="primary" @click="searchCanle">清空字段</el-button>
       </el-row>
     </div>
     <div id="hello">
@@ -32,7 +32,7 @@
               {{ col.label }}
               <i class="el-icon-edit-outline" @click="col.show = false"></i>
             </p>
-            <el-input v-show="!col.show" v-model="col.label" size="mini"> </el-input>
+            <el-input v-show="!col.show" v-model="col.label" size="mini"></el-input>
           </template>
           <!-- 列-->
           <template #default="scope">
@@ -95,7 +95,7 @@
 
           <!--        <el-divider />-->
           <div>
-            <el-button @click="calcParam.dataTipsDisplay = true">首行数据 </el-button>
+            <el-button @click="calcParam.dataTipsDisplay = true">首行数据</el-button>
           </div>
           <div></div>
           <el-input disabled placeholder="(function(data) {" />
@@ -131,10 +131,10 @@
             label-width="100px"
             style="max-width: 460px"
           >
-            <el-form-item prop="cn" label="中文" :required="true">
+            <el-form-item :required="true" label="中文" prop="cn">
               <el-input v-model="newFieldParam.cn" autocomplete="off" />
             </el-form-item>
-            <el-form-item prop="en" label="英文" :required="true">
+            <el-form-item :required="true" label="英文" prop="en">
               <el-input v-model="newFieldParam.en" autocomplete="off" />
             </el-form-item>
           </el-form>
@@ -147,7 +147,7 @@
       <div>
         <!--          搜索字段-->
         <el-dialog v-model="searchParam.display" title="搜索字段" width="30%">
-          <el-form :model="searchParam" label-position="right" label-width="100px" style="max-width: 460px"> </el-form>
+          <el-form :model="searchParam" label-position="right" label-width="100px" style="max-width: 460px"></el-form>
           <el-input disabled placeholder="(function(data) {" />
           <el-input v-model="searchParam.rule" :rows="8" placeholder="请输入计算公式" type="textarea" />
           <el-input disabled placeholder="})(rowData); " />
@@ -168,6 +168,7 @@
 import { h } from 'vue';
 import { ElLoading, ElMessage } from 'element-plus';
 import { ipcRenderer } from 'electron';
+
 let loading;
 export default {
   name: 'demo',

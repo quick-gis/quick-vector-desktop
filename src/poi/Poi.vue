@@ -12,12 +12,12 @@
     <el-button @click="search">搜索</el-button>
   </el-form>
   <el-table :data="tableData" border style="width: 100%">
-    <el-table-column prop="name" label="名称" width="180" />
-    <el-table-column prop="type" label="兴趣点类型" width="180" />
-    <el-table-column prop="typecode" label="兴趣点类型编码" width="180" />
-    <el-table-column prop="address" label="地址" width="180" />
-    <el-table-column prop="location" label="经纬度" width="180" />
-    <el-table-column prop="cityname" label="城市名" width="180" />
+    <el-table-column label="名称" prop="name" width="180" />
+    <el-table-column label="兴趣点类型" prop="type" width="180" />
+    <el-table-column label="兴趣点类型编码" prop="typecode" width="180" />
+    <el-table-column label="地址" prop="address" width="180" />
+    <el-table-column label="经纬度" prop="location" width="180" />
+    <el-table-column label="城市名" prop="cityname" width="180" />
   </el-table>
 </template>
 

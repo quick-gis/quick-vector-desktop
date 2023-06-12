@@ -9,4 +9,3 @@ export function saveBufferCount(layerName: string) {
   }
   return count.get(layerName);
 }
-

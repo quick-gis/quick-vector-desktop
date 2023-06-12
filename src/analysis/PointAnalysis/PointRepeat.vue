@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from 'vue';
 import { ipcRenderer } from 'electron';
 import {
@@ -65,17 +65,17 @@ const error = () => {
   <div>
     <div>点重复分析</div>
 
-    <el-form :rules="rules" :model="data" label-width="120px">
-      <el-form-item prop="layerName" label="待分析图层">
-        <el-tree-select node-key="id" v-model="data.layerName" :data="LayerTree" :render-after-expand="false" />
+    <el-form :model="data" :rules="rules" label-width="120px">
+      <el-form-item label="待分析图层" prop="layerName">
+        <el-tree-select v-model="data.layerName" :data="LayerTree" :render-after-expand="false" node-key="id" />
       </el-form-item>
-      <el-form-item prop="module" label="检查模式">
+      <el-form-item label="检查模式" prop="module">
         <el-radio-group v-model="data.radio1" class="ml-4">
           <el-radio label="1" size="large">字段检查</el-radio>
           <el-radio label="2" size="large">坐标检查</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item v-if="data.radio1 == 1" prop="fields" label="检查字段">
+      <el-form-item v-if="data.radio1 == 1" label="检查字段" prop="fields">
         <el-select v-model="data.field">
           <el-option v-for="(col, idx) in data.fields" :label="col" :value="col" />
         </el-select>

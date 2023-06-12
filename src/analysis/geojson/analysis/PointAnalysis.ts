@@ -36,6 +36,7 @@ export class PointAnalysis {
     // 返回具有相同坐标的要素
     return featuresWithSameCoordinates;
   }
+
   private coordinatesMatch(coords1: [], coords2: []): boolean {
     if (coords1.length !== coords2.length) {
       return false;

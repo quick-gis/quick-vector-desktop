@@ -1,7 +1,9 @@
 import { CoreSplitLine } from './LineSplit';
+
 function splitPoint(d: any) {
   return d;
 }
+
 export function CoreSplitPoint(d: any) {
   if (d.type == 'FeatureCollection') {
     let r = [];

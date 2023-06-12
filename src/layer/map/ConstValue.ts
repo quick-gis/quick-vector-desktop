@@ -23,9 +23,11 @@ let qvmap: QvMap = null;
 export function setQvMap(qvmapParam: QvMap) {
   qvmap = qvmapParam;
 }
+
 export function getQvmap() {
   return qvmap;
 }
+
 export function getProj(layer: ProdLayersTypeEnum) {
   if (layer == ProdLayersTypeEnum.vec_c_jwd) {
     return 'EPSG:4326';

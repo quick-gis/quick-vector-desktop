@@ -9,6 +9,7 @@ export function removeNodesByLabel(nodes: any[], labels: string[]): any[] {
     return true;
   });
 }
+
 export function findNodeByLabel(nodes: any[], targetLabel: string) {
   for (const node of nodes) {
     if (node.label === targetLabel) {
@@ -25,6 +26,7 @@ export function findNodeByLabel(nodes: any[], targetLabel: string) {
 
   return null; // 没有找到匹配的节点
 }
+
 export function findNodeById(nodes: any[], id: string) {
   for (const node of nodes) {
     if (node.id === id) {
@@ -41,6 +43,7 @@ export function findNodeById(nodes: any[], id: string) {
 
   return null; // 没有找到匹配的节点
 }
+
 export function disableNodesWithInvalidGeoType(data: any[], invalidGeoType: string) {
   for (let i = 0; i < data.length; i++) {
     const node = data[i];

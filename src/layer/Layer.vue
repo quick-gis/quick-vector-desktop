@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { QvMap } from './map/QvMap';
 import { ipcRenderer } from 'electron';
@@ -173,21 +173,21 @@ ipcRenderer.on('Transit-ex-geojson', (event, args) => {
     <!--  todo: 尺寸动态 -->
     <Vue3DraggableResizable
       id="a"
-      :initW="200"
-      :initH="600"
+      v-model:active="d.active"
+      v-model:h="d.h"
+      v-model:w="d.w"
       v-model:x="d.x"
       v-model:y="d.y"
-      v-model:w="d.w"
-      v-model:h="d.h"
-      v-model:active="d.active"
       :draggable="true"
+      :initH="600"
+      :initW="200"
       :resizable="true"
       @activated="print('activated')"
       @deactivated="print('deactivated')"
-      @drag-start="print('drag-start')"
-      @resize-start="print('resize-start')"
       @dragging="print('dragging')"
       @resizing="print('resizing')"
+      @drag-start="print('drag-start')"
+      @resize-start="print('resize-start')"
       @drag-end="print('drag-end')"
       @resize-end="print('resize-end')"
     >
@@ -199,21 +199,21 @@ ipcRenderer.on('Transit-ex-geojson', (event, args) => {
     <div v-if="attrArrayDisplay">
       <Vue3DraggableResizable
         id="b"
-        :initW="attrShowSize.initW"
-        :initH="attrShowSize.initH"
+        v-model:active="attrShowSize.active"
+        v-model:h="attrShowSize.h"
+        v-model:w="attrShowSize.w"
         v-model:x="attrShowSize.x"
         v-model:y="attrShowSize.y"
-        v-model:w="attrShowSize.w"
-        v-model:h="attrShowSize.h"
-        v-model:active="attrShowSize.active"
         :draggable="true"
+        :initH="attrShowSize.initH"
+        :initW="attrShowSize.initW"
         :resizable="true"
         @activated="print('activated')"
         @deactivated="print('deactivated')"
-        @drag-start="print('drag-start')"
-        @resize-start="print('resize-start')"
         @dragging="print('dragging')"
         @resizing="print('resizing')"
+        @drag-start="print('drag-start')"
+        @resize-start="print('resize-start')"
         @drag-end="print('drag-end')"
         @resize-end="print('resize-end')"
       >
@@ -242,6 +242,7 @@ ipcRenderer.on('Transit-ex-geojson', (event, args) => {
   height: 100%;
   overflow-y: auto;
 }
+
 #b {
   position: fixed;
   z-index: 999;
@@ -249,6 +250,7 @@ ipcRenderer.on('Transit-ex-geojson', (event, args) => {
   height: 100%;
   overflow-y: auto;
 }
+
 #flood {
   position: absolute;
   bottom: 0;
@@ -257,6 +259,7 @@ ipcRenderer.on('Transit-ex-geojson', (event, args) => {
   height: 20px;
   background-color: rgba(238, 255, 0, 0.5);
 }
+
 .close-button {
   position: absolute;
   top: 0;

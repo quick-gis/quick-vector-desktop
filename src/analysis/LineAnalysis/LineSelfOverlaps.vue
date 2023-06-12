@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue';
 import { ipcRenderer } from 'electron';
 import {
@@ -45,9 +45,9 @@ const error = () => {
   <div>
     <div>线自重叠分析</div>
 
-    <el-form :rules="rules" :model="data" label-width="120px">
-      <el-form-item prop="layerName" label="待分析图层">
-        <el-tree-select node-key="id" v-model="data.layerName" :data="LayerTree" :render-after-expand="false" />
+    <el-form :model="data" :rules="rules" label-width="120px">
+      <el-form-item label="待分析图层" prop="layerName">
+        <el-tree-select v-model="data.layerName" :data="LayerTree" :render-after-expand="false" node-key="id" />
       </el-form-item>
       <!--      <el-form-item prop="full" label="是否需要完全重叠">-->
       <!--        <el-select v-model="data.full">-->

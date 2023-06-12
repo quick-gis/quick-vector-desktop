@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 /**
  * poi 数据对象
  */
@@ -52,6 +53,7 @@ abstract class PoiSearchParam {
   // @ts-ignore
   page: number | null;
 }
+
 class GaoDePoiSearchParam extends PoiSearchParam {
   // @ts-ignore
   key: string;

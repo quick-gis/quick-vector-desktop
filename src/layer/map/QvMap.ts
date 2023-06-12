@@ -12,10 +12,9 @@ import { Layer } from 'ol/layer';
 import { DefaultSelectStyle, SelectedStyles } from '../../config/mapmapStyle';
 import { MapBrowserEvent, Observable } from 'ol';
 import { reactive } from 'vue';
-import { Select } from 'ol/interaction';
-import dp from '../../test/test';
-import { Style } from 'ol/style';
+import { Modify, Select, Snap } from 'ol/interaction';
 import { getCenter } from 'ol/extent';
+
 const turf = require('@turf/turf');
 
 function getSelectPlus(mapData) {
@@ -69,6 +68,11 @@ const a = {
 const geojson = new GeoJSON();
 
 export class QvMap {
+  static addLayerBaseIndex = 30000;
+  static bufferBaseIndex = 10000;
+  static lineRingBaseIndex = 90000;
+  static lineSelfOverBaseIndex = 80000;
+  static pointRepeatBaseIndex = 80000;
   target: string;
   hh: OlMap = new OlMap();
   // @ts-ignore
@@ -78,7 +82,6 @@ export class QvMap {
    * @private
    */
   private diTu = new Map<ProdLayersTypeEnum, Layer>();
-
   /**
    * 文件转换图层
    * @private
@@ -89,7 +92,6 @@ export class QvMap {
    * @private
    */
   private _bufferLayer = new Map<String, Layer>();
-
   /**
    * 环分析图层
    * @private
@@ -105,12 +107,6 @@ export class QvMap {
    * @private
    */
   private _PointRepeatLayer = new Map<String, Layer>();
-
-  static addLayerBaseIndex = 30000;
-  static bufferBaseIndex = 10000;
-  static lineRingBaseIndex = 90000;
-  static lineSelfOverBaseIndex = 80000;
-  static pointRepeatBaseIndex = 80000;
   private curLayerIndex = QvMap.addLayerBaseIndex;
   private curBufferLayerIndex = QvMap.bufferBaseIndex;
   private curLineRingLayerIndex = QvMap.lineRingBaseIndex;
@@ -127,6 +123,13 @@ export class QvMap {
     zoom: -1,
   });
   private openSelect = false;
+  private mapClickKey: any;
+
+  constructor(target: string, obj) {
+    this.target = target;
+    this.mapData = obj;
+  }
+
   openOrClose() {
     if (this.openSelect) {
       this.mapData.openSelect = false;
@@ -137,13 +140,13 @@ export class QvMap {
     }
     this.openSelect = !this.openSelect;
   }
+
   closeSelector() {
     this.mapData.openSelect = false;
     this._map.removeInteraction(getSelectPlus(this.mapData));
     this.openSelect = !this.openSelect;
   }
 
-  private mapClickKey: any;
   openOrCloseCoordinatePickup() {
     this.mapData.isOpenCoordinatePicku = !this.mapData.isOpenCoordinatePicku;
     if (this.mapData.isOpenCoordinatePicku) {
@@ -154,14 +157,10 @@ export class QvMap {
       this.closeCoordinatePickup();
     }
   }
+
   closeCoordinatePickup() {
     this.mapData.isOpenCoordinatePicku = false;
     this._map.un(this.mapClickKey.type, this.mapClickKey.listener);
-  }
-
-  constructor(target: string, obj) {
-    this.target = target;
-    this.mapData = obj;
   }
 
   //  3. 要素图层的序号应该从10000开始
@@ -198,6 +197,7 @@ export class QvMap {
       }
     }
   }
+
   addMap(layer: ProdLayersTypeEnum) {
     this.diTu.forEach((v, k) => {
       v.setVisible(false);
@@ -219,22 +219,27 @@ export class QvMap {
     let layer1 = this._fileLayer.get(uid);
     layer1.setVisible(checked);
   }
+
   showOrCloseLineRingLayers(uid, checked) {
     console.log('iiiiii', uid);
     let layer1 = this._LineRingLayer.get(uid);
     layer1.setVisible(checked);
   }
+
   showOrClose_LineSelfOverlapsLayer(uid, checked) {
     this._LineSelfOverlapsLayer.get(uid)?.setVisible(checked);
   }
+
   showOrCloseBufferLayers(uid, checked) {
     let layer1 = this._bufferLayer.get(uid);
     layer1.setVisible(checked);
   }
+
   showOrClosePointRepeatLayers(uid, checked) {
     let layer1 = this._PointRepeatLayer.get(uid);
     layer1.setVisible(checked);
   }
+
   getFileLayer(uid) {
     return this._fileLayer.get(uid);
   }
@@ -301,6 +306,7 @@ export class QvMap {
     });
     view.setCenter(getCenter(layerExtent));
   }
+
   GetAllfileLayer(): Map<String, Layer> {
     return this._fileLayer;
   }
@@ -323,6 +329,7 @@ export class QvMap {
     this._fileLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
   }
+
   addGeoJsonForImport(uid, json, type) {
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
@@ -402,6 +409,7 @@ export class QvMap {
     this._LineSelfOverlapsLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
   }
+
   addPointRepeatLayer(uid: string, json: any) {
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
@@ -425,5 +433,15 @@ export class QvMap {
     if (zoom) {
       view.setZoom(zoom);
     }
+  }
+}
+
+class EditorCon {
+  private _modify: Modify;
+  private _snap: Snap;
+
+  constructor(modify: Modify, snap: Snap) {
+    this._modify = modify;
+    this._snap = snap;
   }
 }

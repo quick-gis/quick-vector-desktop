@@ -13,6 +13,7 @@ interface Link {
    */
   link_field: any[];
 }
+
 export class LineCsvObe {
   rows: any;
   headers: any[];
@@ -51,6 +52,7 @@ export class LineCsvObe {
       return {};
     }
   }
+
   LoadLineCsv(sxField: string, syField: string, zxField: string, zyField: string) {
     let features: any[] = [];
 
@@ -136,6 +138,7 @@ export class PointCsvObe {
     };
   }
 }
+
 //
 // let a = new PointCsvObe('/Users/zhangsan/temp/electron-vite-vue/sample/data.csv');
 // console.log(JSON.stringify(a.LoadPointCsv('x', 'y')));

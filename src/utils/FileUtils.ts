@@ -7,6 +7,7 @@ const DITU_CONFIG_FILE = 'dt.json';
 import fs from 'fs';
 import os from 'os';
 import { join } from 'path';
+
 const USER_HOME = process.env.HOME || process.env.USERPROFILE || os.homedir();
 
 function createFolder(rp: string) {
@@ -22,6 +23,7 @@ export function GetLogPath() {
   // @ts-ignore
   return join(USER_HOME, ROOT_PATH, LOG_PATH);
 }
+
 export function GetDiTuConfigFile() {
   // @ts-ignore
   return join(USER_HOME, ROOT_PATH, CONFIG_PATH, DITU_CONFIG_FILE);
@@ -31,6 +33,7 @@ export function GetStylePath() {
   // @ts-ignore
   return join(USER_HOME, ROOT_PATH, STYLE_PATH);
 }
+
 export function GetConfigPath() {
   // @ts-ignore
   return join(USER_HOME, ROOT_PATH, CONFIG_PATH);
@@ -56,6 +59,7 @@ export function SaveDiTuConfig(data: string) {
 export function ReadDiTuConfig() {
   return JSON.parse(fs.readFileSync(GetDiTuConfigFile(), 'utf8'));
 }
+
 export function WriteDiTuConfig(obj) {
   createFile(GetDiTuConfigFile(), JSON.stringify(obj));
 }

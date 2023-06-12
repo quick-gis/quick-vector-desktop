@@ -55,13 +55,13 @@ export class LineAnalysis {
       if (b4 < 0) {
         if (!invalidFeatures.has(feature1)) {
           invalidFeatures.add(feature1);
-          continue;
         }
       }
     }
 
     return invalidFeatures;
   }
+
   checkMultiLineStringWithMultiLineString(feature1: any, featureCollection: any): 0 | -1 | 1 {
     let checkOther = [];
     for (let j = 0; j < featureCollection.features.length; j++) {
@@ -78,6 +78,7 @@ export class LineAnalysis {
     }
     return checkOther.includes(true) ? 1 : -1;
   }
+
   isMultiLinkedAndMultiLinked(feature1: any, feature2: any): boolean {
     let f1Lines = feature1.geometry.coordinates;
     let f2Lines = feature2.geometry.coordinates;
@@ -104,6 +105,7 @@ export class LineAnalysis {
     }
     return re.includes(true);
   }
+
   checkMultiLineStringWithLineString(feature1: any, featureCollection: any) {
     let checkOther = [];
     for (let j = 0; j < featureCollection.features.length; j++) {
@@ -120,6 +122,7 @@ export class LineAnalysis {
     }
     return checkOther.includes(true) ? 1 : -1;
   }
+
   isMultiLinkedAndLineStringLinked(feature1: any, feature2: any): boolean {
     let f1Line = feature1.geometry.coordinates;
     let f2Line = feature2.geometry.coordinates;
@@ -217,6 +220,7 @@ export class LineAnalysis {
       this.areArraysEqual(endPoint1, endPoint2)
     );
   }
+
   checkMultiLineStringSelf(feature: any): boolean {
     const geometry = feature.geometry;
 
@@ -249,6 +253,7 @@ export class LineAnalysis {
 
     return !re.includes(false);
   }
+
   areArraysEqual(arr1: [], arr2: []) {
     if (arr1.length !== arr2.length) {
       return false;

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { reactive } from 'vue';
 import { ipcRenderer } from 'electron';
 import { ElMessage, FormRules } from 'element-plus';
@@ -65,18 +65,18 @@ const error = () => {
 <template>
   <div>导入GeoJson</div>
   <div>
-    <el-form :rules="rules" :model="importGeoJsonData" label-width="120px">
-      <el-form-item prop="file" label="选择文件">
+    <el-form :model="importGeoJsonData" :rules="rules" label-width="120px">
+      <el-form-item label="选择文件" prop="file">
         <el-input v-model="importGeoJsonData.file" disabled></el-input>
         <el-button @click="ipcRenderer.send('open-select-geojson-gen')">...</el-button>
       </el-form-item>
-      <el-form-item prop="encoding" label="编码格式">
+      <el-form-item label="编码格式" prop="encoding">
         <el-select v-model="importGeoJsonData.encoding" placeholder="请选择文件编码">
           <el-option label="GB2312" value="GB2312" />
           <el-option label="UTF-8" value="utf8" />
         </el-select>
       </el-form-item>
-      <el-form-item prop="type" label="成图类型">
+      <el-form-item label="成图类型" prop="type">
         <el-select v-model="importGeoJsonData.type" placeholder="请选择成图类型">
           <el-option label="点" value="point" />
           <el-option label="线" value="line" />

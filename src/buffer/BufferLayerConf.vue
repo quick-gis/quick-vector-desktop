@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ipcRenderer } from 'electron';
 import { onMounted, reactive, ref } from 'vue';
 import { findNodeById, findNodeByLabel, removeNodesByLabel } from '../layer/map/NodeUtil';
@@ -102,20 +102,20 @@ const rules = {
 
 <template>
   <div>图层缓冲区</div>
-  <el-form :rules="rules" :model="data" label-width="120px">
-    <el-form-item prop="layerName" label="缓冲图层">
+  <el-form :model="data" :rules="rules" label-width="120px">
+    <el-form-item label="缓冲图层" prop="layerName">
       <el-tree-select
-        :node-click="nodeClick"
-        node-key="id"
         v-model="data.layerName"
         :data="LayerTree"
+        :node-click="nodeClick"
         :render-after-expand="false"
+        node-key="id"
       />
     </el-form-item>
-    <el-form-item prop="size" label="缓冲长度">
-      <el-input-number :step="0.1" v-model="data.size" />
+    <el-form-item label="缓冲长度" prop="size">
+      <el-input-number v-model="data.size" :step="0.1" />
     </el-form-item>
-    <el-form-item prop="unity" label="单位">
+    <el-form-item label="单位" prop="unity">
       <el-select v-model="data.unity" placeholder="请选择长度单位">
         <el-option v-for="unit in units" :key="unit.value" :label="unit.label" :value="unit.value"></el-option>
       </el-select>

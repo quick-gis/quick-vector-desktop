@@ -1,8 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { reactive } from 'vue';
 import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import { ElMessage } from 'element-plus';
+
 const data = reactive({
   file: '',
   geojson: '',

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type Node from 'element-plus/es/components/tree/src/model/node';
 import type { DragEvents } from 'element-plus/es/components/tree/src/model/useDragNode';
 import type { AllowDropType, NodeDropType } from 'element-plus/es/components/tree/src/tree.type';
@@ -195,6 +195,7 @@ function findNodeByLabel(nodes, targetLabel) {
 
   return null; // 没有找到匹配的节点
 }
+
 const nodeClick = (e) => {
   console.log(e);
 };
@@ -508,12 +509,12 @@ ipcRenderer.on('get-geojson-field', (event, args) => {
 <template>
   <div>
     <el-tree
-      :default-checked-keys="defaultCheckedKeys"
-      :allow-drop="allowDrop"
       :allow-drag="allowDrag"
+      :allow-drop="allowDrop"
       :data="data"
-      draggable
+      :default-checked-keys="defaultCheckedKeys"
       default-expand-all
+      draggable
       node-key="id"
       show-checkbox
       @check-change="handleCheckChange"
@@ -531,19 +532,19 @@ ipcRenderer.on('get-geojson-field', (event, args) => {
     <!--    右键图层菜单(展示图层用-->
     <div
       v-show="showMenu"
+      id="contextmenu"
       :style="{
         top: contextmenuConfig.y + 'px',
         left: contextmenuConfig.x + 'px',
       }"
-      id="contextmenu"
       @mouseleave="showMenu = false"
       @mousemove.stop
     >
       <div>
-        <el-button @click="showAttrTable()">查看属性表 </el-button>
-        <el-button @click="showBufferConfigWindows()">建立缓冲区 </el-button>
+        <el-button @click="showAttrTable()">查看属性表</el-button>
+        <el-button @click="showBufferConfigWindows()">建立缓冲区</el-button>
         <el-button @click="CenteredDisplay()">居中显示</el-button>
-        <el-button @click="exportJeoJsonData()">导出为GeoJson数据 </el-button>
+        <el-button @click="exportJeoJsonData()">导出为GeoJson数据</el-button>
       </div>
     </div>
   </div>
@@ -552,17 +553,17 @@ ipcRenderer.on('get-geojson-field', (event, args) => {
     <!--    右键图层菜单(展示图层用-->
     <div
       v-show="showAnalysisMenu"
+      id="contextmenu"
       :style="{
         top: contextmenuConfig.y + 'px',
         left: contextmenuConfig.x + 'px',
       }"
-      id="contextmenu"
       @mouseleave="showMenu = false"
       @mousemove.stop
     >
       <div>
         <el-button @click="CenteredDisplay()">居中显示</el-button>
-        <el-button @click="exportJeoJsonData()">导出为GeoJson数据 </el-button>
+        <el-button @click="exportJeoJsonData()">导出为GeoJson数据</el-button>
       </div>
     </div>
   </div>

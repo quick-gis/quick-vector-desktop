@@ -33,6 +33,7 @@ const feature1 = {
     ],
   },
 };
+
 /**
  * 判断是否链接
  */
@@ -40,6 +41,7 @@ function isFlowLinked(curEndPoint: [], tarStartPoint: []): boolean {
   // 线1的终点是线2的起点，
   return areArraysEqual(curEndPoint, tarStartPoint);
 }
+
 function areArraysEqual(arr1: [], arr2: []) {
   if (arr1.length !== arr2.length) {
     return false;

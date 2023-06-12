@@ -12,6 +12,7 @@ const rules = reactive<FormRules>({
 const importGeoJsonData = reactive({
   file: '',
   encoding: 'utf8',
+  type: 'collection',
 });
 
 ipcRenderer.on('open-select-geojson-gen-success', (event, args) => {
@@ -73,6 +74,14 @@ const error = () => {
         <el-select v-model="importGeoJsonData.encoding" placeholder="请选择文件编码">
           <el-option label="GB2312" value="GB2312" />
           <el-option label="UTF-8" value="utf8" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="type" label="成图类型">
+        <el-select v-model="importGeoJsonData.type" placeholder="请选择成图类型">
+          <el-option label="点" value="point" />
+          <el-option label="线" value="line" />
+          <el-option label="面" value="polygon" />
+          <el-option label="集合" value="collection" />
         </el-select>
       </el-form-item>
     </el-form>

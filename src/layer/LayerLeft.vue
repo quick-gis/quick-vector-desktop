@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from 'uuid';
 import GeoJSON from 'ol/format/GeoJSON';
 import { GetLog } from '../utils/LogUtils';
 import { saveBufferCount } from '../buffer/BufferUtil';
+import { saveLineRingCount } from '../analysis/geojson/analysis/LineRingUtil';
+import { GeoJsonLineCyc } from '../analysis/geojson/analysis/GeoJsonLineCyc';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -64,6 +66,14 @@ const data = ref([
       {
         id: uuidv4(),
         label: '缓冲区分析',
+        disabled: true,
+
+        children: [],
+      },
+
+      {
+        id: uuidv4(),
+        label: '环分析',
         disabled: true,
 
         children: [],
@@ -274,7 +284,7 @@ ipcRenderer.on('gen-geojson-show', function (event, args) {
     id: args.uid,
     label: fileName,
     uid: args.uid,
-    geo_type: 'collection',
+    geo_type: args.type,
     tag: ProdLayersTypeEnum.file,
   });
 
@@ -372,6 +382,29 @@ const exportJeoJsonData = () => {
     geojson: exportGeoJsonString,
   });
 };
+
+ipcRenderer.on('line-ring-config-completion', (event, args) => {
+  let findNodeByLabel1 = findNodeByLabel(data.value, '环分析');
+  let nodeId = uuidv4();
+  let label = args.layerName;
+  let layer = props.qvMap?.getLayersByUid(args.id);
+  let geojsonstr = geojson.writeFeatures(layer?.getSource()?.getFeatures());
+  let geoJsonLineCyc = GeoJsonLineCyc(JSON.parse(geojsonstr));
+
+  props.qvMap?.addLineRingLayer(nodeId, geoJsonLineCyc);
+
+  findNodeByLabel1.children.unshift({
+    id: nodeId,
+    label: label + '-' + saveLineRingCount(label),
+    sourceName: label,
+    uid: nodeId,
+    geo_type: 'Line',
+    tag: ProdLayersTypeEnum.line_ring,
+  });
+  nextTick(() => {
+    defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
+  });
+});
 </script>
 
 <template>

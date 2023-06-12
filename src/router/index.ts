@@ -122,6 +122,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/line_ring',
+      name: 'line_ring',
+      component: defineAsyncComponent(() => import('../analysis/LineAnalysis/LineRing.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

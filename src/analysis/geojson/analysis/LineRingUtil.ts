@@ -1,6 +1,6 @@
 const count = new Map();
 
-export function saveBufferCount(layerName: string) {
+export function saveLineRingCount(layerName: string) {
   if (count.has(layerName)) {
     const currentCount = count.get(layerName) as number;
     count.set(layerName, currentCount + 1);
@@ -9,4 +9,3 @@ export function saveBufferCount(layerName: string) {
   }
   return count.get(layerName);
 }
-

@@ -44,6 +44,14 @@ function connectPoints(points: any): [] {
 }
 
 export function CoreSplitLine(d: any) {
+  if (d.type == 'FeatureCollection') {
+    let r = [];
+    for (let o of d.features) {
+      r.push(...CoreSplitLine(o));
+    }
+    return r;
+  }
+
   let type = d.geometry.type;
   if (type == 'LineString') {
     return splitLineString(d.geometry.coordinates);

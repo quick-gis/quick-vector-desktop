@@ -41,3 +41,16 @@ export function findNodeById(nodes: any[], id: string) {
 
   return null; // 没有找到匹配的节点
 }
+export function disableNodesWithInvalidGeoType(data: any[], invalidGeoType: string) {
+  for (let i = 0; i < data.length; i++) {
+    const node = data[i];
+
+    if (node.geo_type && node.geo_type.toLowerCase() !== invalidGeoType.toLowerCase()) {
+      node.disabled = true;
+    }
+
+    if (node.children && node.children.length > 0) {
+      disableNodesWithInvalidGeoType(node.children, invalidGeoType);
+    }
+  }
+}

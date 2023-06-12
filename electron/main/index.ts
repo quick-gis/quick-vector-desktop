@@ -57,7 +57,7 @@ function extracted(name, rootPath, isMac: boolean, path) {
         ]
       : []),
   ]);
-  // browserWindow.webContents.openDevTools({ mode: 'detach' });
+  browserWindow.webContents.openDevTools({ mode: 'detach' });
   browserWindow.setMenu(m);
   browserWindow.show();
   map.set(name, browserWindow);
@@ -85,7 +85,7 @@ async function createWindow() {
     isDev = true;
     win.loadURL(rootPath);
     // Open devTool if the app is not packaged
-    // win.webContents.openDevTools();
+    win.webContents.openDevTools();
   } else {
     rootPath = indexHtml;
     isDev = true;
@@ -162,6 +162,12 @@ async function createWindow() {
           label: '缓冲区分析',
           click: () => {
             extracted('/buff_lay', rootPath, isMac, '/buff_lay');
+          },
+        },
+        {
+          label: '环分析',
+          click: () => {
+            extracted('/line_ring', rootPath, isMac, '/line_ring');
           },
         },
       ],
@@ -392,10 +398,12 @@ ipcMain.on('getLayers', (event, args) => {
 });
 ipcMain.on('layers', (event, args) => {
   map.get('/buff_lay')?.webContents.send('curLayers', args);
+  map.get('/line_ring')?.webContents.send('curLayers', args);
   win.webContents.send('curLayers', args);
 });
 ipcMain.on('layerGeojson', (event, args) => {
   map.get('/buff_lay')?.webContents.send('curLayersGeojson', args);
+  map.get('/line_ring')?.webContents.send('curLayersGeojson', args);
   win.webContents.send('curLayersGeojson', args);
 });
 
@@ -453,4 +461,12 @@ ipcMain.on('save-geojson', (event, args) => {
 
 ipcMain.on('close-export-geojson', (event, args) => {
   map.get('/exportGeoJson').close();
+});
+
+ipcMain.on('line-ring', (event, args) => {
+  if (args.close) {
+    map.get('/line_ring')?.close();
+  } else {
+    win.webContents.send('line-ring-config-completion', args);
+  }
 });

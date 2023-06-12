@@ -90,10 +90,18 @@ export class QvMap {
    */
   private _bufferLayer = new Map<String, Layer>();
 
+  /**
+   * 环分析图层
+   * @private
+   */
+  private _LineRingLayer = new Map<String, Layer>();
+
   static addLayerBaseIndex = 30000;
   static bufferBaseIndex = 10000;
+  static lineRingBaseIndex = 90000;
   private curLayerIndex = QvMap.addLayerBaseIndex;
   private curBufferLayerIndex = QvMap.bufferBaseIndex;
+  private curLineRingLayerIndex = QvMap.lineRingBaseIndex;
   // @ts-ignore
   private mapData = reactive({
     coordinates: null,
@@ -212,14 +220,33 @@ export class QvMap {
     if (layer == null) {
       layer = this._bufferLayer.get(uid);
     }
+    if (layer == null) {
+      layer = this._LineRingLayer.get(uid);
+    }
     return geojson.writeFeatures(layer.getSource().getFeatures());
   }
+
+  getLayersByUid(uid: any) {
+    let layer = this._fileLayer.get(uid);
+    if (layer == null) {
+      layer = this._bufferLayer.get(uid);
+    }
+    if (layer == null) {
+      layer = this._LineRingLayer.get(uid);
+    }
+    return layer;
+  }
+
   CenteredDisplay(uid) {
     let layer = null;
 
     layer = this.getFileLayer(uid);
     if (layer == null) {
       layer = this._bufferLayer.get(uid);
+    }
+
+    if (layer == null) {
+      layer = this._LineRingLayer.get(uid);
     }
     let layerExtent = layer?.getSource().getExtent();
 
@@ -284,6 +311,20 @@ export class QvMap {
       return geoJSON;
     }
     return null;
+  }
+
+  addLineRingLayer(uid: string, json: any) {
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: geojson.readFeatures(json),
+      }),
+      style: SelectedStyles['line'],
+    });
+    debugger;
+    this.curLineRingLayerIndex = this.curLineRingLayerIndex + 1;
+    vectorLayer.setZIndex(this.curLineRingLayerIndex);
+    this._LineRingLayer.set(uid, vectorLayer);
+    this._map.addLayer(vectorLayer);
   }
 
   /**

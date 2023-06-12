@@ -205,6 +205,11 @@ export class QvMap {
     let layer1 = this._fileLayer.get(uid);
     layer1.setVisible(checked);
   }
+  showOrCloseLineRingLayers(uid, checked) {
+    console.log('iiiiii', uid);
+    let layer1 = this._LineRingLayer.get(uid);
+    layer1.setVisible(checked);
+  }
   showOrCloseBufferLayers(uid, checked) {
     let layer1 = this._bufferLayer.get(uid);
     layer1.setVisible(checked);
@@ -320,7 +325,6 @@ export class QvMap {
       }),
       style: SelectedStyles['line'],
     });
-    debugger;
     this.curLineRingLayerIndex = this.curLineRingLayerIndex + 1;
     vectorLayer.setZIndex(this.curLineRingLayerIndex);
     this._LineRingLayer.set(uid, vectorLayer);

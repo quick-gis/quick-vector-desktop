@@ -468,5 +468,6 @@ ipcMain.on('line-ring', (event, args) => {
     map.get('/line_ring')?.close();
   } else {
     win.webContents.send('line-ring-config-completion', args);
+    map.get('/line_ring')?.close();
   }
 });

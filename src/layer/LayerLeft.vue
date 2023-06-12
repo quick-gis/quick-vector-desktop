@@ -236,6 +236,7 @@ ipcRenderer.on('gen-pointOrLine-show', function (event, args) {
     label: fileName,
     uid: args.uid,
     tag: ProdLayersTypeEnum.file,
+    geo_type: args.geo_type,
   });
 
   nextTick(() => {
@@ -253,6 +254,8 @@ ipcRenderer.on('gen-shp-show', function (event, args) {
     id: args.uid,
     label: fileName,
     uid: args.uid,
+    geo_type: args.geo_type,
+
     tag: ProdLayersTypeEnum.file,
   });
 
@@ -271,6 +274,7 @@ ipcRenderer.on('gen-geojson-show', function (event, args) {
     id: args.uid,
     label: fileName,
     uid: args.uid,
+    geo_type: 'collection',
     tag: ProdLayersTypeEnum.file,
   });
 
@@ -352,6 +356,7 @@ ipcRenderer.on('buffer-config-data-complete', (event, args) => {
     label: label + '-' + saveBufferCount(label),
     sourceName: label,
     uid: nodeId,
+    geo_type: 'Polygon',
     tag: ProdLayersTypeEnum.buffer,
   });
   nextTick(() => {

@@ -273,6 +273,7 @@ export default {
           type: 'FeatureCollection',
           features: features,
         },
+        geo_type: this.gen_shp.type,
       };
       console.log(data);
       GetLog().info(JSON.stringify(data));

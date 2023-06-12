@@ -46,6 +46,7 @@ const ok = async () => {
         type: importShapeData.type,
         fileName: importShapeData.file,
         geo: data,
+        geo_type: importShapeData.type,
       })
     )
   );

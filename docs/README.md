@@ -6,6 +6,7 @@
   - [csv成图](./成图/csv成图.md)
   - [shp成图](./成图/shp成图.md)
   - [GeoJson成图](./成图/GeoJson成图.md)
+  - [MySQL成图](./成图/Mysql成图.md)
 - 交互
   - [属性查看](./交互/属性查看.md)
 - 底图

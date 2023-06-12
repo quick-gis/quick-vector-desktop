@@ -6,8 +6,8 @@ import TestLayerEditor from './test/TestLayerEditor.vue';
 
 <template>
   <div>
-    <TestLayerEditor />
-    <!--    <router-view></router-view>-->
+    <!--    <TestLayerEditor />-->
+    <router-view></router-view>
   </div>
 </template>
 

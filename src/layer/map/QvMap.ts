@@ -434,14 +434,57 @@ export class QvMap {
       view.setZoom(zoom);
     }
   }
+
+  startEditor(uid: string) {
+    if (this.curEditorLayer) {
+      this._map.removeInteraction(this.curEditorLayer.modify);
+      this._map.removeInteraction(this.curEditorLayer.snap);
+    }
+
+    let layersByUid = this.getLayersByUid(uid);
+    if (layersByUid) {
+      let source = layersByUid.getSource();
+      let modify = new Modify({
+        source: source,
+      });
+      let snap = new Snap({
+        source: source,
+      });
+      this.curEditorLayer = new EditorCon(modify, snap, layersByUid);
+      this._map.addInteraction(this.curEditorLayer.modify);
+      this._map.addInteraction(this.curEditorLayer.snap);
+    }
+  }
+  endEditor(uid: string) {
+    if (this.curEditorLayer) {
+      this._map.removeInteraction(this.curEditorLayer.modify);
+      this._map.removeInteraction(this.curEditorLayer.snap);
+    }
+  }
+
+  private curEditorLayer: EditorCon = null;
 }
 
 class EditorCon {
   private _modify: Modify;
   private _snap: Snap;
+  private _layer: Layer;
 
-  constructor(modify: Modify, snap: Snap) {
+  get modify(): Modify {
+    return this._modify;
+  }
+
+  get snap(): Snap {
+    return this._snap;
+  }
+
+  get layer(): Layer {
+    return this._layer;
+  }
+
+  constructor(modify: Modify, snap: Snap, layer: Layer) {
     this._modify = modify;
     this._snap = snap;
+    this._layer = layer;
   }
 }

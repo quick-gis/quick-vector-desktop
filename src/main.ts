@@ -15,11 +15,17 @@ import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
 CreateRootPath();
 
+import * as ElementPlusIconsVue from '@element-plus/icons-vue';
+
 function aa() {}
 
 aa();
 
 const app = createApp(App);
+
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component);
+}
 app.config.errorHandler = (err, vm, info) => {
   ElMessage({
     showClose: true,

@@ -16,6 +16,8 @@ import { saveLineRingCount } from '../analysis/geojson/analysis/LineRingUtil';
 import { GeoJsonLineCyc } from '../analysis/geojson/analysis/GeoJsonLineCyc';
 import { LineAnalysis } from '../analysis/geojson/analysis/LineAnalysis';
 import { PointAnalysis } from '../analysis/geojson/analysis/PointAnalysis';
+import { ElMessage } from 'element-plus';
+import { findNodeById } from './map/NodeUtil';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -55,11 +57,6 @@ onMounted(() => {
 });
 
 const data = ref([
-  {
-    id: uuidv4(),
-    label: '编辑图层',
-    disabled: true,
-  },
   {
     id: uuidv4(),
     label: '分析图层',
@@ -203,6 +200,12 @@ var geojson = new GeoJSON();
 
 const nodeContextMenu = (event, data, node) => {
   console.log('右键', event, data, node);
+
+  if (node.data.isEditor) {
+    editorLayerAbout.name = '结束编辑';
+  } else {
+    editorLayerAbout.name = '开始编辑';
+  }
   let tag = node?.data?.tag;
   curData.curNode = node;
   contextmenuConfig.x = event.clientX;
@@ -216,7 +219,6 @@ const nodeContextMenu = (event, data, node) => {
     });
     console.log('dddddd', geoJSON);
     curData.geojson = geoJSON;
-
     showMenu.value = true;
   } else if (tag == ProdLayersTypeEnum.buffer) {
     showAnalysisMenu.value = true;
@@ -504,6 +506,21 @@ ipcRenderer.on('get-geojson-field', (event, args) => {
     );
   }
 });
+
+const startOrEndEditor = () => {
+  let node = findNodeById(data.value, curData.curNode?.data.id);
+  node.isEditor = !node.isEditor;
+
+  if (node.isEditor) {
+    props.qvMap?.startEditor(curData.curNode?.data.id);
+  } else {
+    props.qvMap?.endEditor(curData.curNode?.data.id);
+  }
+  console.log(node);
+};
+const editorLayerAbout = reactive({
+  name: '开始编辑',
+});
 </script>
 
 <template>
@@ -526,7 +543,13 @@ ipcRenderer.on('get-geojson-field', (event, args) => {
       @node-drag-over="handleDragOver"
       @node-drag-end="handleDragEnd"
       @node-drop="handleDrop"
-    />
+    >
+      <template #default="{ node, data }">
+        <div>
+          <el-icon v-if="data.isEditor"><EditPen /></el-icon> {{ data.label }}
+        </div></template
+      >
+    </el-tree>
   </div>
   <div>
     <!--    右键图层菜单(展示图层用-->
@@ -542,6 +565,7 @@ ipcRenderer.on('get-geojson-field', (event, args) => {
     >
       <div>
         <el-button @click="showAttrTable()">查看属性表</el-button>
+        <el-button @click="startOrEndEditor()">{{ editorLayerAbout.name }}</el-button>
         <el-button @click="showBufferConfigWindows()">建立缓冲区</el-button>
         <el-button @click="CenteredDisplay()">居中显示</el-button>
         <el-button @click="exportJeoJsonData()">导出为GeoJson数据</el-button>

@@ -84,7 +84,6 @@ async function createWindow() {
     rootPath = `${url}`;
     isDev = true;
     win.loadURL(rootPath);
-    // Open devTool if the app is not packaged
     win.webContents.openDevTools();
   } else {
     rootPath = indexHtml;
@@ -126,6 +125,13 @@ async function createWindow() {
 
               click: () => {
                 extracted('/importGeoJson', rootPath, isMac, '/importGeoJson');
+              },
+            },
+            {
+              label: '从MySQL导入',
+
+              click: () => {
+                extracted('/MySqlGeojson', rootPath, isMac, '/MySqlGeojson');
               },
             },
           ],
@@ -511,4 +517,8 @@ ipcMain.on('get-geojson-field', (event, args) => {
 });
 ipcMain.on('get-geojson-field-res', (event, args) => {
   map.get('/PointRepeat').webContents.send('get-geojson-field-res-Propagation', args);
+});
+ipcMain.on('mysql-gen-geojson', (event, args) => {
+  win.webContents.send('gen-mysql-show', args);
+  map.get('/MySqlGeojson')?.close();
 });

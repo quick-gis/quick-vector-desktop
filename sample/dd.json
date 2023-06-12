@@ -1,0 +1,116 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              119.456968320495,
+              29.2185869231014
+            ],
+            [
+              119.457030454832,
+              29.2181936331143
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "ba": null,
+        "id": "1",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                119.456968320495,
+                29.2185869231014
+              ],
+              [
+                119.457030454832,
+                29.2181936331143
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              119.456968320495,
+              29.2185869231014
+            ],
+            [
+              119.457030454832,
+              29.2181936331143
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "ba": null,
+        "id": "2",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                119.456968320495,
+                29.2185869231014
+              ],
+              [
+                119.457030454832,
+                29.2181936331143
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              119.457030454832,
+              29.2181936331143
+            ],
+            [
+              119.456968320495,
+              29.2185869231014
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "ba": null,
+        "id": "3",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                119.457030454832,
+                29.2181936331143
+              ],
+              [
+                119.456968320495,
+                29.2185869231014
+              ]
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

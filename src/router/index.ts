@@ -146,6 +146,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/MySqlGeojson',
+      name: 'MySqlGeojson',
+      component: defineAsyncComponent(() => import('../db/mysql/MySqlGeojson.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

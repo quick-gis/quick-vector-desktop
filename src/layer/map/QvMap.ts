@@ -70,6 +70,7 @@ const geojson = new GeoJSON();
 export class QvMap {
   static addLayerBaseIndex = 30000;
   static bufferBaseIndex = 10000;
+  static DbBaseIndex = 10000;
   static lineRingBaseIndex = 90000;
   static lineSelfOverBaseIndex = 80000;
   static pointRepeatBaseIndex = 80000;
@@ -103,11 +104,17 @@ export class QvMap {
    */
   private _LineSelfOverlapsLayer = new Map<String, Layer>();
   /**
+   * 数据库图层
+   * @private
+   */
+  private _DbLayer = new Map<String, Layer>();
+  /**
    * 点重叠分析图层
    * @private
    */
   private _PointRepeatLayer = new Map<String, Layer>();
   private curLayerIndex = QvMap.addLayerBaseIndex;
+  private curDbLayerIndex = QvMap.DbBaseIndex;
   private curBufferLayerIndex = QvMap.bufferBaseIndex;
   private curLineRingLayerIndex = QvMap.lineRingBaseIndex;
   private curLineSelfOverLayerIndex = QvMap.lineSelfOverBaseIndex;
@@ -225,6 +232,11 @@ export class QvMap {
     let layer1 = this._LineRingLayer.get(uid);
     layer1.setVisible(checked);
   }
+  showOrCloseDbLayers(uid, checked) {
+    console.log('iiiiii', uid);
+    let layer1 = this._DbLayer.get(uid);
+    layer1.setVisible(checked);
+  }
 
   showOrClose_LineSelfOverlapsLayer(uid, checked) {
     this._LineSelfOverlapsLayer.get(uid)?.setVisible(checked);
@@ -260,6 +272,9 @@ export class QvMap {
     if (layer == null) {
       layer = this._PointRepeatLayer.get(uid);
     }
+    if (layer == null) {
+      layer = this._DbLayer.get(uid);
+    }
     return geojson.writeFeatures(layer.getSource().getFeatures());
   }
 
@@ -276,6 +291,9 @@ export class QvMap {
     }
     if (layer == null) {
       layer = this._PointRepeatLayer.get(uid);
+    }
+    if (layer == null) {
+      layer = this._DbLayer.get(uid);
     }
     return layer;
   }
@@ -297,6 +315,9 @@ export class QvMap {
     if (layer == null) {
       layer = this._PointRepeatLayer.get(uid);
     }
+    if (layer == null) {
+      layer = this._DbLayer.get(uid);
+    }
     let layerExtent = layer?.getSource().getExtent();
 
     let view = this._map.getView();
@@ -313,6 +334,22 @@ export class QvMap {
 
   GetAllbufferLayer(): Map<String, Layer> {
     return this._bufferLayer;
+  }
+
+  addSqlGeojsonFile(uid, json) {
+    console.log(json);
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: new GeoJSON().readFeatures(JSON.parse(json)),
+      }),
+      style: function (f) {
+        return SelectedStyles[f.getGeometry().getType()];
+      },
+    });
+    this.curDbLayerIndex = this.curDbLayerIndex + 1;
+    vectorLayer.setZIndex(this.curDbLayerIndex);
+    this._DbLayer.set(uid, vectorLayer);
+    this._map.addLayer(vectorLayer);
   }
 
   addGeojsonFile(uid, json) {

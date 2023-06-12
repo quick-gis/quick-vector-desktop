@@ -245,6 +245,8 @@ const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean)
     props.qvMap?.showOrClose_LineSelfOverlapsLayer(data?.uid, checked);
   } else if (data?.tag == ProdLayersTypeEnum.point_repeat) {
     props.qvMap?.showOrClosePointRepeatLayers(data?.uid, checked);
+  } else if (data?.tag == ProdLayersTypeEnum.sql) {
+    props.qvMap?.showOrCloseDbLayers(data?.uid, checked);
   } else if (
     data?.tag == ProdLayersTypeEnum.vec_c_jwd ||
     data?.tag == ProdLayersTypeEnum.vec_jwd_label ||
@@ -294,6 +296,23 @@ ipcRenderer.on('gen-shp-show', function (event, args) {
     tag: ProdLayersTypeEnum.file,
   });
 
+  nextTick(() => {
+    defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
+  });
+});
+ipcRenderer.on('gen-mysql-show', (event, args) => {
+  let findNodeByLabel1 = findNodeByLabel(data.value, '数据库图层');
+  let nodeId = uuidv4();
+
+  findNodeByLabel1.children.unshift({
+    id: nodeId,
+    label: args.name,
+    uid: nodeId,
+    geo_type: args.type,
+    tag: ProdLayersTypeEnum.sql,
+  });
+  props.qvMap?.addSqlGeojsonFile(nodeId, args.geojsonStr.geojson);
+  debugger;
   nextTick(() => {
     defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
   });

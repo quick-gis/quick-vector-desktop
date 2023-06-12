@@ -138,6 +138,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/PointRepeat',
+      name: 'PointRepeat',
+      component: defineAsyncComponent(() => import('../analysis/PointAnalysis/PointRepeat.vue')),
+      meta: {
+        requiresAuth: false,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };

@@ -15,6 +15,7 @@ import { saveBufferCount } from '../buffer/BufferUtil';
 import { saveLineRingCount } from '../analysis/geojson/analysis/LineRingUtil';
 import { GeoJsonLineCyc } from '../analysis/geojson/analysis/GeoJsonLineCyc';
 import { LineAnalysis } from '../analysis/geojson/analysis/LineAnalysis';
+import { PointAnalysis } from '../analysis/geojson/analysis/PointAnalysis';
 
 const handleDragStart = (node: Node, ev: DragEvents) => {
   console.log('drag start', node);
@@ -82,6 +83,13 @@ const data = ref([
       {
         id: uuidv4(),
         label: '线自重叠分析',
+        disabled: true,
+
+        children: [],
+      },
+      {
+        id: uuidv4(),
+        label: '点重复分析',
         disabled: true,
 
         children: [],
@@ -232,6 +240,8 @@ const handleCheckChange = (data: Tree, checked: boolean, indeterminate: boolean)
     props.qvMap?.showOrCloseLineRingLayers(data?.uid, checked);
   } else if (data?.tag == ProdLayersTypeEnum.line_self_ov) {
     props.qvMap?.showOrClose_LineSelfOverlapsLayer(data?.uid, checked);
+  } else if (data?.tag == ProdLayersTypeEnum.point_repeat) {
+    props.qvMap?.showOrClosePointRepeatLayers(data?.uid, checked);
   } else if (
     data?.tag == ProdLayersTypeEnum.vec_c_jwd ||
     data?.tag == ProdLayersTypeEnum.vec_jwd_label ||
@@ -425,7 +435,6 @@ ipcRenderer.on('line-self-overlaps-config-completion', (event, args) => {
   let label = args.layerName;
   let layer = props.qvMap?.getLayersByUid(args.id);
   let geojsonstr = geojson.writeFeatures(layer?.getSource()?.getFeatures());
-  // let geoJsonLineCyc = GeoJsonLineCyc(JSON.parse(geojsonstr));
 
   let findSelfFullOverlaps = lineAna.findSelfOverlaps(JSON.parse(geojsonstr), args.full === 'true');
   debugger;
@@ -442,6 +451,57 @@ ipcRenderer.on('line-self-overlaps-config-completion', (event, args) => {
   nextTick(() => {
     defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
   });
+});
+let pointAna = new PointAnalysis();
+ipcRenderer.on('point-repeat-config-completion', (event, args) => {
+  let findNodeByLabel1 = findNodeByLabel(data.value, '点重复分析');
+  let nodeId = uuidv4();
+  let label = args.layerName;
+  let layer = props.qvMap?.getLayersByUid(args.id);
+  let geojsonstr = geojson.writeFeatures(layer?.getSource()?.getFeatures());
+
+  let res;
+  if (args.field) {
+    res = pointAna.filterFeaturesByAttribute(JSON.parse(geojsonstr), args.field);
+  } else {
+    res = pointAna.findFeaturesWithSameCoordinates(JSON.parse(geojsonstr));
+  }
+
+  debugger;
+  props.qvMap?.addPointRepeatLayer(nodeId, { type: 'FeatureCollection', features: res });
+
+  findNodeByLabel1.children.unshift({
+    id: nodeId,
+    label: label + '-' + saveLineRingCount(label),
+    sourceName: label,
+    uid: nodeId,
+    geo_type: 'Point',
+    tag: ProdLayersTypeEnum.point_repeat,
+  });
+  nextTick(() => {
+    defaultCheckedKeys.value = defaultCheckedKeys.value.concat(nodeId);
+  });
+});
+
+ipcRenderer.on('get-geojson-field', (event, args) => {
+  let layer = props.qvMap?.getLayersByUid(args.node_id);
+  let features = layer.getSource().getFeatures();
+  if (features.length > 0) {
+    let fet = features[0];
+    let properties = fet.getProperties();
+    let fields = [];
+    for (let key in properties) {
+      if (key.toLocaleLowerCase() !== 'geometry'.toLocaleLowerCase()) {
+        fields.push(key);
+      }
+    }
+    ipcRenderer.send(
+      'get-geojson-field-res',
+      JSON.stringify({
+        fields: fields,
+      })
+    );
+  }
 });
 </script>
 

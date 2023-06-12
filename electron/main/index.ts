@@ -176,6 +176,12 @@ async function createWindow() {
             extracted('/line_self_Overlaps', rootPath, isMac, '/line_self_Overlaps');
           },
         },
+        {
+          label: '点重复分析',
+          click: () => {
+            extracted('/PointRepeat', rootPath, isMac, '/PointRepeat');
+          },
+        },
       ],
     },
     {
@@ -406,12 +412,14 @@ ipcMain.on('layers', (event, args) => {
   map.get('/buff_lay')?.webContents.send('curLayers', args);
   map.get('/line_ring')?.webContents.send('curLayers', args);
   map.get('/line_self_Overlaps')?.webContents.send('curLayers', args);
+  map.get('/PointRepeat')?.webContents.send('curLayers', args);
   win.webContents.send('curLayers', args);
 });
 ipcMain.on('layerGeojson', (event, args) => {
   map.get('/buff_lay')?.webContents.send('curLayersGeojson', args);
   map.get('/line_self_Overlaps')?.webContents.send('curLayersGeojson', args);
   map.get('/line_ring')?.webContents.send('curLayersGeojson', args);
+  map.get('/PointRepeat')?.webContents.send('curLayersGeojson', args);
   win.webContents.send('curLayersGeojson', args);
 });
 
@@ -487,4 +495,20 @@ ipcMain.on('line-self-overlaps', (event, args) => {
     win.webContents.send('line-self-overlaps-config-completion', args);
     map.get('/line_self_Overlaps')?.close();
   }
+});
+
+ipcMain.on('point-repeat', (event, args) => {
+  if (args.close) {
+    map.get('/PointRepeat')?.close();
+  } else {
+    win.webContents.send('point-repeat-config-completion', args);
+    // map.get('/PointRepeat')?.close();
+  }
+});
+
+ipcMain.on('get-geojson-field', (event, args) => {
+  win.webContents.send('get-geojson-field', args);
+});
+ipcMain.on('get-geojson-field-res', (event, args) => {
+  map.get('/PointRepeat').webContents.send('get-geojson-field-res-Propagation', args);
 });

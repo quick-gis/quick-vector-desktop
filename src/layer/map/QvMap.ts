@@ -100,15 +100,22 @@ export class QvMap {
    * @private
    */
   private _LineSelfOverlapsLayer = new Map<String, Layer>();
+  /**
+   * 点重叠分析图层
+   * @private
+   */
+  private _PointRepeatLayer = new Map<String, Layer>();
 
   static addLayerBaseIndex = 30000;
   static bufferBaseIndex = 10000;
   static lineRingBaseIndex = 90000;
   static lineSelfOverBaseIndex = 80000;
+  static pointRepeatBaseIndex = 80000;
   private curLayerIndex = QvMap.addLayerBaseIndex;
   private curBufferLayerIndex = QvMap.bufferBaseIndex;
   private curLineRingLayerIndex = QvMap.lineRingBaseIndex;
   private curLineSelfOverLayerIndex = QvMap.lineSelfOverBaseIndex;
+  private curPointRepeatLayerIndex = QvMap.pointRepeatBaseIndex;
   // @ts-ignore
   private mapData = reactive({
     coordinates: null,
@@ -224,6 +231,10 @@ export class QvMap {
     let layer1 = this._bufferLayer.get(uid);
     layer1.setVisible(checked);
   }
+  showOrClosePointRepeatLayers(uid, checked) {
+    let layer1 = this._PointRepeatLayer.get(uid);
+    layer1.setVisible(checked);
+  }
   getFileLayer(uid) {
     return this._fileLayer.get(uid);
   }
@@ -241,6 +252,9 @@ export class QvMap {
     if (layer == null) {
       layer = this._LineSelfOverlapsLayer.get(uid);
     }
+    if (layer == null) {
+      layer = this._PointRepeatLayer.get(uid);
+    }
     return geojson.writeFeatures(layer.getSource().getFeatures());
   }
 
@@ -254,6 +268,9 @@ export class QvMap {
     }
     if (layer == null) {
       layer = this._LineSelfOverlapsLayer.get(uid);
+    }
+    if (layer == null) {
+      layer = this._PointRepeatLayer.get(uid);
     }
     return layer;
   }
@@ -271,6 +288,9 @@ export class QvMap {
     }
     if (layer == null) {
       layer = this._LineSelfOverlapsLayer.get(uid);
+    }
+    if (layer == null) {
+      layer = this._PointRepeatLayer.get(uid);
     }
     let layerExtent = layer?.getSource().getExtent();
 
@@ -380,6 +400,18 @@ export class QvMap {
     this.curLineSelfOverLayerIndex = this.curLineSelfOverLayerIndex + 1;
     vectorLayer.setZIndex(this.curLineSelfOverLayerIndex);
     this._LineSelfOverlapsLayer.set(uid, vectorLayer);
+    this._map.addLayer(vectorLayer);
+  }
+  addPointRepeatLayer(uid: string, json: any) {
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: geojson.readFeatures(json),
+      }),
+      style: SelectedStyles['point'],
+    });
+    this.curPointRepeatLayerIndex = this.curPointRepeatLayerIndex + 1;
+    vectorLayer.setZIndex(this.curPointRepeatLayerIndex);
+    this._PointRepeatLayer.set(uid, vectorLayer);
     this._map.addLayer(vectorLayer);
   }
 

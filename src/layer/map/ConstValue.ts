@@ -15,6 +15,7 @@ export enum ProdLayersTypeEnum {
   buffer = '缓冲图层',
   line_ring = '环分析图层',
   line_self_ov = '线自叠加分析图层',
+  point_repeat = '点重复图层',
 }
 
 let qvmap: QvMap = null;

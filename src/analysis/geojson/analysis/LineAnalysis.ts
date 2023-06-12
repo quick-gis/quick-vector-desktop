@@ -333,10 +333,10 @@ export class LineAnalysis {
    * @param full 是否需要完全重叠，true: 完全重叠，false：部分重叠
    */
   findSelfOverlaps(geojson: any, full: boolean) {
-    if (full) {
-      return { type: 'FeatureCollection', features: this.findSelfFullOverlaps(geojson) };
-    } else {
-      return { type: 'FeatureCollection', features: this.findSelfPartialOverlaps(geojson) };
-    }
+    // if (full) {
+    //   return { type: 'FeatureCollection', features: this.findSelfFullOverlaps(geojson) };
+    // } else {
+    return { type: 'FeatureCollection', features: this.findSelfPartialOverlaps(geojson) };
+    // }
   }
 }

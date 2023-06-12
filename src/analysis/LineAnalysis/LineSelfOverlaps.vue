@@ -49,12 +49,12 @@ const error = () => {
       <el-form-item prop="layerName" label="待分析图层">
         <el-tree-select node-key="id" v-model="data.layerName" :data="LayerTree" :render-after-expand="false" />
       </el-form-item>
-      <el-form-item prop="full" label="是否需要完全重叠">
-        <el-select v-model="data.full">
-          <el-option label="是" value="true" />
-          <el-option label="否" value="false" />
-        </el-select>
-      </el-form-item>
+      <!--      <el-form-item prop="full" label="是否需要完全重叠">-->
+      <!--        <el-select v-model="data.full">-->
+      <!--          <el-option label="是" value="true" />-->
+      <!--          <el-option label="否" value="false" />-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
     </el-form>
     <div>
       <el-button @click="ok">确定</el-button>
